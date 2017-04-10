@@ -1,0 +1,22 @@
+#extend("base")
+
+#export("body") {
+  <table class="responsive-table highlight">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Records</th>
+      </tr>
+    </thead>
+    <tbody>
+      #loop(users, "user") {
+        <tr>
+          <td>#(user.id)</td>
+          <td>#(user.name)</td>
+          <td><a href="/records?user_id=#(user.id)">Records</a>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

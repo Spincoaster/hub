@@ -1,0 +1,26 @@
+#extend("base")
+
+#export("body") {
+  <table class="highlight">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Title</th>
+        <th>Artist</th>
+        <th>Comment</th>
+      </tr>
+    </thead>
+    <tbody>
+      #loop(records, "record") {
+        <tr>
+          <td>#(record.id)</td>
+          <td><a href="/records?user_id=#(record.user.id)">#(record.user.name)</a></td>
+          <td>#(record.title)</td>
+          <td><a href="/records?artist_id=#(record.artist.id)">#(record.artist.name)</a></td>
+          <td>#(record.comment)</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

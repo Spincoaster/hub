@@ -1,10 +1,17 @@
 import Vapor
 import VaporPostgreSQL
+import Fluent
+import Lib
 
 let drop = Droplet(
     providers: [VaporPostgreSQL.Provider.self]
 )
 
+drop.preparations.append(Record.self)
+drop.preparations.append(Artist.self)
+drop.preparations.append(User.self)
+drop.preparations.append(Genre.self)
+drop.preparations.append(Pivot<Genre, Record>.self)
 
 drop.get("version") { request in
     if let db = drop.database?.driver as? PostgreSQLDriver {
@@ -14,13 +21,10 @@ drop.get("version") { request in
         return "No db connection"
     }
 }
-/*
-drop.get { req in
-    return try drop.view.make("welcome", [
-        "message": drop.localization[req.lang, "welcome", "title"]
-    ])
-}*/
 
-drop.resource("posts", PostController())
+drop.resource("records", RecordController())
+drop.resource("artists", ArtistController())
+drop.resource("users", UserController())
+drop.resource("genres", GenreController())
 
 drop.run()
