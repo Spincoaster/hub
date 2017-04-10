@@ -69,6 +69,9 @@ public final class Record: Model {
     }
 
     public static func firstOrCreateBy(number: Int, title: String, comment: String, artistId: Node, userId: Node) -> Record? {
+        if title.count == 0 {
+            return nil
+        }
         do {
             if let record = try Record.query().filter("number", String(number)).filter("title", title).first() {
                 return record

@@ -34,6 +34,9 @@ public final class User: Model {
         )
     }
     public static func firstOrCreateBy(name: String) -> User? {
+        if name.count == 0 {
+            return nil
+        }
         do {
             if let user = try User.query().filter("name", name).first() {
                 return user
