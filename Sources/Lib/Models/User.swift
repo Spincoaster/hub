@@ -53,9 +53,9 @@ public final class User: Model {
 
 extension User: Preparation {
     public static func prepare(_ database: Database) throws {
-        try database.create("users") { records in
-            records.id()
-            records.string("name", unique: true)
+        try database.create("users") { users in
+            users.id()
+            users.string("name", unique: true)
         }
     }
     

@@ -53,9 +53,9 @@ public final class Artist: Model {
 
 extension Artist: Preparation {
     public static func prepare(_ database: Database) throws {
-        try database.create("artists") { records in
-            records.id()
-            records.string("name", unique: true)
+        try database.create("artists") { artists in
+            artists.id()
+            artists.string("name", unique: true)
         }
     }
     
