@@ -10,11 +10,12 @@ import Foundation
 
 import Vapor
 import HTTP
+import Fluent
 import Lib
 
 final class UserController: ResourceRepresentable {
     func index(request: Request) throws -> ResponseRepresentable {
-        let users = try User.all().makeNode()
+        let users = try User.query().sort("name", Sort.Direction.ascending).all().makeNode()
         let parameters = try Node(node: ["users": users])
         return try drop.view.make("users", parameters)
     }

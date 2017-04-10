@@ -1,11 +1,12 @@
 import Vapor
 import HTTP
-import Lib
 import Fluent
+import Lib
+
 
 final class RecordController: ResourceRepresentable {
     func index(request: Request) throws -> ResponseRepresentable {
-        let query = try Record.query()
+        let query = try Record.query().sort("title", Sort.Direction.ascending)
         if let artistId = request.query?["artist_id"]?.int {
             try query.filter("artist_id", artistId)
         }

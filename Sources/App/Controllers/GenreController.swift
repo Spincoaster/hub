@@ -9,6 +9,7 @@
 import Foundation
 import Vapor
 import HTTP
+import Fluent
 import Lib
 
 final class GenreController: ResourceRepresentable {

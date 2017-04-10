@@ -10,11 +10,12 @@ import Foundation
 
 import Vapor
 import HTTP
+import Fluent
 import Lib
 
 final class ArtistController: ResourceRepresentable {
     func index(request: Request) throws -> ResponseRepresentable {
-        let artists = try Artist.all().makeNode()
+        let artists = try Artist.query().sort("name", Sort.Direction.ascending).all().makeNode()
         let parameters = try Node(node: ["artists": artists])
         return try drop.view.make("artists", parameters)
 
