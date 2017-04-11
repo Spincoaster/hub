@@ -22,7 +22,11 @@ public class SpreadSheet {
                 guard let str = String(data: data, encoding: String.Encoding.utf8) else { return }
                 let rows: [String] = str.components(separatedBy: "\r\n")
                 let cells = rows.map { s -> [String] in
-                    return s.components(separatedBy: ",")
+                    return s.components(separatedBy: ",").map { val in
+                        if val.count == 0 { return val }
+                        if val[val.startIndex] != "\"" { return val }
+                        return val.substring(with: val.index(val.startIndex, offsetBy: 1)..<val.index(val.endIndex, offsetBy: -1))
+                    }
                 }
                 observer.send(value: cells)
                 observer.sendCompleted()
