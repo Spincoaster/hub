@@ -35,7 +35,7 @@ let _ = SpreadSheet().fetch(fileId: fileId).on() { (rows: [[String]]) -> Void in
         guard let userId   = User.firstOrCreateBy(name: userName)?.id else { return }
         guard let artistId = Artist.firstOrCreateBy(name: artistName)?.id else { return }
         guard let record   = Record.firstOrCreateBy(number: recordNo, title: title, comment: comment, artistId: artistId, userId: userId) else { return }
-        print("imported \(userName)  \(userId) \(record.userId) \(artistId) \(record.artistId)")
+        print("imported \(userName) \(title) \(artistName) \(userId) \(record.userId) \(artistId) \(record.artistId)")
     }
 }.single()
 
