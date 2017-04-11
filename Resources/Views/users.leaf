@@ -4,7 +4,6 @@
   <table class="responsive-table highlight">
     <thead>
       <tr>
-        <th>ID</th>
         <th>Name</th>
         <th>Records</th>
       </tr>
@@ -12,7 +11,6 @@
     <tbody>
       #loop(users, "user") {
         <tr>
-          <td>#(user.id)</td>
           <td>#(user.name)</td>
           <td><a href="/records?user_id=#(user.id)">Records</a>
         </tr>

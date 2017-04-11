@@ -4,7 +4,6 @@
   <table class="highlight">
     <thead>
       <tr>
-        <th>ID</th>
         <th>Name</th>
         <th>Records</th>
       </tr>
@@ -12,7 +11,6 @@
     <tbody>
       #loop(artists, "artist") {
         <tr>
-          <td>#(artist.id)</td>
           <td>#(artist.name)</td>
           <td><a href="/records?artist_id=#(artist.id)">Records</a>
         </tr>

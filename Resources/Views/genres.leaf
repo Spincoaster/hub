@@ -4,14 +4,12 @@
   <table class="responsive-table highlight">
     <thead>
       <tr>
-        <th>ID</th>
         <th>Name</th>
       </tr>
     </thead>
     <tbody>
       #loop(genres, "genre") {
         <tr>
-          <td>#(genre.id)</td>
           <td>#(genre.name)</td>
         </tr>
       }
