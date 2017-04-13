@@ -1,0 +1,31 @@
+#extend("base")
+
+#export("body") {
+  <ul class="pagination" style="display: inline-block; ">
+    <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+    #loop(pages, "page") {
+      <li class="#(page.active) waves-effect">
+        <a href="#(page.href)">#(page.label)</a>
+      </li>
+    }
+    <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+  </ul>
+  <table class="highlight">
+    <thead>
+      <tr>
+        <th>Artist</th>
+        <th>Album</th>
+        <th>Title</th>
+      </tr>
+    </thead>
+    <tbody>
+      #loop(tracks, "track") {
+        <tr>
+          <td><a href="/tracks?artist_id=#(track.artist.id)">#(track.artist.name)</a></td>
+          <td><a href="/tracks?album_id=#(track.album.id)">#(track.album.name)</a></td>
+          <td>#(track.name)</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
