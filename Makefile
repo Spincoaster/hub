@@ -7,6 +7,9 @@ prepare:
 import_records:
 	swift build
 	./.build/debug/ImportRecords
+import_tracks:
+	swift build
+	./.build/debug/ImportTracks
 run:
 	vapor build
 	vapor run serve
