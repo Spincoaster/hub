@@ -12,6 +12,8 @@ drop.preparations.append(Artist.self)
 drop.preparations.append(User.self)
 drop.preparations.append(Genre.self)
 drop.preparations.append(Pivot<Genre, Record>.self)
+drop.preparations.append(Album.self)
+drop.preparations.append(Track.self)
 
 drop.get("version") { request in
     if let db = drop.database?.driver as? PostgreSQLDriver {
