@@ -19,8 +19,8 @@ if let url = getEnvironmentVar("DATABASE_URL") {
 }
 
 let fileId = getEnvironmentVar("FILE_ID") ?? ""
-SpreadSheet.apiKey = getEnvironmentVar("API_KEY") ?? ""
-let _ = SpreadSheet().fetch(fileId: fileId).on() { (rows: [[String]]) -> Void in
+GoogleDrive.apiKey = getEnvironmentVar("API_KEY") ?? ""
+let _ = GoogleDrive().fetchCSV(fileId: fileId).on() { (rows: [[String]]) -> Void in
     rows.forEach {
         guard $0.count > 7 else { return }
         let position:   String = $0[0]
