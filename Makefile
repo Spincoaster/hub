@@ -4,9 +4,9 @@ default: run
 prepare:
 	swift package generate-xcodeproj
 
-task:
+import_records:
 	swift build
-	./.build/debug/Task
+	./.build/debug/ImportRecords
 run:
 	vapor build
 	vapor run serve

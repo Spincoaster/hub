@@ -5,7 +5,7 @@ let package = Package(
     targets: [
         Target(name: "Lib"),
         Target(name: "App",  dependencies: [.Target(name: "Lib")]),
-        Target(name: "Task", dependencies: [.Target(name: "Lib")]),
+        Target(name: "ImportRecords", dependencies: [.Target(name: "Lib")]),
     ],
     dependencies: [
         .Package(url: "https://github.com/vapor/vapor.git", majorVersion: 1, minor: 5),
