@@ -26,7 +26,9 @@ drop.get("version") { request in
 
 drop.resource("records", RecordController())
 drop.resource("artists", ArtistController())
-drop.resource("users", UserController())
-drop.resource("genres", GenreController())
+drop.resource("users"  , UserController())
+drop.resource("genres" , GenreController())
+drop.resource("albums" , AlbumController())
+drop.resource("tracks" , TrackController())
 
 drop.run()
