@@ -12,7 +12,6 @@ public class GoogleDrive {
             request.httpMethod = "GET"
             let session = URLSession(configuration: URLSessionConfiguration.default)
             session.dataTask(with: request) {data, response, err in
-                print("response")
                 if let err = err {
                     print("error")
                     observer.send(error: err as NSError)
@@ -40,7 +39,6 @@ public class GoogleDrive {
             request.httpMethod = "GET"
             let session = URLSession(configuration: URLSessionConfiguration.default)
             session.dataTask(with: request) {data, response, err in
-                print("response")
                 if let err = err {
                     print("error")
                     observer.send(error: err as NSError)
