@@ -9,7 +9,22 @@ func getEnvironmentVar(_ name: String) -> String? {
     return String(utf8String: rawValue)
 }
 
+extension Array {
+    func get(_ index: Int) -> Element? {
+        if index < self.count {
+            return self[index]
+        }
+        return nil
+    }
+}
+
 func handleLine(line: String) {
+    var handled = false
+    defer {
+        if !handled {
+            print("ignored \(line)")
+        }
+    }
     let paths = line.components(separatedBy: "/")
     if paths.count < 4 { return }
     let artistName = paths[1]
@@ -17,11 +32,13 @@ func handleLine(line: String) {
     let trackPath  = paths[3]
     guard trackPath.count > 3 else { return }
     guard let number = Int(trackPath.substring(to: trackPath.index(trackPath.startIndex, offsetBy: 2))) else { return }
-    let name = trackPath.substring(from: trackPath.index(trackPath.startIndex, offsetBy: 3))
+    let fileName = trackPath.substring(from: trackPath.index(trackPath.startIndex, offsetBy: 3))
+    guard let name = fileName.components(separatedBy: ".flac").get(0) else { return }
     
     guard let artistId = Artist.firstOrCreateBy(name: artistName)?.id else { return }
     guard let albumId  = Album.firstOrCreateBy(name: albumName, artistId: artistId)?.id else { return }
     guard let track    = Track.firstOrCreateBy(name: name, number: number, artistId: artistId, albumId: albumId) else { return }
+    handled = true
     print("\(artistName) \(albumName) \(track.number) \(track.name)")
 }
 
