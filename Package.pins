@@ -71,7 +71,7 @@
       "package": "Multipart",
       "reason": null,
       "repositoryURL": "https://github.com/vapor/multipart.git",
-      "version": "1.0.2"
+      "version": "1.0.3"
     },
     {
       "package": "Node",
@@ -137,13 +137,13 @@
       "package": "Vapor",
       "reason": null,
       "repositoryURL": "https://github.com/vapor/vapor.git",
-      "version": "1.5.14"
+      "version": "1.5.15"
     },
     {
       "package": "VaporPostgreSQL",
       "reason": null,
       "repositoryURL": "https://github.com/vapor/postgresql-provider",
-      "version": "1.0.0"
+      "version": "1.1.1"
     }
   ],
   "version": 1
