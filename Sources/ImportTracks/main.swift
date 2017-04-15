@@ -17,7 +17,7 @@ func handleLine(line: String) {
     let trackPath  = paths[3]
     guard trackPath.count > 3 else { return }
     guard let number = Int(trackPath.substring(to: trackPath.index(trackPath.startIndex, offsetBy: 2))) else { return }
-    let name = trackPath.substring(from: trackPath.index(trackPath.startIndex, offsetBy: 2))
+    let name = trackPath.substring(from: trackPath.index(trackPath.startIndex, offsetBy: 3))
     
     guard let artistId = Artist.firstOrCreateBy(name: artistName)?.id else { return }
     guard let albumId  = Album.firstOrCreateBy(name: albumName, artistId: artistId)?.id else { return }
