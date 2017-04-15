@@ -6,7 +6,7 @@ import Lib
 
 final class RecordController: ResourceRepresentable, Pagination {
     func indexQuery(request: Request) throws -> Query<Record> {
-        let query = try Record.query().sort("title", Sort.Direction.ascending)
+        let query = try Record.query().sort("name", Sort.Direction.ascending)
         if let artistId = request.query?["artist_id"]?.int {
             try query.filter("artist_id", artistId)
         }
@@ -63,7 +63,7 @@ final class RecordController: ResourceRepresentable, Pagination {
         let new         = try request.record()
         var record      = record
         record.number   = new.number
-        record.title    = new.title
+        record.name     = new.name
         record.comment  = new.comment
         record.artistId = new.artistId
         try record.save()

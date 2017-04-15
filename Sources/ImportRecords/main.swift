@@ -26,7 +26,7 @@ let _ = GoogleDrive().fetchCSV(fileId: fileId).on() { (rows: [[String]]) -> Void
         let position:   String = $0[0]
         let recordNumber: String = $0[1]
         let userName:     String = $0[2]
-        let title:        String = $0[3]
+        let name:         String = $0[3]
         let artistName:   String = $0[4]
         let comment:      String = $0[5]
         let canUse:       String = $0[6]
@@ -34,8 +34,8 @@ let _ = GoogleDrive().fetchCSV(fileId: fileId).on() { (rows: [[String]]) -> Void
         guard let recordNo = Int(recordNumber) else { return }
         guard let userId   = User.firstOrCreateBy(name: userName)?.id else { return }
         guard let artistId = Artist.firstOrCreateBy(name: artistName)?.id else { return }
-        guard let record   = Record.firstOrCreateBy(number: recordNo, title: title, comment: comment, artistId: artistId, userId: userId) else { return }
-        print("imported \(userName) \(title) \(artistName) \(userId) \(record.userId) \(artistId) \(record.artistId)")
+        guard let record   = Record.firstOrCreateBy(number: recordNo, name: name, comment: comment, artistId: artistId, userId: userId) else { return }
+        print("imported \(userName) \(name) \(artistName) \(userId) \(record.userId) \(artistId) \(record.artistId)")
     }
 }.single()
 

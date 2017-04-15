@@ -13,7 +13,7 @@ import Fluent
 public final class Record: Model {
     public var id:       Node?
     public var number:   Int
-    public var title:    String
+    public var name:     String
     public var comment:  String
     public var artistId: Node
     public var userId:   Node
@@ -23,10 +23,10 @@ public final class Record: Model {
     public var user: User?
     public var artist: Artist?
 
-    public init(number: Int, title: String, comment: String, artistId: Node, userId: Node) {
+    public init(number: Int, name: String, comment: String, artistId: Node, userId: Node) {
 //        self.id       = UUID().uuidString.makeNode()
         self.number   = number
-        self.title    = title
+        self.name     = name
         self.comment  = comment
         self.artistId = artistId
         self.userId   = userId
@@ -35,7 +35,7 @@ public final class Record: Model {
     public init(node: Node, in context: Context) throws {
         id       = try node.extract("id")
         number   = try node.extract("number")
-        title    = try node.extract("title")
+        name     = try node.extract("name")
         comment  = try node.extract("comment")
         artistId = try node.extract("artist_id")
         userId   = try node.extract("user_id")
@@ -45,7 +45,7 @@ public final class Record: Model {
         return try Node(node: [
             "id"       : id,
             "number"   : number,
-            "title"    : title,
+            "name"     : name,
             "comment"  : comment,
             "artist_id": artistId,
             "user_id"  : userId,
@@ -57,7 +57,7 @@ public final class Record: Model {
         return try Node(node: [
             "id"       : id,
             "number"   : number,
-            "title"    : title,
+            "name"     : name,
             "comment"  : comment,
             "artist_id": artistId,
             "user_id"  : userId,
@@ -68,15 +68,15 @@ public final class Record: Model {
 
     }
 
-    public static func firstOrCreateBy(number: Int, title: String, comment: String, artistId: Node, userId: Node) -> Record? {
-        if title.count == 0 {
+    public static func firstOrCreateBy(number: Int, name: String, comment: String, artistId: Node, userId: Node) -> Record? {
+        if name.count == 0 {
             return nil
         }
         do {
-            if let record = try Record.query().filter("number", String(number)).filter("title", title).first() {
+            if let record = try Record.query().filter("number", String(number)).filter("name", name).first() {
                 return record
             } else {
-                var record = Record(number: number, title: title, comment: comment, artistId: artistId, userId: userId)
+                var record = Record(number: number, name: name, comment: comment, artistId: artistId, userId: userId)
                 try record.save()
                 return record
             }
@@ -108,7 +108,7 @@ extension Record: Preparation {
         try database.create("records") { records in
             records.id()
             records.int("number")
-            records.string("title")
+            records.string("name")
             records.string("comment")
             records.parent(Artist.self, optional: false, unique: false)
             records.parent(User.self, optional: false, unique: false)

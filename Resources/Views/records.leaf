@@ -23,7 +23,7 @@
       #loop(records, "record") {
         <tr>
           <td><a href="/records?user_id=#(record.user.id)">#(record.user.name)</a></td>
-          <td>#(record.title)</td>
+          <td>#(record.name)</td>
           <td><a href="/records?artist_id=#(record.artist.id)">#(record.artist.name)</a></td>
           <td>#(record.comment)</td>
         </tr>
