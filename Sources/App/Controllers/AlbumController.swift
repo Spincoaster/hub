@@ -4,10 +4,14 @@ import Fluent
 import Lib
 
 final class AlbumController: ResourceRepresentable, Pagination {
+    typealias E = Album
     func indexQuery(request: Request) throws -> Query<Album> {
         let query = try Album.query().sort("name", Sort.Direction.ascending)
         if let artistId = request.query?["artist_id"]?.int {
             try query.filter("artist_id", artistId)
+        }
+        if let c = request.query?["has_prefix"]?.string {
+            try query.filter("phonetic_name", .hasPrefix, c)
         }
         return query
     }
@@ -26,7 +30,8 @@ final class AlbumController: ResourceRepresentable, Pagination {
         }
         let parameters = try Node.object([
             "albums": albums.map { try $0.makeLeafNode() }.makeNode(),
-            "pages": pages(request: request)
+            "pages": pages(request: request),
+            "pages_with_initial_letter": pagesWithInitialLetter(request: request)
         ])
         return try drop.view.make("albums", parameters)
         

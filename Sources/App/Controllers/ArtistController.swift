@@ -13,10 +13,24 @@ import HTTP
 import Fluent
 import Lib
 
-final class ArtistController: ResourceRepresentable {
+final class ArtistController: ResourceRepresentable, Pagination {
+    typealias E = Artist
+    func indexQuery(request: Request) throws -> Query<Artist> {
+        let query = try Artist.query()
+        if let c = request.query?["has_prefix"]?.string {
+            try query.filter("phonetic_name", .hasPrefix, c)
+        }
+        return query
+    }
+    func indexPath(request: Request) throws -> String {
+        return "/artists?"
+    }
     func index(request: Request) throws -> ResponseRepresentable {
-        let artists = try Artist.query().sort("name", Sort.Direction.ascending).all().makeNode()
-        let parameters = try Node(node: ["artists": artists])
+        let artists = try paginate(request: request)
+        let parameters = try Node.object([
+            "artists": artists.map { try $0.makeNode() }.makeNode(),
+            "pages_with_initial_letter": pagesWithInitialLetter(request: request)
+            ])
         return try drop.view.make("artists", parameters)
 
     }

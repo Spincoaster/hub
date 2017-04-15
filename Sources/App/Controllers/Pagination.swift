@@ -16,6 +16,7 @@ protocol Pagination {
     func indexQuery(request: Request) throws -> Query<E>
     func indexPath(request: Request) throws -> String
     func pages(request: Request) throws -> Node
+    func pagesWithInitialLetter(request: Request) throws -> Node
 }
 
 extension Pagination {
@@ -39,4 +40,17 @@ extension Pagination {
         }
         return try pages.makeNode()
     }
+    public func pagesWithInitialLetter(request: Request) throws -> Node {
+        let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        let href    = try indexPath(request: request)
+        let pages = try letters.characters.map { c in
+            return try [
+                "label": "\(c)",
+                "active": "",
+                "href": "\(href)has_prefix=\(String(c).lowercased())",
+                ].makeNode()
+        }
+        return try pages.makeNode()
+    }
+
 }

@@ -11,15 +11,16 @@ import Vapor
 import Fluent
 
 public final class Track: Model {
-    public var id:       Node?
-    public var name:     String
-    public var number:   Int
-    public var artistId: Node
-    public var albumId:  Node
+    public var id:           Node?
+    public var name:         String
+    public var phoneticName: String
+    public var number:       Int
+    public var artistId:     Node
+    public var albumId:      Node
     
     public var exists: Bool = false
     
-    public var album: Album?
+    public var album:  Album?
     public var artist: Artist?
     
     public init(name: String, number: Int, artistId: Node, albumId: Node) {
@@ -28,36 +29,40 @@ public final class Track: Model {
         self.number   = number
         self.artistId = artistId
         self.albumId  = albumId
+        phoneticName  = name.phonetic()
     }
     
     public init(node: Node, in context: Context) throws {
-        id       = try node.extract("id")
-        name     = try node.extract("name")
-        number   = try node.extract("number")
-        artistId = try node.extract("artist_id")
-        albumId  = try node.extract("album_id")
+        id           = try node.extract("id")
+        name         = try node.extract("name")
+        phoneticName = try node.extract("phonetic_name")
+        number       = try node.extract("number")
+        artistId     = try node.extract("artist_id")
+        albumId      = try node.extract("album_id")
     }
     
     public func makeNode(context: Context) throws -> Node {
         return try Node(node: [
-            "id"       : id,
-            "name"     : name,
-            "number"   : number,
-            "artist_id": artistId,
-            "album_id" : albumId,
+            "id"           : id,
+            "name"         : name,
+            "phonetic_name": phoneticName,
+            "number"       : number,
+            "artist_id"    : artistId,
+            "album_id"     : albumId,
             ]
         )
     }
     
     public func makeLeafNode() throws -> Node {
         return try Node(node: [
-            "id"       : id,
-            "name"     : name,
-            "number"   : number,
-            "artist_id": artistId,
-            "album_id" : albumId,
-            "artist"   : artist,
-            "album"    : album,
+            "id"           : id,
+            "name"         : name,
+            "phonetic_name": phoneticName,
+            "number"       : number,
+            "artist_id"    : artistId,
+            "album_id"     : albumId,
+            "artist"       : artist,
+            "album"        : album,
             ]
         )
         
@@ -94,6 +99,7 @@ extension Track: Preparation {
         try database.create("tracks") { tracks in
             tracks.id()
             tracks.string("name")
+            tracks.string("phonetic_name")
             tracks.int("number")
             tracks.parent(Artist.self, optional: false, unique: false)
             tracks.parent(Album.self, optional: false, unique: false)

@@ -11,9 +11,10 @@ import Vapor
 import Fluent
 
 public final class Album: Model {
-    public var id:       Node?
-    public var name:     String
-    public var artistId: Node
+    public var id:           Node?
+    public var name:         String
+    public var phoneticName: String
+    public var artistId:     Node
     
     public var exists: Bool = false
     
@@ -23,29 +24,33 @@ public final class Album: Model {
         //        self.id       = UUID().uuidString.makeNode()
         self.name     = name
         self.artistId = artistId
+        phoneticName  = name.phonetic()
     }
     
     public init(node: Node, in context: Context) throws {
-        id       = try node.extract("id")
-        name     = try node.extract("name")
-        artistId = try node.extract("artist_id")
+        id           = try node.extract("id")
+        name         = try node.extract("name")
+        phoneticName = try node.extract("phonetic_name")
+        artistId     = try node.extract("artist_id")
     }
     
     public func makeNode(context: Context) throws -> Node {
         return try Node(node: [
-            "id"       : id,
-            "name"     : name,
-            "artist_id": artistId,
+            "id"           : id,
+            "name"         : name,
+            "phonetic_name": phoneticName,
+            "artist_id"    : artistId,
             ]
         )
     }
     
     public func makeLeafNode() throws -> Node {
         return try Node(node: [
-            "id"       : id,
-            "name"     : name,
-            "artist_id": artistId,
-            "artist"   : artist,
+            "id"           : id,
+            "name"         : name,
+            "phonetic_name": phoneticName,
+            "artist_id"    : artistId,
+            "artist"       : artist,
             ]
         )
         
@@ -80,6 +85,7 @@ extension Album: Preparation {
         try database.create("albums") { audios in
             audios.id()
             audios.string("name")
+            audios.string("phonetic_name")
             audios.parent(Artist.self, optional: false, unique: false)
         }
     }

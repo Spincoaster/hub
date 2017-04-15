@@ -13,6 +13,9 @@ final class TrackController: ResourceRepresentable, Pagination {
         if let albumId = request.query?["album_id"]?.int {
             try query.sort("number", Sort.Direction.ascending).filter("album_id", albumId)
         }
+        if let c = request.query?["has_prefix"]?.string {
+            try query.filter("phonetic_name", .hasPrefix, c)
+        }
         return query
     }
     func indexPath(request: Request) throws -> String {
@@ -26,6 +29,11 @@ final class TrackController: ResourceRepresentable, Pagination {
         return href
     }
     func index(request: Request) throws -> ResponseRepresentable {
+        do {
+            try paginate(request: request)
+        } catch {
+            print("\(error)")
+        }
         let tracks = try paginate(request: request)
         if tracks.count > 0 {
             let artists = try Artist.query().filter("id", Filter.Scope.in, tracks.map { $0.artistId }).all()
@@ -34,7 +42,8 @@ final class TrackController: ResourceRepresentable, Pagination {
         }
         let parameters = try Node.object([
             "tracks": tracks.map { try $0.makeLeafNode() }.makeNode(),
-            "pages": pages(request: request)
+            "pages": pages(request: request),
+            "pages_with_initial_letter": pagesWithInitialLetter(request: request)
             ])
         return try drop.view.make("tracks", parameters)
     }

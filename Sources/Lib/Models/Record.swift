@@ -11,12 +11,13 @@ import Vapor
 import Fluent
 
 public final class Record: Model {
-    public var id:       Node?
-    public var number:   Int
-    public var name:     String
-    public var comment:  String
-    public var artistId: Node
-    public var userId:   Node
+    public var id:           Node?
+    public var number:       Int
+    public var name:         String
+    public var phoneticName: String
+    public var comment:      String
+    public var artistId:     Node
+    public var userId:       Node
     
     public var exists: Bool = false
 
@@ -30,39 +31,43 @@ public final class Record: Model {
         self.comment  = comment
         self.artistId = artistId
         self.userId   = userId
+        phoneticName  = name.phonetic()
     }
     
     public init(node: Node, in context: Context) throws {
-        id       = try node.extract("id")
-        number   = try node.extract("number")
-        name     = try node.extract("name")
-        comment  = try node.extract("comment")
-        artistId = try node.extract("artist_id")
-        userId   = try node.extract("user_id")
+        id           = try node.extract("id")
+        number       = try node.extract("number")
+        name         = try node.extract("name")
+        phoneticName = try node.extract("phonetic_name")
+        comment      = try node.extract("comment")
+        artistId     = try node.extract("artist_id")
+        userId       = try node.extract("user_id")
     }
     
     public func makeNode(context: Context) throws -> Node {
         return try Node(node: [
-            "id"       : id,
-            "number"   : number,
-            "name"     : name,
-            "comment"  : comment,
-            "artist_id": artistId,
-            "user_id"  : userId,
+            "id"           : id,
+            "number"       : number,
+            "name"         : name,
+            "phonetic_name": phoneticName,
+            "comment"      : comment,
+            "artist_id"    : artistId,
+            "user_id"      : userId,
             ]
         )
     }
 
     public func makeLeafNode() throws -> Node {
         return try Node(node: [
-            "id"       : id,
-            "number"   : number,
-            "name"     : name,
-            "comment"  : comment,
-            "artist_id": artistId,
-            "user_id"  : userId,
-            "user"     : user,
-            "artist"   : artist,
+            "id"           : id,
+            "number"       : number,
+            "name"         : name,
+            "phonetic_name": phoneticName,
+            "comment"      : comment,
+            "artist_id"    : artistId,
+            "user_id"      : userId,
+            "user"         : user,
+            "artist"       : artist,
             ]
         )
 
@@ -109,6 +114,7 @@ extension Record: Preparation {
             records.id()
             records.int("number")
             records.string("name")
+            records.string("phonetic_name")
             records.string("comment")
             records.parent(Artist.self, optional: false, unique: false)
             records.parent(User.self, optional: false, unique: false)
