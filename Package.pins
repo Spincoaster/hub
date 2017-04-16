@@ -8,6 +8,12 @@
       "version": "1.0.0"
     },
     {
+      "package": "CMeCab",
+      "reason": null,
+      "repositoryURL": "https://github.com/novi/CMeCab-OSX.git",
+      "version": "1.0.0"
+    },
+    {
       "package": "CPostgreSQL",
       "reason": null,
       "repositoryURL": "https://github.com/vapor/cpostgresql.git",
@@ -66,6 +72,12 @@
       "reason": null,
       "repositoryURL": "https://github.com/vapor/leaf.git",
       "version": "1.0.7"
+    },
+    {
+      "package": "MeCab",
+      "reason": null,
+      "repositoryURL": "https://github.com/novi/mecab-swift.git",
+      "version": "0.2.1"
     },
     {
       "package": "Multipart",
