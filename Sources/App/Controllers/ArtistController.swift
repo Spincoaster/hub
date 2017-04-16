@@ -11,7 +11,6 @@ import Foundation
 import Vapor
 import HTTP
 import Fluent
-import Lib
 
 final class ArtistController: ResourceRepresentable, Pagination {
     typealias E = Artist

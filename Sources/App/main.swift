@@ -1,7 +1,6 @@
 import Vapor
 import VaporPostgreSQL
 import Fluent
-import Lib
 
 let drop = Droplet(
     providers: [VaporPostgreSQL.Provider.self]

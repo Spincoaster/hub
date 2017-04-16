@@ -11,7 +11,6 @@ import Foundation
 import Vapor
 import HTTP
 import Fluent
-import Lib
 
 final class UserController: ResourceRepresentable {
     func index(request: Request) throws -> ResponseRepresentable {
