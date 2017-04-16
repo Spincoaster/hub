@@ -8,7 +8,7 @@ extension String {
 }
 
 class MeCabHelper {
-    static var shared: Mecab? = try? Mecab()
+    static var shared: Mecab? = try! Mecab()
     static func alphabetize(string: String) -> String? {
         guard let shared = shared, let nodes = try? shared.tokenize(string: string) else { return nil }
         return nodes.map { node -> String in
