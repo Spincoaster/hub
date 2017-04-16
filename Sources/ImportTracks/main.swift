@@ -9,15 +9,6 @@ func getEnvironmentVar(_ name: String) -> String? {
     return String(utf8String: rawValue)
 }
 
-extension Array {
-    func get(_ index: Int) -> Element? {
-        if index < self.count {
-            return self[index]
-        }
-        return nil
-    }
-}
-
 func handleLine(line: String) {
     var handled = false
     defer {
