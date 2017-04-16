@@ -4,12 +4,12 @@ default: run
 prepare:
 	swift package generate-xcodeproj
 
-import_records:
-	swift build
-	./.build/debug/ImportRecords
-import_tracks:
-	swift build
-	./.build/debug/ImportTracks
+records:
+	vapor build
+	vapor run records
+tracks:
+	vapor build
+	vapor run tracks
 run:
 	vapor build
 	vapor run serve

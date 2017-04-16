@@ -3,10 +3,7 @@ import PackageDescription
 let package = Package(
     name: "recordhub",
     targets: [
-        Target(name: "Lib"),
-        Target(name: "App",  dependencies: [.Target(name: "Lib")]),
-        Target(name: "ImportRecords", dependencies: [.Target(name: "Lib")]),
-        Target(name: "ImportTracks", dependencies: [.Target(name: "Lib")]),
+         Target(name: "App"),
     ],
     dependencies: [
         .Package(url: "https://github.com/vapor/vapor.git", majorVersion: 1, minor: 5),

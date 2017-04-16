@@ -30,4 +30,7 @@ drop.resource("genres" , GenreController())
 drop.resource("albums" , AlbumController())
 drop.resource("tracks" , TrackController())
 
+drop.commands.append(ImportReordsCommand(console: drop.console))
+drop.commands.append(ImportTracksCommand(console: drop.console))
+
 drop.run()

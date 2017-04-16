@@ -28,11 +28,6 @@ final class TrackController: ResourceRepresentable, Pagination {
         return href
     }
     func index(request: Request) throws -> ResponseRepresentable {
-        do {
-            try paginate(request: request)
-        } catch {
-            print("\(error)")
-        }
         let tracks = try paginate(request: request)
         if tracks.count > 0 {
             let artists = try Artist.query().filter("id", Filter.Scope.in, tracks.map { $0.artistId }).all()

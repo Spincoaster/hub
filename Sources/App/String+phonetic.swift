@@ -3,8 +3,7 @@ import MeCab
 extension String {
     public func phonetic() -> String {
         let lowercased   = self.lowercased()
-        let alphabetized = MeCabHelper.alphabetize(string: lowercased)
-        return lowercased
+        return MeCabHelper.alphabetize(string: lowercased) ?? lowercased
     }
 }
 
