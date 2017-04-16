@@ -12,13 +12,13 @@
   </ul>
 
   <ul class="pagination" style="display: inline-block; ">
-    <l i class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+    <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
     #loop(pages, "page") {
       <li class="#(page.active) waves-effect">
         <a href="#(page.href)">#(page.label)</a>
       </li>
     }
-    <li class="waves-effect"><a href=""><i class="material-icons">chevron_right</i></a></li>
+    <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
   </ul>
   <table class="highlight">
     <thead>
