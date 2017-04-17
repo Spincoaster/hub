@@ -28,6 +28,15 @@
             <li><a href="./artists">Artists</a></li>
             <li><a href="./users">Users</a></li>
           </ul>
+          <form class="red lighten-3" style="float: right;">
+            <button class="btn waves-effect waves-light" type="submit">
+              <i class="material-icons" style="line-height: 36px">search</i>
+            </button>
+            <div class="input-field inline">
+              <input id="search" type="search" name="contains" required>
+              <i class="material-icons">close</i>
+            </div>
+          </form>
         </div>
       </nav>
     </div>

@@ -24,6 +24,9 @@
       <tr>
         <th>Artist</th>
         <th>Name</th>
+        #if(show_phonetic_name) {
+          <th>Phonetic name</th>
+        }
       </tr>
     </thead>
     <tbody>
@@ -31,6 +34,9 @@
         <tr>
           <td><a href="/albums?artist_id=#(album.artist.id)">#(album.artist.name)</a></td>
           <td><a href="/tracks?album_id=#(album.id)">#(album.name)</a>
+          #if(show_phonetic_name) {
+            <td>#(album.phonetic_name)</td>
+          }
         </tr>
       }
     </tbody>

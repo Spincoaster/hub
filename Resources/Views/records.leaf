@@ -25,6 +25,9 @@
       <tr>
         <th>User</th>
         <th>Title</th>
+        #if(show_phonetic_name) {
+          <th>Phonetic title</th>
+        }
         <th>Artist</th>
         <th>Comment</th>
       </tr>
@@ -34,6 +37,9 @@
         <tr>
           <td><a href="/records?user_id=#(record.user.id)">#(record.user.name)</a></td>
           <td>#(record.name)</td>
+          #if(show_phonetic_name) {
+            <td>#(record.phonetic_name)</td>
+          }
           <td><a href="/records?artist_id=#(record.artist.id)">#(record.artist.name)</a></td>
           <td>#(record.comment)</td>
         </tr>

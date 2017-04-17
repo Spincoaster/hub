@@ -15,6 +15,9 @@ final class RecordController: ResourceRepresentable, Pagination {
         if let c = request.query?["has_prefix"]?.string {
             try query.filter("phonetic_name", .hasPrefix, c)
         }
+        if let c = request.query?["contains"]?.string {
+            try query.filter("name", .contains, c)
+        }
         return query
     }
     func indexPath(request: Request) throws -> String {
@@ -37,7 +40,8 @@ final class RecordController: ResourceRepresentable, Pagination {
         let parameters = try Node.object([
             "records": records.map { try $0.makeLeafNode() }.makeNode(),
             "pages": pages(request: request),
-            "pages_with_initial_letter": pagesWithInitialLetter(request: request)
+            "pages_with_initial_letter": pagesWithInitialLetter(request: request),
+            "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode()
             ])
         return try drop.view.make("records", parameters)
     }
