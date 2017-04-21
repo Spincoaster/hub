@@ -14,7 +14,7 @@ import Console
 import Fluent
 
 final class ImportReordsCommand: Command {
-    public let id = "tracks"
+    public let id = "records"
     public let help = ["This command imports tracks."]
     public let console: ConsoleProtocol
     
