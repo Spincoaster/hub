@@ -5,13 +5,13 @@ prepare:
 	swift package generate-xcodeproj
 
 records:
-	vapor build
+	swift build -Xlinker -L/usr/local/lib/
 	vapor run records
 tracks:
-	vapor build
+	swift build -Xlinker -L/usr/local/lib/
 	vapor run tracks
 run:
-	vapor build
+	swift build -Xlinker -L/usr/local/lib/
 	vapor run serve
 migrate: dropdb createdb run
 
