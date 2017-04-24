@@ -15,6 +15,7 @@ public final class Record: Model {
     public var number:       Int
     public var name:         String
     public var phoneticName: String
+    public var furigana:     String
     public var comment:      String
     public var artistId:     Node
     public var userId:       Node
@@ -32,6 +33,7 @@ public final class Record: Model {
         self.artistId = artistId
         self.userId   = userId
         phoneticName  = name.phonetic()
+        furigana      = name.furigana()
     }
     
     public init(node: Node, in context: Context) throws {
@@ -39,6 +41,7 @@ public final class Record: Model {
         number       = try node.extract("number")
         name         = try node.extract("name")
         phoneticName = try node.extract("phonetic_name")
+        furigana     = try node.extract("furigana")
         comment      = try node.extract("comment")
         artistId     = try node.extract("artist_id")
         userId       = try node.extract("user_id")
@@ -50,6 +53,7 @@ public final class Record: Model {
             "number"       : number,
             "name"         : name,
             "phonetic_name": phoneticName,
+            "furigana"     : furigana,
             "comment"      : comment,
             "artist_id"    : artistId,
             "user_id"      : userId,
@@ -63,6 +67,7 @@ public final class Record: Model {
             "number"       : number,
             "name"         : name,
             "phonetic_name": phoneticName,
+            "furigana"     : furigana,
             "comment"      : comment,
             "artist_id"    : artistId,
             "user_id"      : userId,
@@ -115,6 +120,7 @@ extension Record: Preparation {
             records.int("number")
             records.string("name")
             records.string("phonetic_name")
+            records.string("furigana")
             records.string("comment")
             records.parent(Artist.self, optional: false, unique: false)
             records.parent(User.self, optional: false, unique: false)

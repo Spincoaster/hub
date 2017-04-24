@@ -16,6 +16,7 @@
         <th>Name</th>
         #if(show_phonetic_name) {
           <th>Phonetic name</th>
+          <th>Furigana</th>
         }
         <th>Albums</th>
         <th>Records</th>
@@ -28,6 +29,7 @@
           <td>#(artist.name)</td>
           #if(show_phonetic_name) {
             <td>#(artist.phonetic_name)</td>
+            <td>#(artist.furigana)</td>
           }
           <td><a href="/albums?artist_id=#(artist.id)">Albums</a>
           <td><a href="/records?artist_id=#(artist.id)">Records</a>

@@ -14,6 +14,7 @@ public final class Artist: Model {
     public var id:           Node?
     public var name:         String
     public var phoneticName: String
+    public var furigana:     String
 
     public var exists: Bool = false
 
@@ -21,19 +22,22 @@ public final class Artist: Model {
 //        self.id   = UUID().uuidString.makeNode()
         self.name    = name
         phoneticName = name.phonetic()
+        furigana     = name.furigana()
     }
     
     public init(node: Node, in context: Context) throws {
         id           = try node.extract("id")
         name         = try node.extract("name")
         phoneticName = try node.extract("phonetic_name")
+        furigana     = try node.extract("furigana")
     }
     
     public func makeNode(context: Context) throws -> Node {
         return try Node(node: [
             "id"           : id,
             "name"         : name,
-            "phonetic_name": phoneticName
+            "phonetic_name": phoneticName,
+            "furigana"     : furigana
             ]
         )
     }
@@ -61,6 +65,7 @@ extension Artist: Preparation {
             artists.id()
             artists.string("name", unique: true)
             artists.string("phonetic_name")
+            artists.string("furigana")
         }
     }
     

@@ -14,6 +14,7 @@ public final class Album: Model {
     public var id:           Node?
     public var name:         String
     public var phoneticName: String
+    public var furigana:     String
     public var artistId:     Node
     
     public var exists: Bool = false
@@ -25,12 +26,14 @@ public final class Album: Model {
         self.name     = name
         self.artistId = artistId
         phoneticName  = name.phonetic()
+        furigana      = name.furigana()
     }
     
     public init(node: Node, in context: Context) throws {
         id           = try node.extract("id")
         name         = try node.extract("name")
         phoneticName = try node.extract("phonetic_name")
+        furigana     = try node.extract("furigana")
         artistId     = try node.extract("artist_id")
     }
     
@@ -39,6 +42,7 @@ public final class Album: Model {
             "id"           : id,
             "name"         : name,
             "phonetic_name": phoneticName,
+            "furigana"     : furigana,
             "artist_id"    : artistId,
             ]
         )
@@ -49,6 +53,7 @@ public final class Album: Model {
             "id"           : id,
             "name"         : name,
             "phonetic_name": phoneticName,
+            "furigana"     : furigana,
             "artist_id"    : artistId,
             "artist"       : artist,
             ]
@@ -86,6 +91,7 @@ extension Album: Preparation {
             audios.id()
             audios.string("name")
             audios.string("phonetic_name")
+            audios.string("furigana")
             audios.parent(Artist.self, optional: false, unique: false)
         }
     }

@@ -4,13 +4,23 @@ extension String {
     public func phonetic() -> String {
         let lowercased   = self.lowercased()
         let alphabetized = MeCabHelper.alphabetize(string: lowercased)
-        print(alphabetized)
         return alphabetized ?? lowercased
+    }
+    public func furigana() -> String {
+        let lowercased   = self.lowercased()
+        return MeCabHelper.furigana(string: lowercased) ?? ""
     }
 }
 
 class MeCabHelper {
     static var shared: Mecab? = try! Mecab()
+    static func furigana(string: String) -> String? {
+        guard let shared = shared, let nodes = try? shared.tokenize(string: string) else { return nil }
+        return nodes.map { node -> String in
+            guard !node.isBosEos else { return "" }
+            return node.features.count < 8 ? node.surface : node.features[8]
+        }.joined()
+    }
     static func alphabetize(string: String) -> String? {
         guard let shared = shared, let nodes = try? shared.tokenize(string: string) else { return nil }
         return nodes.map { node -> String in

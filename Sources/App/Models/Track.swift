@@ -14,6 +14,7 @@ public final class Track: Model {
     public var id:           Node?
     public var name:         String
     public var phoneticName: String
+    public var furigana:     String
     public var number:       Int
     public var artistId:     Node
     public var albumId:      Node
@@ -30,12 +31,14 @@ public final class Track: Model {
         self.artistId = artistId
         self.albumId  = albumId
         phoneticName  = name.phonetic()
+        furigana      = name.furigana()
     }
     
     public init(node: Node, in context: Context) throws {
         id           = try node.extract("id")
         name         = try node.extract("name")
         phoneticName = try node.extract("phonetic_name")
+        furigana     = try node.extract("furigana")
         number       = try node.extract("number")
         artistId     = try node.extract("artist_id")
         albumId      = try node.extract("album_id")
@@ -46,6 +49,7 @@ public final class Track: Model {
             "id"           : id,
             "name"         : name,
             "phonetic_name": phoneticName,
+            "furigana"     : furigana,
             "number"       : number,
             "artist_id"    : artistId,
             "album_id"     : albumId,
@@ -58,6 +62,7 @@ public final class Track: Model {
             "id"           : id,
             "name"         : name,
             "phonetic_name": phoneticName,
+            "furigana"     : furigana,
             "number"       : number,
             "artist_id"    : artistId,
             "album_id"     : albumId,
@@ -100,6 +105,7 @@ extension Track: Preparation {
             tracks.id()
             tracks.string("name")
             tracks.string("phonetic_name")
+            tracks.string("furigana")
             tracks.int("number")
             tracks.parent(Artist.self, optional: false, unique: false)
             tracks.parent(Album.self, optional: false, unique: false)

@@ -27,6 +27,7 @@
         <th>Title</th>
         #if(show_phonetic_name) {
           <th>Phonetic name</th>
+          <th>Furigana</th>
         }
       </tr>
     </thead>
@@ -38,6 +39,7 @@
           <td>#(track.name)</td>
           #if(show_phonetic_name) {
             <td>#(track.phonetic_name)</td>
+            <td>#(track.furigana)</td>
           }
         </tr>
       }
