@@ -19,7 +19,7 @@
     }
     <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
   </ul>
-  <table class="responsive-table highlight">
+  <table class="highlight">
     <thead>
       <tr>
         <th>Artist</th>
@@ -33,7 +33,7 @@
       #loop(albums, "album") {
         <tr>
           <td><a href="/albums?artist_id=#(album.artist.id)">#(album.artist.name)</a></td>
-          <td><a href="/tracks?album_id=#(album.id)">#(album.name)</a>
+          <td><a href="/tracks?album_id=#(album.id)">#(album.name)</a></td>
           #if(show_phonetic_name) {
             <td>#(album.phonetic_name)</td>
           }
