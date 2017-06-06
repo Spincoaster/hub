@@ -3,7 +3,7 @@
 #export("body") {
   <ul class="pagination" style="display: inline-block; ">
     <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
-    #loop(pages_with_initial_letter, "page") {
+    #loop(pages, "page") {
       <li class="#(page.active) waves-effect">
         <a href="#(page.href)">#(page.label)</a>
       </li>
@@ -14,13 +14,18 @@
     <thead>
       <tr>
         <th>name</th>
+        <th>Records</th>
       </tr>
     </thead>
     <tbody>
       #loop(users, "user") {
         <tr>
           <td>#(user.name)</td>
-          <td><a href="/records?user_id=#(user.id)">Records</a>
+          <td>
+            <a href="/records?user_id=#(user.id)">
+              <i class="small material-icons">album</i>
+            </a>
+          </td>
         </tr>
       }
     </tbody>

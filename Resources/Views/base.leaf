@@ -18,35 +18,62 @@
       <nav>
         <div class="nav-wrapper">
           #raw() {
-            <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
+            <a href="#" data-activates="mobile-menu" class="button-collapse show-on-large">
+              <i class="material-icons">menu</i>
+            </a>
           }
-          <ul class="left hide-on-med-and-down">
-            <li><a href="./records">Records</a></li>
-            <li><a href="./tracks">Hi-Reso</a></li>
-            <li><a href="./genres">Genres</a></li>
-            <li><a href="./albums">Albums</a></li>
-            <li><a href="./artists">Artists</a></li>
-            <li><a href="./users">Users</a></li>
-          </ul>
-          <form class="red lighten-3" style="float: right;">
-            <button class="btn waves-effect waves-light" type="submit">
+          <span class="brand-logo center">
+            #(title)
+          </span>
+          <form style="float: right; margin-right: 8px;">
+            <div class="input-field inline">
+              <input id="search" placeholder="Search #(resource_name)" name="contains" type="text">
+            </div>
+            <button class="btn-floating waves-effect waves-light" type="submit">
               <i class="material-icons" style="line-height: 36px">search</i>
             </button>
-            <div class="input-field inline">
-              <input id="search" type="search" name="contains" required>
-              <i class="material-icons">close</i>
-            </div>
           </form>
         </div>
       </nav>
     </div>
     <ul class="side-nav" id="mobile-menu">
-      <li><a href="./records">Records</a></li>
-      <li><a href="./tracks">Hi-Reso</a></li>
-      <li><a href="./genres">Genres</a></li>
-      <li><a href="./albums">Albums</a></li>
-      <li><a href="./artists">Artists</a></li>
-      <li><a href="./users">Users</a></li>
+      <li>
+        <a href="./records">
+          <i class="small material-icons">album</i>
+          Records
+        </a>
+      </li>
+      <li>
+        <a href="./tracks">
+          <i class="small material-icons">high_quality</i>
+          Hi-Res
+        </a>
+      </li>
+<!--
+      <li>
+        <a href="./genres">
+          Genres
+        </a>
+      </li>
+-->
+      <li>
+        <a href="./albums">
+          <i class="small material-icons">library_music</i>
+          Albums
+        </a>
+      </li>
+      <li>
+        <a href="./artists">
+          <i class="small material-icons">assignment_ind</i>
+          Artists
+        </a>
+      </li>
+      <li>
+        <a href="./users">
+          <i class="small material-icons">perm_identity</i>
+          Owners
+        </a>
+      </li>
     </ul>
     <div class="row">
       <div class="col s10 offset-s1 center-align">

@@ -18,9 +18,9 @@
           <th>Phonetic name</th>
           <th>Furigana</th>
         }
-        <th>Albums</th>
         <th>Records</th>
-        <th>Hi-Reso</th>
+        <th>Albums</th>
+        <th style="white-space: nowrap;">Hi-Res</th>
       </tr>
     </thead>
     <tbody>
@@ -31,9 +31,21 @@
             <td>#(artist.phonetic_name)</td>
             <td>#(artist.furigana)</td>
           }
-          <td><a href="/albums?artist_id=#(artist.id)">Albums</a>
-          <td><a href="/records?artist_id=#(artist.id)">Records</a>
-          <td><a href="/tracks?artist_id=#(artist.id)">Hi-Reso</a>
+          <td>
+            <a href="/records?artist_id=#(artist.id)">
+              <i class="small material-icons">album</i>
+            </a>
+          </td>
+          <td>
+            <a href="/albums?artist_id=#(artist.id)">
+              <i class="small material-icons">library_music</i>
+            </a>
+          </td>
+          <td>
+            <a href="/tracks?artist_id=#(artist.id)"
+              <i class="small material-icons">high_quality</i>
+            </a>
+          </td>
         </tr>
       }
     </tbody>

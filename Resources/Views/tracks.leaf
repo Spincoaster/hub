@@ -22,9 +22,9 @@
   <table class="highlight">
     <thead>
       <tr>
+        <th>Title</th>
         <th>Artist</th>
         <th>Album</th>
-        <th>Title</th>
         #if(show_phonetic_name) {
           <th>Phonetic name</th>
           <th>Furigana</th>
@@ -34,9 +34,9 @@
     <tbody>
       #loop(tracks, "track") {
         <tr>
+          <td>#(track.name)</td>
           <td><a href="/tracks?artist_id=#(track.artist.id)">#(track.artist.name)</a></td>
           <td><a href="/tracks?album_id=#(track.album.id)">#(track.album.name)</a></td>
-          <td>#(track.name)</td>
           #if(show_phonetic_name) {
             <td>#(track.phonetic_name)</td>
             <td>#(track.furigana)</td>
