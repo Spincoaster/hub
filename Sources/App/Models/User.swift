@@ -33,6 +33,13 @@ public final class User: Model {
             ]
         )
     }
+    public func makeLeafNode() throws -> Node {
+        return try Node(node: [
+            "id"    : id,
+            "name"  : name,
+            ]
+        )
+    }
     public static func firstOrCreateBy(name: String) -> User? {
         if name.count == 0 {
             return nil

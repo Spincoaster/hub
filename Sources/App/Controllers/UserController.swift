@@ -12,10 +12,27 @@ import Vapor
 import HTTP
 import Fluent
 
-final class UserController: ResourceRepresentable {
+final class UserController: ResourceRepresentable,  Pagination {
+    func indexQuery(request: Request) throws -> Query<User> {
+        let query = try User.query().sort("name", Sort.Direction.ascending)
+        if let c = request.query?["has_prefix"]?.string {
+            try query.filter("name", .hasPrefix, c)
+        }
+        if let c = request.query?["contains"]?.string {
+            try query.filter("name", .contains, c)
+        }
+        return query
+    }
+    func indexPath(request: Request) throws -> String {
+        return "/users?"
+    }
     func index(request: Request) throws -> ResponseRepresentable {
-        let users = try User.query().sort("name", Sort.Direction.ascending).all().makeNode()
-        let parameters = try Node(node: ["users": users])
+        let users = try paginate(request: request)
+        let parameters = try Node.object([
+            "title": getTitle()?.makeNode() ?? "",
+            "users": users.map { try $0.makeLeafNode() }.makeNode(),
+            "pages": pages(request: request),
+            ])
         return try drop.view.make("users", parameters)
     }
     
