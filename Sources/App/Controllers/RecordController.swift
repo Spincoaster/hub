@@ -44,6 +44,8 @@ final class RecordController: ResourceRepresentable, Pagination {
             Record.setParents(records: records, users: users, artists: artists)
         }
         let parameters = try Node.object([
+            "title": getTitle()?.makeNode() ?? "",
+            "resource_name": "Record",
             "records": records.map { try $0.makeLeafNode() }.makeNode(),
             "pages": pages(request: request),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),

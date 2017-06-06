@@ -52,5 +52,8 @@ extension Pagination {
         }
         return try pages.makeNode()
     }
-
+    func getTitle() -> String? {
+        guard let rawValue = getenv("APP_NAME") else { return nil }
+        return String(utf8String: rawValue)
+    }
 }

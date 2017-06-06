@@ -35,6 +35,8 @@ final class AlbumController: ResourceRepresentable, Pagination {
             Album.setParents(albums: albums, artists: artists)
         }
         let parameters = try Node.object([
+            "title": getTitle()?.makeNode() ?? "",
+            "resource_name": "Album",
             "albums": albums.map { try $0.makeLeafNode() }.makeNode(),
             "pages": pages(request: request),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),

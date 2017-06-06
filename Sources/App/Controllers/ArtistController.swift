@@ -30,6 +30,8 @@ final class ArtistController: ResourceRepresentable, Pagination {
     func index(request: Request) throws -> ResponseRepresentable {
         let artists = try paginate(request: request)
         let parameters = try Node.object([
+            "title": getTitle()?.makeNode() ?? "",
+            "resource_name": "Artist",
             "artists": artists.map { try $0.makeNode() }.makeNode(),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
             "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode()
