@@ -52,7 +52,7 @@ final class TrackController: ResourceRepresentable, Pagination {
         }
         let parameters = try Node.object([
             "title": getTitle()?.makeNode(in: nil) ?? "",
-            "resource_name": "Track",
+            "resource_name": "Hi-Res Audio",
             "tracks": tracks.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),

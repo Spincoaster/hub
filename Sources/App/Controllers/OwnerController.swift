@@ -30,6 +30,7 @@ final class OwnerController: ResourceRepresentable,  Pagination {
         let owners = try paginate(request: request)
         let parameters = try Node.object([
             "title": getTitle()?.makeNode(in: nil) ?? "",
+            "resource_name": "Owner",
             "owners": owners.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
             "current_user": request.currentUser?.makeNode(in: nil) ?? nil
