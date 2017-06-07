@@ -9,34 +9,48 @@
   <body>
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+    <script src="javascripts/index.js"></script>
     <script>
       $(document).ready(function() {
         $(".button-collapse").sideNav();
       })
     </script>
     <div class="navbar-fixed">
-      <nav>
+      <nav id="nav-normal">
         <div class="nav-wrapper">
           #raw() {
-            <a href="#" data-activates="mobile-menu" class="button-collapse show-on-large">
+            <a href="#" data-activates="sidebar-menu" class="button-collapse show-on-large">
               <i class="material-icons">menu</i>
             </a>
           }
           <span class="brand-logo center">
             #(title)
           </span>
-          <form style="float: right; margin-right: 8px;">
-            <div class="input-field inline">
-              <input id="search" placeholder="Search #(resource_name)" name="contains" type="text">
+          #raw() {
+          <ul class="right">
+            <li>
+              <a id="search" class="show-on-large" data-activates="search">
+                <i class="material-icons">search</i>
+              </a>
+            </li>
+          </ul>
+          }
+        </div>
+      </nav>
+      <nav id="nav-search" style="display: none;">
+        <div class="nav-wrapper">
+          <form id="search-form">
+            <div class="input-field">
+              <input id="search-field" type="search" name="contains">
+              <label id="search-icon" class="label-icon" for="search"><i class="material-icons">search</i></label>
+              <i id="search-close" class="material-icons" >close</i>
+              </button>
             </div>
-            <button class="btn-floating waves-effect waves-light" type="submit">
-              <i class="material-icons" style="line-height: 36px">search</i>
-            </button>
           </form>
         </div>
       </nav>
     </div>
-    <ul class="side-nav" id="mobile-menu">
+    <ul class="side-nav" id="sidebar-menu">
       <li>
         <a href="./records">
           <i class="small material-icons">album</i>
