@@ -10,6 +10,16 @@
     }
     <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
   </ul>
+  <br >
+  <ul class="pagination">
+    <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+    #loop(pages, "page") {
+      <li class="#(page.active) waves-effect">
+        <a href="#(page.href)">#(page.label)</a>
+      </li>
+    }
+    <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+  </ul>
   <table class="highlight">
     <thead>
       <tr>

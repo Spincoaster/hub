@@ -43,11 +43,12 @@ extension Pagination {
     }
     public func pagesWithInitialLetter(request: Request) throws -> Node {
         let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        let currentLetter = request.query?["has_prefix"]?.string ?? ""
         let href    = try indexPath(request: request)
         let pages = try letters.characters.map { c in
             return try [
                 "label": "\(c)",
-                "active": "",
+                "active": currentLetter.uppercased() == String(c) ? "active" : "",
                 "href": "\(href)has_prefix=\(String(c).lowercased())",
                 ].makeNode(in: nil)
         }

@@ -34,6 +34,7 @@ final class ArtistController: ResourceRepresentable, Pagination {
             "title": getTitle()?.makeNode(in: nil) ?? "",
             "resource_name": "Artist",
             "artists": artists.map { try $0.makeLeafNode() }.makeNode(in: nil),
+            "pages": pages(request: request),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
             "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode(in: nil)
             ])
