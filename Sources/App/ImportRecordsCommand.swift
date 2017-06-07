@@ -9,7 +9,7 @@
 import Foundation
 
 import Vapor
-import VaporPostgreSQL
+import PostgreSQLProvider
 import Console
 import Fluent
 
@@ -25,11 +25,10 @@ final class ImportReordsCommand: Command {
     public func run(arguments: [String]) throws {
         console.print("running custom command...")
         if let url = getEnvironmentVar("DATABASE_URL") {
-            let provider = try VaporPostgreSQL.Provider(url: url)
-            Database.default = Database(provider.driver)
-            print("DATABASE_URL \(url)")
+            let driver = try PostgreSQLDriver.Driver(url: url)
+            Database.default = Database(driver)
         } else {
-            let driver = VaporPostgreSQL.PostgreSQLDriver(dbname: "recordhub", user: "postgres", password: "")
+            let driver = try PostgreSQLDriver.Driver(url: "postgresql://postgres::3306/recordhub")
             Database.default = Database(driver)
         }
         

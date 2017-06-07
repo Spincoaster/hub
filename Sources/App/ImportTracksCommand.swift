@@ -8,7 +8,7 @@
 
 import Foundation
 import Vapor
-import VaporPostgreSQL
+import PostgreSQLProvider
 import Console
 import Fluent
 
@@ -16,7 +16,7 @@ final class ImportTracksCommand: Command {
     public let id = "tracks"
     public let help = ["This command imports tracks."]
     public let console: ConsoleProtocol
-    
+
     public init(console: ConsoleProtocol) {
         self.console = console
     }
@@ -25,11 +25,11 @@ final class ImportTracksCommand: Command {
         console.print("running custom command...")
         
         if let url = getEnvironmentVar("DATABASE_URL") {
-            let provider = try VaporPostgreSQL.Provider(url: url)
-            Database.default = Database(provider.driver)
+            let driver = try PostgreSQLDriver.Driver(url: url)
+            Database.default = Database(driver)
             print("DATABASE_URL \(url)")
         } else {
-            let driver = VaporPostgreSQL.PostgreSQLDriver(dbname: "recordhub", user: "postgres", password: "")
+            let driver = try PostgreSQLDriver.Driver(url: "postgresql://postgres::3306/recordhub")
             Database.default = Database(driver)
         }
         
@@ -63,14 +63,14 @@ final class ImportTracksCommand: Command {
         let artistName = paths[1]
         let albumName  = paths[2]
         let trackPath  = paths[3]
-        guard trackPath.count > 3 else { return }
+        guard trackPath.characters.count > 3 else { return }
         guard let number = Int(trackPath.substring(to: trackPath.index(trackPath.startIndex, offsetBy: 2))) else { return }
         let fileName = trackPath.substring(from: trackPath.index(trackPath.startIndex, offsetBy: 3))
         guard let name = fileName.components(separatedBy: ".flac").get(0) else { return }
         
         guard let artistId = Artist.firstOrCreateBy(name: artistName)?.id else { return }
         guard let albumId  = Album.firstOrCreateBy(name: albumName, artistId: artistId)?.id else { return }
-        guard let track    = Track.firstOrCreateBy(name: name, number: number, artistId: artistId, albumId: albumId) else { return }
+        guard let track    = Track.firstOrCreateBy(name: name, number: number, artistId: Identifier(artistId), albumId: albumId) else { return }
         handled = true
         print("\(artistName) \(albumName) \(track.number) \(track.name)")
     }

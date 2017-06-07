@@ -1,21 +1,29 @@
-import Vapor
-import VaporPostgreSQL
+import PostgreSQLProvider
+import LeafProvider
 import Fluent
+import Console
 
-let drop = Droplet(
-    providers: [VaporPostgreSQL.Provider.self]
-)
+let config = try Config()
+try config.addProvider(PostgreSQLProvider.Provider.self)
+try config.addProvider(LeafProvider.Provider.self)
 
-drop.preparations.append(Record.self)
-drop.preparations.append(Artist.self)
-drop.preparations.append(User.self)
-drop.preparations.append(Genre.self)
-drop.preparations.append(Pivot<Genre, Record>.self)
-drop.preparations.append(Album.self)
-drop.preparations.append(Track.self)
+config.preparations.append(User.self)
+config.preparations.append(Artist.self)
+config.preparations.append(Record.self)
+config.preparations.append(Genre.self)
+config.preparations.append(Pivot<Genre, Record>.self)
+config.preparations.append(Album.self)
+config.preparations.append(Track.self)
+
+let console: ConsoleProtocol = Terminal(arguments: CommandLine.arguments)
+let commands: [Command] = [
+    ImportReordsCommand(console: console),
+    ImportTracksCommand(console: console)
+]
+let drop = try Droplet(config: config, commands: commands)
 
 drop.get("version") { request in
-    if let db = drop.database?.driver as? PostgreSQLDriver {
+    if let db = drop.database?.driver as? PostgreSQLDriver.Driver {
         let version = try db.raw("SELECT version()")
         return try JSON(node: version)
     } else {
@@ -30,7 +38,4 @@ drop.resource("genres" , GenreController())
 drop.resource("albums" , AlbumController())
 drop.resource("tracks" , TrackController())
 
-drop.commands.append(ImportReordsCommand(console: drop.console))
-drop.commands.append(ImportTracksCommand(console: drop.console))
-
-drop.run()
+try drop.run()
