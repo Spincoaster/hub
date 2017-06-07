@@ -5,20 +5,20 @@ import Fluent
 final class RecordController: ResourceRepresentable, Pagination {
     func indexQuery(request: Request) throws -> Query<Record> {
         let query = try Record.makeQuery().join(Artist.self, baseKey: "artist_id", joinedKey: "id")
-                                          .join(User.self, baseKey: "user_id", joinedKey: "id")
+                                          .join(Owner.self, baseKey: "owner_id", joinedKey: "id")
                                           .sort(Sort(Artist.self, "phonetic_name", .ascending))
         if let artistId = request.query?["artist_id"]?.int {
             try query.filter("artist_id", artistId)
         }
-        if let userId = request.query?["user_id"]?.int {
-            try query.filter("user_id", userId)
+        if let ownerId = request.query?["owner_id"]?.int {
+            try query.filter("owner_id", ownerId)
         }
         if let c = request.query?["has_prefix"]?.string {
             try query.filter(Artist.self, "phonetic_name", .hasPrefix, c)
         }
         if let c = request.query?["contains"]?.string {
             try query.or { orGroup in
-                    try orGroup.contains(User.self, "user", c)
+                    try orGroup.contains(Owner.self, "owner", c)
                     try orGroup.contains(Artist.self, "name", c)
                     try orGroup.contains(Artist.self, "furigana", c)
                     try orGroup.contains(Record.self, "name", c)
@@ -33,8 +33,8 @@ final class RecordController: ResourceRepresentable, Pagination {
         if let artistId = request.query?["artist_id"]?.int {
             href += "artist_id=\(artistId)&"
         }
-        if let userId = request.query?["user_id"]?.int {
-            href += "user_id=\(userId)&"
+        if let ownerId = request.query?["owner_id"]?.int {
+            href += "owner_id=\(ownerId)&"
         }
         return href
     }
@@ -42,8 +42,8 @@ final class RecordController: ResourceRepresentable, Pagination {
         let records = try paginate(request: request)
         if records.count > 0 {
             let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, records.map { $0.artistId.makeNode(in: nil) }))).all()
-            let users   = try User.makeQuery().filter(Filter(User.self, .subset("id", Filter.Scope.in, records.map { $0.userId.makeNode(in: nil) }))).all()
-            Record.setParents(records: records, users: users, artists: artists)
+            let owners   = try Owner.makeQuery().filter(Filter(Owner.self, .subset("id", Filter.Scope.in, records.map { $0.ownerId.makeNode(in: nil) }))).all()
+            Record.setParents(records: records, owners: owners, artists: artists)
         }
         let parameters = try Node.object([
             "title": getTitle()?.makeNode(in: nil) ?? "",

@@ -21,31 +21,31 @@ public final class Record: Model {
     public var furigana:     String
     public var comment:      String
     public var artistId:     Identifier
-    public var userId:       Identifier
+    public var ownerId:       Identifier
     
     public var exists: Bool = false
 
-    public var user: User?
+    public var owner: Owner?
     public var artist: Artist?
 
-    public init(number: Int, name: String, comment: String, artistId: Identifier, userId: Identifier) {
+    public init(number: Int, name: String, comment: String, artistId: Identifier, ownerId: Identifier) {
 //        self.id       = UUID().uuidString.makeNode()
         self.number   = number
         self.name     = name
         self.comment  = comment
         self.artistId = artistId
-        self.userId   = userId
+        self.ownerId   = ownerId
         phoneticName  = name.phonetic()
         furigana      = name.furigana()
     }
 
-    public init(number: Int, name: String, comment: String, artistId: Identifier, userId: Identifier, phoneticName: String, furigana: String) {
+    public init(number: Int, name: String, comment: String, artistId: Identifier, ownerId: Identifier, phoneticName: String, furigana: String) {
         //        self.id       = UUID().uuidString.makeNode()
         self.number        = number
         self.name          = name
         self.comment       = comment
         self.artistId      = artistId
-        self.userId        = userId
+        self.ownerId        = ownerId
         self.phoneticName  = phoneticName
         self.furigana      = furigana
     }
@@ -59,7 +59,7 @@ public final class Record: Model {
         furigana     = try row.get("furigana")
         comment      = try row.get("comment")
         artistId     = try row.get("artist_id")
-        userId       = try row.get("user_id")
+        ownerId       = try row.get("owner_id")
     }
     
     public func makeRow() throws -> Row {
@@ -71,18 +71,18 @@ public final class Record: Model {
         try row.set("furigana"     , furigana)
         try row.set("comment"      , comment)
         try row.set("artist_id"    , artistId)
-        try row.set("user_id"      , userId)
+        try row.set("owner_id"      , ownerId)
         return row
     }
 
     public func makeLeafNode() throws -> Node {
         var node: Node = try makeJSON().converted()
         try node.set("artist", artist?.makeLeafNode())
-        try node.set("user", user?.makeLeafNode())
+        try node.set("owner", owner?.makeLeafNode())
         return node
     }
 
-    public static func firstOrCreateBy(number: Int, name: String, comment: String, artistId: Identifier, userId: Identifier) -> Record? {
+    public static func firstOrCreateBy(number: Int, name: String, comment: String, artistId: Identifier, ownerId: Identifier) -> Record? {
         if name.isEmpty {
             return nil
         }
@@ -90,7 +90,7 @@ public final class Record: Model {
             if let record = try Record.makeQuery().filter("number", String(number)).filter("name", name).first() {
                 return record
             } else {
-                let record = Record(number: number, name: name, comment: comment, artistId: artistId, userId: userId)
+                let record = Record(number: number, name: name, comment: comment, artistId: artistId, ownerId: ownerId)
                 try record.save()
                 return record
             }
@@ -100,17 +100,17 @@ public final class Record: Model {
         }
     }
 
-    public static func setParents(records: [Record], users: [User], artists: [Artist]) {
+    public static func setParents(records: [Record], owners: [Owner], artists: [Artist]) {
         records.forEach { r in
-            r.user   = users.filter { u in u.id == r.userId }.first
+            r.owner   = owners.filter { u in u.id == r.ownerId }.first
             r.artist = artists.filter { a in a.id == r.artistId }.first
         }
     }
 }
 
 /*public extension Record {
-    public func user() throws -> Parent<User> {
-        return try parent(userId, nil, User.self)
+    public func owner() throws -> Parent<Owner> {
+        return try parent(ownerId, nil, Owner.self)
     }
     public func artist() throws -> Parent<Artist> {
         return try parent(artistId, nil, Artist.self)
@@ -127,7 +127,7 @@ extension Record: Preparation {
             records.string("furigana")
             records.string("comment")
             records.parent(Artist.self, optional: false, unique: false)
-            records.parent(User.self, optional: false, unique: false)
+            records.parent(Owner.self, optional: false, unique: false)
         }
     }
     
@@ -145,7 +145,7 @@ extension Record: JSONConvertible {
             name         : json.get("name"),
             comment      : json.get("comment"),
             artistId     : json.get("artist_id"),
-            userId       : json.get("user_id"),
+            ownerId       : json.get("owner_id"),
             phoneticName : json.get("phonetic_name"),
             furigana     : json.get("furigana")
         )
@@ -158,7 +158,7 @@ extension Record: JSONConvertible {
         try json.set("name", name)
         try json.set("comment", comment)
         try json.set("artist_id", artistId)
-        try json.set("user_id", userId)
+        try json.set("owner_id", ownerId)
         try json.set("phonetic_name", phoneticName)
         try json.set("furigana", furigana)
         

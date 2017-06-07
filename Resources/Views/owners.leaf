@@ -18,11 +18,11 @@
       </tr>
     </thead>
     <tbody>
-      #loop(users, "user") {
+      #loop(owners, "owner") {
         <tr>
-          <td>#(user.name)</td>
+          <td>#(owner.name)</td>
           <td>
-            <a href="/records?user_id=#(user.id)">
+            <a href="/records?owner_id=#(owner.id)">
               <i class="small material-icons">album</i>
             </a>
           </td>

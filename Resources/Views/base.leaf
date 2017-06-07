@@ -84,7 +84,7 @@
         </a>
       </li>
       <li>
-        <a href="./users">
+        <a href="./owners">
           <i class="small material-icons">perm_identity</i>
           Owners
         </a>

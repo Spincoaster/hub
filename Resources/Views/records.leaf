@@ -43,7 +43,7 @@
             <td>#(record.furigana)</td>
           }
           <td>#(record.comment)</td>
-          <td><a href="/records?user_id=#(record.user.id)">#(record.user.name)</a></td>
+          <td><a href="/records?owner_id=#(record.owner.id)">#(record.owner.name)</a></td>
         </tr>
       }
     </tbody>

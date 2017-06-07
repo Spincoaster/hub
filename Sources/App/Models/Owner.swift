@@ -1,5 +1,5 @@
 //
-//  User.swift
+//  Owner.swift
 //  recordhub
 //
 //  Created by Hiroki Kumamoto on 2017/04/05.
@@ -11,7 +11,7 @@ import Vapor
 import Fluent
 import FluentProvider
 
-public final class User: Model {
+public final class Owner: Model {
     public let storage = Storage()
 
     public var id:       Identifier?
@@ -39,17 +39,17 @@ public final class User: Model {
         return try makeJSON().converted()
     }
 
-    public static func firstOrCreateBy(name: String) -> User? {
+    public static func firstOrCreateBy(name: String) -> Owner? {
         if name.isEmpty {
             return nil
         }
         do {
-            if let user = try User.makeQuery().filter("name", name).first() {
-                return user
+            if let owner = try Owner.makeQuery().filter("name", name).first() {
+                return owner
             } else {
-                let user = User(name: name)
-                try user.save()
-                return user
+                let owner = Owner(name: name)
+                try owner.save()
+                return owner
             }
         } catch {
             return nil
@@ -57,11 +57,11 @@ public final class User: Model {
     }
 }
 
-extension User: Preparation {
+extension Owner: Preparation {
     public static func prepare(_ database: Database) throws {
-        try database.create(self) { users in
-            users.id()
-            users.string("name", unique: true)
+        try database.create(self) { owners in
+            owners.id()
+            owners.string("name", unique: true)
         }
     }
     
@@ -71,7 +71,7 @@ extension User: Preparation {
 }
 
 // MARK: JSON
-extension User: JSONConvertible {
+extension Owner: JSONConvertible {
     public convenience init(json: JSON) throws {
         try self.init(
             //            id           = json.get("id")
@@ -88,7 +88,7 @@ extension User: JSONConvertible {
     }
 }
 
-extension User: ResponseRepresentable { }
+extension Owner: ResponseRepresentable { }
 
 // MARK: NODE
-extension User: NodeRepresentable { }
+extension Owner: NodeRepresentable { }

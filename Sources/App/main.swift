@@ -7,7 +7,7 @@ let config = try Config()
 try config.addProvider(PostgreSQLProvider.Provider.self)
 try config.addProvider(LeafProvider.Provider.self)
 
-config.preparations.append(User.self)
+config.preparations.append(Owner.self)
 config.preparations.append(Artist.self)
 config.preparations.append(Record.self)
 config.preparations.append(Genre.self)
@@ -33,7 +33,7 @@ drop.get("version") { request in
 
 drop.resource("records", RecordController())
 drop.resource("artists", ArtistController())
-drop.resource("users"  , UserController())
+drop.resource("owners" , OwnerController())
 drop.resource("genres" , GenreController())
 drop.resource("albums" , AlbumController())
 drop.resource("tracks" , TrackController())
