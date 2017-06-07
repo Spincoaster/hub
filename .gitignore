@@ -6,3 +6,9 @@ Config/secrets
 .DS_Store
 *~
 .env
+
+node_modules
+Public/fonts
+Public/styles/materialize*
+
+recordhub.dump
