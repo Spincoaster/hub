@@ -1,0 +1,5 @@
+#extend("base")
+
+#export("body") {
+  <h2>Sorry, Authentication is required to access</h2>
+}
