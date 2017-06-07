@@ -9,67 +9,71 @@
 import Foundation
 import Vapor
 import Fluent
+import FluentProvider
+import Node
 
 public final class Album: Model {
-    public var id:           Node?
+    public let storage = Storage()
+
+//    public var id:           Node?
     public var name:         String
     public var phoneticName: String
     public var furigana:     String
-    public var artistId:     Node
+    public var artistId:     Identifier
     
     public var exists: Bool = false
     
     public var artist: Artist?
     
-    public init(name: String, artistId: Node) {
+    public init(name: String, artistId: Identifier) {
         //        self.id       = UUID().uuidString.makeNode()
         self.name     = name
         self.artistId = artistId
         phoneticName  = name.phonetic()
         furigana      = name.furigana()
     }
-    
-    public init(node: Node, in context: Context) throws {
-        id           = try node.extract("id")
-        name         = try node.extract("name")
-        phoneticName = try node.extract("phonetic_name")
-        furigana     = try node.extract("furigana")
-        artistId     = try node.extract("artist_id")
+
+    public init(name: String, artistId: Identifier, phoneticName: String, furigana: String) {
+        //        self.id       = UUID().uuidString.makeNode()
+        self.name         = name
+        self.artistId     = artistId
+        self.phoneticName = phoneticName
+        self.furigana     = furigana
     }
     
-    public func makeNode(context: Context) throws -> Node {
-        return try Node(node: [
-            "id"           : id,
-            "name"         : name,
-            "phonetic_name": phoneticName,
-            "furigana"     : furigana,
-            "artist_id"    : artistId,
-            ]
-        )
+    public init(row: Row) throws {
+//        id           = try row.get("id")
+        name         = try row.get("name")
+        phoneticName = try row.get("phonetic_name")
+        furigana     = try row.get("furigana")
+        artistId     = try row.get("artist_id")
     }
     
+    public func makeRow() throws -> Row {
+        var row = Row()
+        //        try row.set("id", name)
+        try row.set("name"         , name)
+        try row.set("phonetic_name", phoneticName)
+        try row.set("furigana"     , furigana)
+        try row.set("artist_id"    , artistId)
+        return row
+    }
+
     public func makeLeafNode() throws -> Node {
-        return try Node(node: [
-            "id"           : id,
-            "name"         : name,
-            "phonetic_name": phoneticName,
-            "furigana"     : furigana,
-            "artist_id"    : artistId,
-            "artist"       : artist,
-            ]
-        )
-        
+        var node: Node = try makeJSON().converted()
+        try node.set("artist", artist?.makeLeafNode())
+        return node
     }
-    
-    public static func firstOrCreateBy(name: String, artistId: Node) -> Album? {
-        if name.count == 0 {
+
+    public static func firstOrCreateBy(name: String, artistId: Identifier) -> Album? {
+        if name.isEmpty {
             return nil
         }
         do {
-            if let album = try Album.query().filter("name", name).first() {
+            if let album = try Album.makeQuery().filter("name", name).first() {
                 return album
             } else {
-                var album = Album(name: name, artistId: artistId)
+                let album = Album(name: name, artistId: artistId)
                 try album.save()
                 return album
             }
@@ -78,6 +82,7 @@ public final class Album: Model {
             return nil
         }
     }
+
     public static func setParents(albums: [Album], artists: [Artist]) {
         albums.forEach { al in
             al.artist = artists.filter { a in a.id == al.artistId }.first
@@ -87,16 +92,45 @@ public final class Album: Model {
 
 extension Album: Preparation {
     public static func prepare(_ database: Database) throws {
-        try database.create("albums") { audios in
+        try database.create(self) { audios in
             audios.id()
             audios.string("name")
             audios.string("phonetic_name")
             audios.string("furigana")
-            audios.parent(Artist.self, optional: false, unique: false)
+            audios.parent(Artist.self)
         }
     }
-    
+
     public static func revert(_ database: Database) throws {
-        try database.delete("albums")
+        try database.delete(self)
     }
 }
+
+// MARK: JSON
+extension Album: JSONConvertible {
+    public convenience init(json: JSON) throws {
+        try self.init(
+//            id           = json.get("id")
+            name         : json.get("name"),
+            artistId     : json.get("artist_id"),
+            phoneticName : json.get("phonetic_name"),
+            furigana     : json.get("furigana")
+        )
+    }
+    
+    public func makeJSON() throws -> JSON {
+        var json = JSON()
+        try json.set("id", id)
+        try json.set("name", name)
+        try json.set("phonetic_name", phoneticName)
+        try json.set("furigana", furigana)
+        try json.set("artist_id", artistId)
+        return json
+    }
+}
+
+extension Album: ResponseRepresentable { }
+
+
+// MARK: NODE
+extension Album: NodeRepresentable { }
