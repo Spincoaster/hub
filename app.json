@@ -27,7 +27,8 @@
         "EXTERNAL_ID": {
             "description": "file id of external tracks list",
             "value": "xxxxx"
-        }
+        },
+       "NODE_MODULES_CACHE": false
     },
     "addons": [{
         "plan": "heroku-postgresql",
