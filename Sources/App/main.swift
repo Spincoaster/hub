@@ -31,11 +31,14 @@ drop.get("version") { request in
     }
 }
 
-drop.resource("records", RecordController())
-drop.resource("artists", ArtistController())
-drop.resource("owners" , OwnerController())
-drop.resource("genres" , GenreController())
-drop.resource("albums" , AlbumController())
-drop.resource("tracks" , TrackController())
+let auth = drop.grouped([BasicAuthMiddleware()])
+
+auth.resource("records", RecordController())
+auth.resource("artists", ArtistController())
+auth.resource("owners" , OwnerController())
+auth.resource("genres" , GenreController())
+auth.resource("artists", ArtistController())
+auth.resource("albums" , AlbumController())
+auth.resource("tracks" , TrackController())
 
 try drop.run()

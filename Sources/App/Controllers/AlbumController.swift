@@ -41,7 +41,8 @@ final class AlbumController: ResourceRepresentable, Pagination {
             "albums": albums.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
-            "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode(in: nil)
+            "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode(in: nil),
+            "current_user": request.currentUser?.makeNode(in: nil) ?? nil
         ])
         return try drop.view.make("albums", parameters)
         

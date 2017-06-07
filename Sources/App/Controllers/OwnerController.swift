@@ -32,6 +32,7 @@ final class OwnerController: ResourceRepresentable,  Pagination {
             "title": getTitle()?.makeNode(in: nil) ?? "",
             "owners": owners.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
+            "current_user": request.currentUser?.makeNode(in: nil) ?? nil
             ])
         return try drop.view.make("owners", parameters)
     }
