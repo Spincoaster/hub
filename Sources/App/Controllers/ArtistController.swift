@@ -21,6 +21,7 @@ final class ArtistController: ResourceRepresentable, Pagination {
         }
         if let c = request.query?["contains"]?.string {
             try query.contains(Artist.self, "name", c)
+            try query.contains(Artist.self, "furigana", c)
         }
         return query
     }

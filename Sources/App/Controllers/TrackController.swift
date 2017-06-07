@@ -17,10 +17,13 @@ final class TrackController: ResourceRepresentable, Pagination {
         }
         if let c = request.query?["contains"]?.string {
             try query.join(Artist.self, baseKey: "artist_id", joinedKey: "id")
-                     .join(Album.self, baseKey: "album_id", joinedKey: "id").or { orGroup in
-                try orGroup.contains(Artist.self, "name", c)
-                try orGroup.contains(Album.self, "name", c)
-                try orGroup.contains(Track.self, "name", c)
+                .join(Album.self, baseKey: "album_id", joinedKey: "id").or { orGroup in
+                    try orGroup.contains(Artist.self, "name", c)
+                    try orGroup.contains(Artist.self, "furigana", c)
+                    try orGroup.contains(Album.self, "name", c)
+                    try orGroup.contains(Album.self, "furigana", c)
+                    try orGroup.contains(Track.self, "name", c)
+                    try orGroup.contains(Track.self, "furigana", c)
             }
         }
         return query

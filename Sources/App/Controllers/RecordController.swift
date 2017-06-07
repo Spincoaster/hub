@@ -15,10 +15,14 @@ final class RecordController: ResourceRepresentable, Pagination {
             try query.filter("phonetic_name", .hasPrefix, c)
         }
         if let c = request.query?["contains"]?.string {
-            let _ = try query.join(Artist.self, baseKey: "artist_id", joinedKey: "id").or { orGroup in
-                try orGroup.contains(Artist.self, "name", c)
-                try orGroup.contains(Record.self, "name", c)
-                try orGroup.contains(Record.self, "comment", c)
+            try query.join(Artist.self, baseKey: "artist_id", joinedKey: "id")
+                .join(User.self, baseKey: "user_id", joinedKey: "id").or { orGroup in
+                    try orGroup.contains(User.self, "user", c)
+                    try orGroup.contains(Artist.self, "name", c)
+                    try orGroup.contains(Artist.self, "furigana", c)
+                    try orGroup.contains(Record.self, "name", c)
+                    try orGroup.contains(Record.self, "furigana", c)
+                    try orGroup.contains(Record.self, "comment", c)
             }
         }
         return query
