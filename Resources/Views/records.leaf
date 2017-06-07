@@ -10,7 +10,7 @@
     }
     <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
   </ul>
-
+  <br >
   <ul class="pagination" style="display: inline-block; ">
     <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
     #loop(pages, "page") {
@@ -23,12 +23,12 @@
   <table class="highlight">
     <thead>
       <tr>
+        <th>Artist</th>
         <th>Title</th>
         #if(show_phonetic_name) {
           <th>Phonetic title</th>
           <th>Furigana</th>
         }
-        <th>Artist</th>
         <th>Comment</th>
         <th>Owner</th>
       </tr>
@@ -36,12 +36,12 @@
     <tbody>
       #loop(records, "record") {
         <tr>
+          <td><a href="/records?artist_id=#(record.artist.id)">#(record.artist.name)</a></td>
           <td>#(record.name)</td>
           #if(show_phonetic_name) {
             <td>#(record.phonetic_name)</td>
             <td>#(record.furigana)</td>
           }
-          <td><a href="/records?artist_id=#(record.artist.id)">#(record.artist.name)</a></td>
           <td>#(record.comment)</td>
           <td><a href="/records?user_id=#(record.user.id)">#(record.user.name)</a></td>
         </tr>

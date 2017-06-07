@@ -10,6 +10,7 @@
     }
     <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
   </ul>
+  <br >
   <ul class="pagination" style="display: inline-block; ">
     <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
     #loop(pages, "page") {
@@ -22,8 +23,8 @@
   <table class="highlight">
     <thead>
       <tr>
-        <th>Title</th>
         <th>Artist</th>
+        <th>Title</th>
         <th>Album</th>
         #if(show_phonetic_name) {
           <th>Phonetic name</th>
@@ -34,8 +35,8 @@
     <tbody>
       #loop(tracks, "track") {
         <tr>
-          <td>#(track.name)</td>
           <td><a href="/tracks?artist_id=#(track.artist.id)">#(track.artist.name)</a></td>
+          <td>#(track.name)</td>
           <td><a href="/tracks?album_id=#(track.album.id)">#(track.album.name)</a></td>
           #if(show_phonetic_name) {
             <td>#(track.phonetic_name)</td>

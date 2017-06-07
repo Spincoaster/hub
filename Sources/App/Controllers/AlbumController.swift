@@ -5,15 +5,16 @@ import Fluent
 final class AlbumController: ResourceRepresentable, Pagination {
     typealias E = Album
     func indexQuery(request: Request) throws -> Query<Album> {
-        let query = try Album.makeQuery().sort("name", Sort.Direction.ascending)
+        let query = try Album.makeQuery().join(Artist.self, baseKey: "artist_id", joinedKey: "id")
+                                         .sort(Sort(Artist.self, "phonetic_name", .ascending))
         if let artistId = request.query?["artist_id"]?.int {
             try query.filter("artist_id", artistId)
         }
         if let c = request.query?["has_prefix"]?.string {
-            try query.filter("phonetic_name", .hasPrefix, c)
+            try query.filter(Artist.self, "phonetic_name", .hasPrefix, c)
         }
         if let c = request.query?["contains"]?.string {
-            let _ = try query.join(Artist.self, baseKey: "artist_id", joinedKey: "id").or { orGroup in
+            let _ = try query.or { orGroup in
                 try orGroup.contains(Artist.self, "name", c)
                 try orGroup.contains(Artist.self, "furigana", c)
                 try orGroup.contains(Album.self, "furigana", c)

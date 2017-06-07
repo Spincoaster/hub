@@ -10,6 +10,7 @@
     }
     <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
   </ul>
+  <br >
   <ul class="pagination" style="display: inline-block; ">
     <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
     #loop(pages, "page") {

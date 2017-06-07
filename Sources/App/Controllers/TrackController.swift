@@ -5,7 +5,9 @@ import Fluent
 final class TrackController: ResourceRepresentable, Pagination {
     typealias E = Track
     func indexQuery(request: Request) throws -> Query<Track> {
-        let query = try Track.makeQuery()
+        let query = try Track.makeQuery().join(Artist.self, baseKey: "artist_id", joinedKey: "id")
+                                         .join(Album.self, baseKey: "album_id", joinedKey: "id")
+                                         .sort(Sort(Artist.self, "phonetic_name", .ascending))
         if let artistId = request.query?["artist_id"]?.int {
             try query.sort("album_id", Sort.Direction.ascending).filter("artist_id", artistId)
         }
@@ -13,11 +15,10 @@ final class TrackController: ResourceRepresentable, Pagination {
             try query.sort("number", Sort.Direction.ascending).filter("album_id", albumId)
         }
         if let c = request.query?["has_prefix"]?.string {
-            try query.filter("phonetic_name", .hasPrefix, c)
+            try query.filter(Artist.self, "phonetic_name", .hasPrefix, c)
         }
         if let c = request.query?["contains"]?.string {
-            try query.join(Artist.self, baseKey: "artist_id", joinedKey: "id")
-                .join(Album.self, baseKey: "album_id", joinedKey: "id").or { orGroup in
+            try query.or { orGroup in
                     try orGroup.contains(Artist.self, "name", c)
                     try orGroup.contains(Artist.self, "furigana", c)
                     try orGroup.contains(Album.self, "name", c)

@@ -15,7 +15,7 @@ import Fluent
 final class ArtistController: ResourceRepresentable, Pagination {
     typealias E = Artist
     func indexQuery(request: Request) throws -> Query<Artist> {
-        let query = try Artist.makeQuery()
+        let query = try Artist.makeQuery().sort(Sort(Artist.self, "phonetic_name", .ascending))
         if let c = request.query?["has_prefix"]?.string {
             try query.filter("phonetic_name", .hasPrefix, c)
         }
