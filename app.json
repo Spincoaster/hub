@@ -3,7 +3,38 @@
     "scripts": {},
     "env": {},
     "formation": {},
-    "addons": [],
+    "env": {
+        "APP_NAME": {
+            "description": "App name",
+            "value": "recordhub"
+        },
+        "BASIC_AUTH_PASSWORD": {
+            "description": "Password for basic auth",
+            "value": "recordhub"
+        },
+        "API_KEY": {
+            "description": "api key for google drive",
+            "value": "xxxxx"
+        },
+        "FILE_ID": {
+            "description": "file id of records list",
+            "value": "xxxxx"
+        },
+        "INTERNAL_ID": {
+            "description": "file id of interanl tracks list",
+            "value": "xxxxx"
+        },
+        "EXTERNAL_ID": {
+            "description": "file id of external tracks list",
+            "value": "xxxxx"
+        }
+    },
+    "addons": [{
+        "plan": "heroku-postgresql",
+        "options": {
+            "version": "9.5"
+        }
+    }],
     "buildpacks": [
         {
             "url": "https://github.com/vapor-community/heroku-buildpack"
