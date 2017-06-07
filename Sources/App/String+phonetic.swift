@@ -1,4 +1,6 @@
+#if os(OSX)
 import MeCab
+#endif
 
 extension String {
     public func phonetic() -> String {
@@ -12,21 +14,32 @@ extension String {
     }
 }
 
+
 class MeCabHelper {
+    #if os(OSX)
     static var shared: Mecab? = try! Mecab()
+    #endif
     static func furigana(string: String) -> String? {
-        guard let shared = shared, let nodes = try? shared.tokenize(string: string) else { return nil }
-        return nodes.map { node -> String in
-            guard !node.isBosEos else { return "" }
-            return node.features.count < 8 ? node.surface : node.features[8]
-        }.joined()
+        #if os(OSX)
+            guard let shared = shared, let nodes = try? shared.tokenize(string: string) else { return nil }
+            return nodes.map { node -> String in
+                guard !node.isBosEos else { return "" }
+                return node.features.count < 8 ? node.surface : node.features[8]
+                }.joined()
+        #else
+            return nil
+        #endif
     }
     static func alphabetize(string: String) -> String? {
-        guard let shared = shared, let nodes = try? shared.tokenize(string: string) else { return nil }
-        return nodes.map { node -> String in
-            guard !node.isBosEos else { return "" }
-            return katakana2roman(string: node.features.count < 8 ? node.surface : node.features[8])
-        }.joined()
+        #if os(OSX)
+            guard let shared = shared, let nodes = try? shared.tokenize(string: string) else { return nil }
+            return nodes.map { node -> String in
+                guard !node.isBosEos else { return "" }
+                return katakana2roman(string: node.features.count < 8 ? node.surface : node.features[8])
+            }.joined()
+        #else
+            return nil
+        #endif
     }
     static func isAlpha(string: String) -> Bool {
         for char in string.unicodeScalars {
