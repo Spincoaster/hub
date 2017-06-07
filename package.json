@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "npm run fonts && npm run sass",
-    "sass": "node-sass Resources/sass/index.scss Public/styles/materialize.min.css --output-style compressed --source-map true --include-path node_modules/materialize-css/sass/",
+    "sass": "node-sass Resources/sass/index.scss Public/styles/materialize.min.css --output-style compressed --source-map true --include-path node_modules/materialize-css/sass/ --no-bin-links",
     "fonts": "cp -r node_modules/materialize-css/fonts Public/",
     "watch": "node-sass node_modules/materialize-css/sass/materialize.scss Public/styles/materialize.min.css --output-style compressed --source-map true --watch",
     "postinstall": "npm run build"
