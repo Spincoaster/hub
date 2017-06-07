@@ -40,5 +40,7 @@ auth.resource("genres" , GenreController())
 auth.resource("artists", ArtistController())
 auth.resource("albums" , AlbumController())
 auth.resource("tracks" , TrackController())
-
+drop.get("/") { request in
+    return Response(redirect: "/records")
+}
 try drop.run()
