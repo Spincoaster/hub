@@ -18,7 +18,7 @@ final class RecordController: ResourceRepresentable, Pagination {
         }
         if let c = request.query?["contains"]?.string {
             try query.or { orGroup in
-                    try orGroup.contains(Owner.self, "owner", c)
+                    try orGroup.contains(Owner.self,  "name", c)
                     try orGroup.contains(Artist.self, "name", c)
                     try orGroup.contains(Artist.self, "furigana", c)
                     try orGroup.contains(Record.self, "name", c)
