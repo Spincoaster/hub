@@ -13,10 +13,9 @@ final class AlbumController: ResourceRepresentable, Pagination {
             try query.filter("phonetic_name", .hasPrefix, c)
         }
         if let c = request.query?["contains"]?.string {
-            let _ = try query.join(Artist.self).or { query in
-                let _ = try query.filter(Artist.self, "name", .contains, c).or { query in
-                    let _ = try query.filter("name", .contains, c)
-                }
+            let _ = try query.join(Artist.self, baseKey: "artist_id", joinedKey: "id").or { orGroup in
+                try orGroup.contains(Artist.self, "name", c)
+                try orGroup.contains(Album.self, "name", c)
             }
         }
         return query

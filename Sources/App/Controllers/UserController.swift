@@ -19,7 +19,7 @@ final class UserController: ResourceRepresentable,  Pagination {
             try query.filter("name", .hasPrefix, c)
         }
         if let c = request.query?["contains"]?.string {
-            try query.filter("name", .contains, c)
+            try query.contains(User.self, "name", c)
         }
         return query
     }
