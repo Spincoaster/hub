@@ -14,7 +14,7 @@ public class GoogleDrive {
             session.dataTask(with: request) {data, response, err in
                 if let err = err {
                     print("error")
-                    observer.send(error: err as NSError)
+                    observer.send(error: err as! NSError)
                     return
                 }
                 guard let data = data else { return }
@@ -41,7 +41,7 @@ public class GoogleDrive {
             session.dataTask(with: request) {data, response, err in
                 if let err = err {
                     print("error")
-                    observer.send(error: err as NSError)
+                    observer.send(error: err as! NSError)
                     return
                 }
                 guard let data = data else { return }
