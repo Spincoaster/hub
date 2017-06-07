@@ -13,13 +13,13 @@ import Fluent
 
 final class GenreController: ResourceRepresentable {
     func index(request: Request) throws -> ResponseRepresentable {
-        let genres = try Genre.all().makeNode()
+        let genres = try Genre.all().makeNode(in: nil)
         let parameters = try Node(node: ["genres": genres])
         return try drop.view.make("genres", parameters)
     }
     
     func create(request: Request) throws -> ResponseRepresentable {
-        var genre = try request.artist()
+        let genre = try request.artist()
         try genre.save()
         return genre
     }
@@ -34,13 +34,12 @@ final class GenreController: ResourceRepresentable {
     }
     
     func clear(request: Request) throws -> ResponseRepresentable {
-        try Genre.query().delete()
+        try Genre.makeQuery().delete()
         return JSON([])
     }
     
     func update(request: Request, genre: Genre) throws -> ResponseRepresentable {
         let new = try request.genre()
-        var genre  = genre
         genre.name = new.name
         try genre.save()
         return genre
@@ -56,8 +55,8 @@ final class GenreController: ResourceRepresentable {
             index:   index,
             store:   create,
             show:    show,
+            update:  update,
             replace: replace,
-            modify:  update,
             destroy: delete,
             clear:   clear
         )
@@ -67,6 +66,6 @@ final class GenreController: ResourceRepresentable {
 extension Request {
     func genre() throws -> Genre {
         guard let json = json else { throw Abort.badRequest }
-        return try Genre(node: json)
+        return try Genre(json: json)
     }
 }

@@ -15,7 +15,7 @@ import Fluent
 final class ArtistController: ResourceRepresentable, Pagination {
     typealias E = Artist
     func indexQuery(request: Request) throws -> Query<Artist> {
-        let query = try Artist.query()
+        let query = try Artist.makeQuery()
         if let c = request.query?["has_prefix"]?.string {
             try query.filter("phonetic_name", .hasPrefix, c)
         }
@@ -30,18 +30,18 @@ final class ArtistController: ResourceRepresentable, Pagination {
     func index(request: Request) throws -> ResponseRepresentable {
         let artists = try paginate(request: request)
         let parameters = try Node.object([
-            "title": getTitle()?.makeNode() ?? "",
+            "title": getTitle()?.makeNode(in: nil) ?? "",
             "resource_name": "Artist",
-            "artists": artists.map { try $0.makeNode() }.makeNode(),
+            "artists": artists.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
-            "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode()
+            "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode(in: nil)
             ])
         return try drop.view.make("artists", parameters)
 
     }
     
     func create(request: Request) throws -> ResponseRepresentable {
-        var artist = try request.artist()
+        let artist = try request.artist()
         try artist.save()
         return artist
     }
@@ -56,13 +56,12 @@ final class ArtistController: ResourceRepresentable, Pagination {
     }
     
     func clear(request: Request) throws -> ResponseRepresentable {
-        try Artist.query().delete()
+        try Artist.makeQuery().delete()
         return JSON([])
     }
     
     func update(request: Request, artist: Artist) throws -> ResponseRepresentable {
         let new = try request.artist()
-        var artist  = artist
         artist.name = new.name
         try artist.save()
         return artist
@@ -78,8 +77,8 @@ final class ArtistController: ResourceRepresentable, Pagination {
             index:   index,
             store:   create,
             show:    show,
+            update:  update,
             replace: replace,
-            modify:  update,
             destroy: delete,
             clear:   clear
         )
@@ -89,6 +88,6 @@ final class ArtistController: ResourceRepresentable, Pagination {
 extension Request {
     func artist() throws -> Artist {
         guard let json = json else { throw Abort.badRequest }
-        return try Artist(node: json)
+        return try Artist(json: json)
     }
 }

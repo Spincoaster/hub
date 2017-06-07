@@ -2,10 +2,9 @@ import Vapor
 import HTTP
 import Fluent
 
-
 final class RecordController: ResourceRepresentable, Pagination {
     func indexQuery(request: Request) throws -> Query<Record> {
-        let query = try Record.query().sort("name", Sort.Direction.ascending)
+        let query = try Record.makeQuery().sort("name", Sort.Direction.ascending)
         if let artistId = request.query?["artist_id"]?.int {
             try query.filter("artist_id", artistId)
         }
@@ -16,12 +15,10 @@ final class RecordController: ResourceRepresentable, Pagination {
             try query.filter("phonetic_name", .hasPrefix, c)
         }
         if let c = request.query?["contains"]?.string {
-            let _ = try query.union(Artist.self).or { query in
-                let _ = try query.filter(Artist.self, "name", .contains, c).or { query in
-                    let _ = try query.filter("name", .contains, c).or { query in
-                        let _ = try query.filter("comment", .contains, c)
-                    }
-                }
+            let _ = try query.join(Artist.self).or { orGroup in
+                try orGroup.filter(Artist.self, "name", .contains, c)
+                try orGroup.filter("name", .contains, c)
+                try orGroup.filter("comment", .contains, c)
             }
         }
         return query
@@ -39,23 +36,23 @@ final class RecordController: ResourceRepresentable, Pagination {
     func index(request: Request) throws -> ResponseRepresentable {
         let records = try paginate(request: request)
         if records.count > 0 {
-            let artists = try Artist.query().filter("id", Filter.Scope.in, records.map { $0.artistId }).all()
-            let users   = try User.query().filter("id", Filter.Scope.in, records.map { $0.userId }).all()
+            let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, records.map { $0.artistId.makeNode(in: nil) }))).all()
+            let users   = try User.makeQuery().filter(Filter(User.self, .subset("id", Filter.Scope.in, records.map { $0.userId.makeNode(in: nil) }))).all()
             Record.setParents(records: records, users: users, artists: artists)
         }
         let parameters = try Node.object([
-            "title": getTitle()?.makeNode() ?? "",
+            "title": getTitle()?.makeNode(in: nil) ?? "",
             "resource_name": "Record",
-            "records": records.map { try $0.makeLeafNode() }.makeNode(),
+            "records": try records.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
-            "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode()
+            "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode(in: nil)
             ])
         return try drop.view.make("records", parameters)
     }
 
     func create(request: Request) throws -> ResponseRepresentable {
-        var record = try request.record()
+        let record = try request.record()
         try record.save()
         return record
     }
@@ -70,13 +67,12 @@ final class RecordController: ResourceRepresentable, Pagination {
     }
 
     func clear(request: Request) throws -> ResponseRepresentable {
-        try Record.query().delete()
+        try Record.makeQuery().delete()
         return JSON([])
     }
 
     func update(request: Request, record: Record) throws -> ResponseRepresentable {
         let new         = try request.record()
-        var record      = record
         record.number   = new.number
         record.name     = new.name
         record.comment  = new.comment
@@ -95,8 +91,8 @@ final class RecordController: ResourceRepresentable, Pagination {
             index:   index,
             store:   create,
             show:    show,
+            update:  update,
             replace: replace,
-            modify:  update,
             destroy: delete,
             clear:   clear
         )
@@ -106,6 +102,6 @@ final class RecordController: ResourceRepresentable, Pagination {
 extension Request {
     func record() throws -> Record {
         guard let json = json else { throw Abort.badRequest }
-        return try Record(node: json)
+        return try Record(json: json)
     }
 }

@@ -14,7 +14,7 @@ import Fluent
 
 final class UserController: ResourceRepresentable,  Pagination {
     func indexQuery(request: Request) throws -> Query<User> {
-        let query = try User.query().sort("name", Sort.Direction.ascending)
+        let query = try User.makeQuery().sort("name", Sort.Direction.ascending)
         if let c = request.query?["has_prefix"]?.string {
             try query.filter("name", .hasPrefix, c)
         }
@@ -29,15 +29,15 @@ final class UserController: ResourceRepresentable,  Pagination {
     func index(request: Request) throws -> ResponseRepresentable {
         let users = try paginate(request: request)
         let parameters = try Node.object([
-            "title": getTitle()?.makeNode() ?? "",
-            "users": users.map { try $0.makeLeafNode() }.makeNode(),
+            "title": getTitle()?.makeNode(in: nil) ?? "",
+            "users": users.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
             ])
         return try drop.view.make("users", parameters)
     }
     
     func create(request: Request) throws -> ResponseRepresentable {
-        var user = try request.user()
+        let user = try request.user()
         try user.save()
         return user
     }
@@ -52,14 +52,13 @@ final class UserController: ResourceRepresentable,  Pagination {
     }
     
     func clear(request: Request) throws -> ResponseRepresentable {
-        try User.query().delete()
+        try User.makeQuery().delete()
         return JSON([])
     }
     
     func update(request: Request, user: User) throws -> ResponseRepresentable {
         let new = try request.user()
-        var user = user
-        user.name   = new.name
+        user.name = new.name
         try user.save()
         return user
     }
@@ -74,8 +73,8 @@ final class UserController: ResourceRepresentable,  Pagination {
             index:   index,
             store:   create,
             show:    show,
+            update:  update,
             replace: replace,
-            modify:  update,
             destroy: delete,
             clear:   clear
         )
@@ -85,6 +84,6 @@ final class UserController: ResourceRepresentable,  Pagination {
 extension Request {
     func user() throws -> User {
         guard let json = json else { throw Abort.badRequest }
-        return try User(node: json)
+        return try User(json: json)
     }
 }

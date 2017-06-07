@@ -5,7 +5,7 @@ import Fluent
 final class TrackController: ResourceRepresentable, Pagination {
     typealias E = Track
     func indexQuery(request: Request) throws -> Query<Track> {
-        let query = try Track.query()
+        let query = try Track.makeQuery()
         if let artistId = request.query?["artist_id"]?.int {
             try query.sort("album_id", Sort.Direction.ascending).filter("artist_id", artistId)
         }
@@ -16,12 +16,10 @@ final class TrackController: ResourceRepresentable, Pagination {
             try query.filter("phonetic_name", .hasPrefix, c)
         }
         if let c = request.query?["contains"]?.string {
-            let _ = try query.union(Artist.self).union(Album.self).or { query in
-                let _ = try query.filter(Artist.self, "name", .contains, c).or { query in
-                    let _ = try query.filter(Album.self, "name", .contains, c).or { query in
-                        let _ = try query.filter("name", .contains, c)
-                    }
-                }
+            try query.join(Artist.self).join(Album.self).or { orGroup in
+                try orGroup.filter(Artist.self, "name", .contains, c)
+                try orGroup.filter(Album.self, "name", .contains, c)
+                try orGroup.filter("name", .contains, c)
             }
         }
         return query
@@ -39,23 +37,23 @@ final class TrackController: ResourceRepresentable, Pagination {
     func index(request: Request) throws -> ResponseRepresentable {
         let tracks = try paginate(request: request)
         if tracks.count > 0 {
-            let artists = try Artist.query().filter("id", Filter.Scope.in, tracks.map { $0.artistId }).all()
-            let albums  = try Album.query().filter("id", Filter.Scope.in, tracks.map { $0.albumId }).all()
+            let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, tracks.map { $0.artistId.makeNode(in: nil) }))).all()
+            let albums  = try Album.makeQuery().filter(Filter(Album.self, .subset("id", Filter.Scope.in, tracks.map { $0.albumId.makeNode(in: nil) }))).all()
             Track.setParents(tracks: tracks, albums: albums, artists: artists)
         }
         let parameters = try Node.object([
-            "title": getTitle()?.makeNode() ?? "",
+            "title": getTitle()?.makeNode(in: nil) ?? "",
             "resource_name": "Track",
-            "tracks": tracks.map { try $0.makeLeafNode() }.makeNode(),
+            "tracks": tracks.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
-            "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode()
+            "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode(in: nil)
             ])
         return try drop.view.make("tracks", parameters)
     }
     
     func create(request: Request) throws -> ResponseRepresentable {
-        var record = try request.record()
+        let record = try request.record()
         try record.save()
         return record
     }
@@ -70,13 +68,12 @@ final class TrackController: ResourceRepresentable, Pagination {
     }
     
     func clear(request: Request) throws -> ResponseRepresentable {
-        try Record.query().delete()
+        try Record.makeQuery().delete()
         return JSON([])
     }
     
     func update(request: Request, track: Track) throws -> ResponseRepresentable {
-        let new         = try request.track()
-        var track       = track
+        let new        = try request.track()
         track.number   = new.number
         track.name     = new.name
         track.artistId = new.artistId
@@ -95,8 +92,8 @@ final class TrackController: ResourceRepresentable, Pagination {
             index:   index,
             store:   create,
             show:    show,
+            update:  update,
             replace: replace,
-            modify:  update,
             destroy: delete,
             clear:   clear
         )
@@ -106,7 +103,7 @@ final class TrackController: ResourceRepresentable, Pagination {
 extension Request {
     func track() throws -> Track {
         guard let json = json else { throw Abort.badRequest }
-        return try Track(node: json)
+        return try Track(json: json)
     }
 }
 

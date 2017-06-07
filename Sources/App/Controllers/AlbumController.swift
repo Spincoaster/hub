@@ -5,7 +5,7 @@ import Fluent
 final class AlbumController: ResourceRepresentable, Pagination {
     typealias E = Album
     func indexQuery(request: Request) throws -> Query<Album> {
-        let query = try Album.query().sort("name", Sort.Direction.ascending)
+        let query = try Album.makeQuery().sort("name", Sort.Direction.ascending)
         if let artistId = request.query?["artist_id"]?.int {
             try query.filter("artist_id", artistId)
         }
@@ -13,7 +13,7 @@ final class AlbumController: ResourceRepresentable, Pagination {
             try query.filter("phonetic_name", .hasPrefix, c)
         }
         if let c = request.query?["contains"]?.string {
-            let _ = try query.union(Artist.self).or { query in
+            let _ = try query.join(Artist.self).or { query in
                 let _ = try query.filter(Artist.self, "name", .contains, c).or { query in
                     let _ = try query.filter("name", .contains, c)
                 }
@@ -31,23 +31,23 @@ final class AlbumController: ResourceRepresentable, Pagination {
     func index(request: Request) throws -> ResponseRepresentable {
         let albums = try paginate(request: request)
         if albums.count > 0 {
-            let artists = try Artist.query().filter("id", Filter.Scope.in, albums.map { $0.artistId }).all()
+            let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", .in, albums.map { $0.artistId.makeNode(in: nil) }))).all()
             Album.setParents(albums: albums, artists: artists)
         }
         let parameters = try Node.object([
-            "title": getTitle()?.makeNode() ?? "",
+            "title": getTitle()?.makeNode(in: nil) ?? "",
             "resource_name": "Album",
-            "albums": albums.map { try $0.makeLeafNode() }.makeNode(),
+            "albums": albums.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
-            "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode()
+            "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode(in: nil)
         ])
         return try drop.view.make("albums", parameters)
         
     }
     
     func create(request: Request) throws -> ResponseRepresentable {
-        var album = try request.album()
+        let album = try request.album()
         try album.save()
         return album
     }
@@ -62,13 +62,12 @@ final class AlbumController: ResourceRepresentable, Pagination {
     }
     
     func clear(request: Request) throws -> ResponseRepresentable {
-        try Album.query().delete()
+        try Album.makeQuery().delete()
         return JSON([])
     }
     
     func update(request: Request, album: Album) throws -> ResponseRepresentable {
         let new = try request.album()
-        var album  = album
         album.name = new.name
         try album.save()
         return album
@@ -84,8 +83,8 @@ final class AlbumController: ResourceRepresentable, Pagination {
             index:   index,
             store:   create,
             show:    show,
+            update:  update,
             replace: replace,
-            modify:  update,
             destroy: delete,
             clear:   clear
         )
@@ -95,6 +94,6 @@ final class AlbumController: ResourceRepresentable, Pagination {
 extension Request {
     func album() throws -> Album {
         guard let json = json else { throw Abort.badRequest }
-        return try Album(node: json)
+        return try Album(json: json)
     }
 }
