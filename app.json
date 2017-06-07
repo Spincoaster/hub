@@ -7,6 +7,9 @@
     "buildpacks": [
         {
             "url": "https://github.com/vapor-community/heroku-buildpack"
+        },
+        {
+            "url": "heroku/nodejs"
         }
     ]
 }
