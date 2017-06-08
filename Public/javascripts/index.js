@@ -27,4 +27,18 @@ $(function() {
     var $parent = $(this).parent();
     $parent.scrollLeft($(this).offset().left - 1.5 * w - $parent.width() / 2);
   });
+
+  if (('standalone' in window.navigator) && window.navigator.standalone) {
+    var links = document.links;
+    var link;
+    for (var i = 0; i < links.length; i++) {
+      var link = links[i];
+      if (link.href.toLowerCase().indexOf('javascript') === -1) {
+        link.addEventListener('click', function(e) {
+          top.location.href = this.href;
+          e.returnValue = false;
+        }, false);
+      }
+    }
+  }
 });
