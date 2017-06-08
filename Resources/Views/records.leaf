@@ -31,6 +31,7 @@
         }
         <th>Comment</th>
         <th>Owner</th>
+        <th>Location</th>
       </tr>
     </thead>
     <tbody>
@@ -44,6 +45,7 @@
           }
           <td>#(record.comment)</td>
           <td><a href="/records?owner_id=#(record.owner.id)">#(record.owner.name)</a></td>
+          <td style="white-space: nowrap;">#(record.location)-#(record.number)</td>
         </tr>
       }
     </tbody>

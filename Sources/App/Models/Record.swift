@@ -21,31 +21,35 @@ public final class Record: Model {
     public var furigana:     String
     public var comment:      String
     public var artistId:     Identifier
-    public var ownerId:       Identifier
+    public var ownerId:      Identifier
+    public var location:     String
     
     public var exists: Bool = false
 
     public var owner: Owner?
     public var artist: Artist?
 
-    public init(number: Int, name: String, comment: String, artistId: Identifier, ownerId: Identifier) {
+    public init(location: String, number: Int, name: String, comment: String, artistId: Identifier, ownerId: Identifier) {
 //        self.id       = UUID().uuidString.makeNode()
+        self.location = location
         self.number   = number
         self.name     = name
         self.comment  = comment
         self.artistId = artistId
-        self.ownerId   = ownerId
+        self.ownerId  = ownerId
+
         phoneticName  = name.phonetic()
         furigana      = name.furigana()
     }
 
-    public init(number: Int, name: String, comment: String, artistId: Identifier, ownerId: Identifier, phoneticName: String, furigana: String) {
+    public init(location: String, number: Int, name: String, comment: String, artistId: Identifier, ownerId: Identifier, phoneticName: String, furigana: String) {
         //        self.id       = UUID().uuidString.makeNode()
+        self.location      = location
         self.number        = number
         self.name          = name
         self.comment       = comment
         self.artistId      = artistId
-        self.ownerId        = ownerId
+        self.ownerId       = ownerId
         self.phoneticName  = phoneticName
         self.furigana      = furigana
     }
@@ -53,25 +57,27 @@ public final class Record: Model {
     
     public init(row: Row) throws {
         id           = try row.get("id")
+        location     = try row.get("location")
         number       = try row.get("number")
         name         = try row.get("name")
         phoneticName = try row.get("phonetic_name")
         furigana     = try row.get("furigana")
         comment      = try row.get("comment")
         artistId     = try row.get("artist_id")
-        ownerId       = try row.get("owner_id")
+        ownerId      = try row.get("owner_id")
     }
     
     public func makeRow() throws -> Row {
         var row = Row()
         //        try row.set("id", name)
+        try row.set("location"     , location)
         try row.set("number"       , number)
         try row.set("name"         , name)
         try row.set("phonetic_name", phoneticName)
         try row.set("furigana"     , furigana)
         try row.set("comment"      , comment)
         try row.set("artist_id"    , artistId)
-        try row.set("owner_id"      , ownerId)
+        try row.set("owner_id"     , ownerId)
         return row
     }
 
@@ -82,7 +88,7 @@ public final class Record: Model {
         return node
     }
 
-    public static func firstOrCreateBy(number: Int, name: String, comment: String, artistId: Identifier, ownerId: Identifier) -> Record? {
+    public static func firstOrCreateBy(location: String, number: Int, name: String, comment: String, artistId: Identifier, ownerId: Identifier) -> Record? {
         if name.isEmpty {
             return nil
         }
@@ -90,7 +96,7 @@ public final class Record: Model {
             if let record = try Record.makeQuery().filter("number", String(number)).filter("name", name).first() {
                 return record
             } else {
-                let record = Record(number: number, name: name, comment: comment, artistId: artistId, ownerId: ownerId)
+                let record = Record(location: location, number: number, name: name, comment: comment, artistId: artistId, ownerId: ownerId)
                 try record.save()
                 return record
             }
@@ -121,6 +127,7 @@ extension Record: Preparation {
     public static func prepare(_ database: Database) throws {
         try database.create(self) { records in
             records.id()
+            records.string("location")
             records.int("number")
             records.string("name")
             records.string("phonetic_name")
@@ -141,11 +148,12 @@ extension Record: JSONConvertible {
     public convenience init(json: JSON) throws {
         try self.init(
             //            id           = json.get("id")
+            location     : json.get("location"),
             number       : json.get("number"),
             name         : json.get("name"),
             comment      : json.get("comment"),
             artistId     : json.get("artist_id"),
-            ownerId       : json.get("owner_id"),
+            ownerId      : json.get("owner_id"),
             phoneticName : json.get("phonetic_name"),
             furigana     : json.get("furigana")
         )
@@ -153,6 +161,7 @@ extension Record: JSONConvertible {
     
     public func makeJSON() throws -> JSON {
         var json = JSON()
+        try json.set("location", location)
         try json.set("id", id)
         try json.set("number", number)
         try json.set("name", name)
