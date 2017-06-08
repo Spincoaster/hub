@@ -12,7 +12,7 @@ import Fluent
 extension Query {
     @discardableResult
     public func contains<T: Entity> (_ entity: T.Type, _ field: String, _ value: String) throws -> Query {
-        let node = "%\(value)%".makeNode(in: nil)
+        let node = "%\(value.trim())%".makeNode(in: nil)
         return try self.filter(Filter(entity, .compare(field, .custom("ILIKE"), node)))
     }
 }
