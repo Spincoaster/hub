@@ -30,6 +30,7 @@ final class ArtistController: ResourceRepresentable, Pagination {
     }
     func index(request: Request) throws -> ResponseRepresentable {
         let artists = try paginate(request: request)
+        let contains: String = request.query?["contains"]?.string ?? "";
         let parameters = try Node.object([
             "title": getTitle()?.makeNode(in: nil) ?? "",
             "home_icon_url": getHomeIconUrl()?.makeNode(in: nil) ?? "",
@@ -37,6 +38,7 @@ final class ArtistController: ResourceRepresentable, Pagination {
             "artists": artists.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
+            "contains": contains.makeNode(in: nil),
             "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode(in: nil),
             "current_user": request.currentUser?.makeNode(in: nil) ?? nil
             ])

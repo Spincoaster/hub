@@ -35,6 +35,7 @@ final class AlbumController: ResourceRepresentable, Pagination {
             let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", .in, albums.map { $0.artistId.makeNode(in: nil) }))).all()
             Album.setParents(albums: albums, artists: artists)
         }
+        let contains: String = request.query?["contains"]?.string ?? "";
         let parameters = try Node.object([
             "title": getTitle()?.makeNode(in: nil) ?? "",
             "home_icon_url": getHomeIconUrl()?.makeNode(in: nil) ?? "",
@@ -42,6 +43,7 @@ final class AlbumController: ResourceRepresentable, Pagination {
             "albums": albums.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
+            "contains": contains.makeNode(in: nil),
             "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode(in: nil),
             "current_user": request.currentUser?.makeNode(in: nil) ?? nil
         ])

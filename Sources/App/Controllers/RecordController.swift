@@ -45,6 +45,7 @@ final class RecordController: ResourceRepresentable, Pagination {
             let owners   = try Owner.makeQuery().filter(Filter(Owner.self, .subset("id", Filter.Scope.in, records.map { $0.ownerId.makeNode(in: nil) }))).all()
             Record.setParents(records: records, owners: owners, artists: artists)
         }
+        let contains = request.query?["contains"]?.string ?? "";
         let parameters = try Node.object([
             "title": getTitle()?.makeNode(in: nil) ?? "",
             "home_icon_url": getHomeIconUrl()?.makeNode(in: nil) ?? "",
@@ -52,6 +53,7 @@ final class RecordController: ResourceRepresentable, Pagination {
             "records": try records.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
+            "contains": contains.makeNode(in: nil),
             "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode(in: nil),
             "current_user": request.currentUser?.makeNode(in: nil) ?? nil
             ])

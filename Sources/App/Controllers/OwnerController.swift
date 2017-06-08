@@ -28,12 +28,14 @@ final class OwnerController: ResourceRepresentable,  Pagination {
     }
     func index(request: Request) throws -> ResponseRepresentable {
         let owners = try paginate(request: request)
+        let contains: String = request.query?["contains"]?.string ?? "";
         let parameters = try Node.object([
             "title": getTitle()?.makeNode(in: nil) ?? "",
             "home_icon_url": getHomeIconUrl()?.makeNode(in: nil) ?? "",
             "resource_name": "Owner",
             "owners": owners.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
+            "contains": contains.makeNode(in: nil),
             "current_user": request.currentUser?.makeNode(in: nil) ?? nil
             ])
         return try drop.view.make("owners", parameters)
