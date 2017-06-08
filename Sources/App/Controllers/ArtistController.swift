@@ -20,8 +20,10 @@ final class ArtistController: ResourceRepresentable, Pagination {
             try query.filter("phonetic_name", .hasPrefix, c)
         }
         if let c = request.query?["contains"]?.string {
-            try query.contains(Artist.self, "name", c)
-            try query.contains(Artist.self, "furigana", c)
+            try query.or { orGroup in
+                try orGroup.contains(Artist.self, "name", c)
+                try orGroup.contains(Artist.self, "furigana", c)
+            }
         }
         return query
     }

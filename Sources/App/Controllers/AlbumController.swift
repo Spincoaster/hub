@@ -17,6 +17,7 @@ final class AlbumController: ResourceRepresentable, Pagination {
             let _ = try query.or { orGroup in
                 try orGroup.contains(Artist.self, "name", c)
                 try orGroup.contains(Artist.self, "furigana", c)
+                try orGroup.contains(Album.self, "name", c)
                 try orGroup.contains(Album.self, "furigana", c)
             }
         }
