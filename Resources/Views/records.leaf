@@ -25,7 +25,7 @@
       <tr>
         <th>Artist</th>
         <th>Title</th>
-        #if(show_phonetic_name) {
+        #if(debug) {
           <th>Phonetic title</th>
           <th>Furigana</th>
         }
@@ -39,7 +39,7 @@
         <tr>
           <td><a href="/records?artist_id=#(record.artist.id)">#(record.artist.name)</a></td>
           <td>#(record.name)</td>
-          #if(show_phonetic_name) {
+          #if(debug) {
             <td>#(record.phonetic_name)</td>
             <td>#(record.furigana)</td>
           }

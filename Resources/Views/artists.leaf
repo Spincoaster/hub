@@ -24,7 +24,7 @@
     <thead>
       <tr>
         <th>Name</th>
-        #if(show_phonetic_name) {
+        #if(debug) {
           <th>Phonetic name</th>
           <th>Furigana</th>
         }
@@ -37,7 +37,7 @@
       #loop(artists, "artist") {
         <tr>
           <td>#(artist.name)</td>
-          #if(show_phonetic_name) {
+          #if(debug) {
             <td>#(artist.phonetic_name)</td>
             <td>#(artist.furigana)</td>
           }

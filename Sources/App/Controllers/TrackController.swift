@@ -59,7 +59,7 @@ final class TrackController: ResourceRepresentable, Pagination {
             "pages": pages(request: request),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
             "contains": contains.makeNode(in: nil),
-            "show_phonetic_name": (request.query?["show_phonetic_name"]?.bool ?? false).makeNode(in: nil),
+            "debug": (request.query?["debug"]?.bool ?? false).makeNode(in: nil),
             "current_user": currentUser.makeNode(in: nil),
             ])
         return try drop.view.make("tracks", parameters)
