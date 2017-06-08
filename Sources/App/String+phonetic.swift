@@ -10,7 +10,18 @@ extension String {
     }
     public func furigana() -> String {
         let lowercased   = self.lowercased()
-        return MeCabHelper.furigana(string: lowercased) ?? ""
+        return MeCabHelper.furigana(string: lowercased)?.toHiragana() ?? ""
+    }
+    func toHiragana() -> String {
+        var str = ""
+        for c in unicodeScalars {
+            if c.value >= 0x30A1 && c.value <= 0x30F6 {
+                str += String(describing: UnicodeScalar(c.value - 96)!)
+            } else {
+                str += String(c)
+            }
+        }
+        return str
     }
 }
 
