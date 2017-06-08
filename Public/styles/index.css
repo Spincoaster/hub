@@ -2,4 +2,5 @@
     width: 100%;
     white-space: nowrap;
     overflow: scroll;
+    -webkit-overflow-scrolling: touch;
 }
