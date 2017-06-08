@@ -7,6 +7,7 @@ var dependencies: [Package.Dependency] = [
     .Package(url: "https://github.com/vapor/node.git", majorVersion: 2),
     .Package(url: "https://github.com/vapor/leaf-provider.git", majorVersion: 1),
     .Package(url: "https://github.com/ReactiveCocoa/ReactiveSwift.git", majorVersion: 1),
+    .Package(url: "https://github.com/yaslab/CSV.swift.git", majorVersion: 1, minor: 1),
 ]
 
 #if os(OSX)

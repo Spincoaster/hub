@@ -12,6 +12,7 @@ import Vapor
 import PostgreSQLProvider
 import Console
 import Fluent
+import CSV
 
 final class ImportReordsCommand: Command {
     public let id = "records"
@@ -34,8 +35,8 @@ final class ImportReordsCommand: Command {
         
         let fileId = getEnvironmentVar("FILE_ID") ?? ""
         GoogleDrive.apiKey = getEnvironmentVar("API_KEY") ?? ""
-        let _ = GoogleDrive().fetchCSV(fileId: fileId).on() { (rows: [[String]]) -> Void in
-            rows.forEach {
+        let _ = GoogleDrive().fetchCSV(fileId: fileId).on() { (csv: CSV) -> Void in
+            csv.forEach {
                 guard $0.count > 7 else { return }
                 let location:     String = $0[0]
                 let number:       String = $0[1]
