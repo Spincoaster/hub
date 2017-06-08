@@ -47,6 +47,7 @@ final class RecordController: ResourceRepresentable, Pagination {
         }
         let parameters = try Node.object([
             "title": getTitle()?.makeNode(in: nil) ?? "",
+            "home_icon_url": getHomeIconUrl()?.makeNode(in: nil) ?? "",
             "resource_name": "Record",
             "records": try records.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),

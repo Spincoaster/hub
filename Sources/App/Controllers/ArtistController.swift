@@ -32,6 +32,7 @@ final class ArtistController: ResourceRepresentable, Pagination {
         let artists = try paginate(request: request)
         let parameters = try Node.object([
             "title": getTitle()?.makeNode(in: nil) ?? "",
+            "home_icon_url": getHomeIconUrl()?.makeNode(in: nil) ?? "",
             "resource_name": "Artist",
             "artists": artists.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),

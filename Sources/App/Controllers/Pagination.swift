@@ -58,4 +58,8 @@ extension Pagination {
         guard let rawValue = getenv("APP_NAME") else { return nil }
         return String(utf8String: rawValue)
     }
+    func getHomeIconUrl() -> String? {
+        guard let rawValue = getenv("HOME_ICON_URL") else { return nil }
+        return String(utf8String: rawValue)
+    }
 }
