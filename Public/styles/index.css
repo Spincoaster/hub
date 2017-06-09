@@ -4,3 +4,10 @@
     overflow: scroll;
     -webkit-overflow-scrolling: touch;
 }
+
+.back {
+    position: fixed;
+    left: 12px;
+    bottom: 12px;
+    opacity: 0.75;
+}

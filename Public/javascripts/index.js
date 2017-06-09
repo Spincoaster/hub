@@ -40,5 +40,8 @@ $(function() {
         }, false);
       }
     }
+    if (document.referrer !== '') {
+      $('.back').show();
+    }
   }
 });

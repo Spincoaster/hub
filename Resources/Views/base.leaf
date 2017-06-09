@@ -97,5 +97,10 @@
         #import("body")
       </div>
     </div>
+    <a class="back btn-floating btn-large waves-effect waves-light black"
+       style="display: none;"
+       href="javascript:history.back(0)">
+      <i class="material-icons">arrow_back</i>
+    </a>
   </body>
 </html>
