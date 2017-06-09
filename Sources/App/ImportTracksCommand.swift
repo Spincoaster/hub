@@ -37,11 +37,11 @@ final class ImportTracksCommand: Command {
         let internalId = getEnvironmentVar("INTERNAL_ID") ?? ""
         GoogleDrive.apiKey = getEnvironmentVar("API_KEY") ?? ""
         
-        let _ = GoogleDrive().fetchText(fileId: externalId).on() { (lines: [String]) -> Void in
+        let _ = GoogleDrive().fetchFileAsText(fileId: externalId).on() { (lines: [String]) -> Void in
             lines.forEach { self.handleLine(line: $0) }
             }.single()
         
-        let _ = GoogleDrive().fetchText(fileId: internalId).on() { (lines: [String]) -> Void in
+        let _ = GoogleDrive().fetchFileAsText(fileId: internalId).on() { (lines: [String]) -> Void in
             lines.forEach { self.handleLine(line: $0) }
             }.single()
     }

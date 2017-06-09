@@ -46,6 +46,25 @@ public class GoogleDrive {
                 }.resume()
         }
     }
-
+    public func fetchFileAsText(fileId: String) -> SignalProducer<[String], NSError> {
+        return SignalProducer { (observer, disposable) in
+            let url = URL(string: "https://www.googleapis.com/drive/v3/files/\(fileId)?key=\(GoogleDrive.apiKey)&alt=media")
+            var request = URLRequest(url: url!)
+            request.httpMethod = "GET"
+            let session = URLSession(configuration: URLSessionConfiguration.default)
+            session.dataTask(with: request) {data, response, err in
+                if let err = err {
+                    print("error")
+                    observer.send(error: err as! NSError)
+                    return
+                }
+                guard let data = data else { return }
+                guard let str = String(data: data, encoding: String.Encoding.utf8) else { return }
+                let lines: [String] = str.components(separatedBy: "\r\n")
+                observer.send(value: lines)
+                observer.sendCompleted()
+                }.resume()
+        }
+    }
 }
 
