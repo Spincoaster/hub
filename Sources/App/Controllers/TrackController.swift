@@ -58,13 +58,28 @@ final class TrackController: ResourceRepresentable, Pagination {
             "tracks": tracks.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
+            "menus": menus(request: request),
             "contains": contains.makeNode(in: nil),
             "debug": (request.query?["debug"]?.bool ?? false).makeNode(in: nil),
             "current_user": currentUser.makeNode(in: nil),
             ])
         return try drop.view.make("tracks", parameters)
     }
-    
+    func menus(request: Request) throws -> Node {
+        var items: [[String:String]] = []
+        for menu in Menu.items {
+            if menu["label"] == "Hi-Res" {
+                items.append(["href":   menu["href"]!,
+                              "label":  menu["label"]!,
+                              "icon":   menu["icon"]!,
+                              "active": "active"])
+            } else {
+                items.append(menu)
+            }
+        }
+        return try items.makeNode(in: nil)
+    }
+
     func create(request: Request) throws -> ResponseRepresentable {
         let record = try request.record()
         try record.save()

@@ -54,43 +54,14 @@
       </nav>
     </div>
     <ul class="side-nav" id="sidebar-menu">
-      <li>
-        <a href="./records">
-          <i class="small material-icons">album</i>
-          Records
-        </a>
-      </li>
-      <li>
-        <a href="./tracks">
-          <i class="small material-icons">high_quality</i>
-          Hi-Res
-        </a>
-      </li>
-<!--
-      <li>
-        <a href="./genres">
-          Genres
-        </a>
-      </li>
--->
-      <li>
-        <a href="./albums">
-          <i class="small material-icons">library_music</i>
-          Albums
-        </a>
-      </li>
-      <li>
-        <a href="./artists">
-          <i class="small material-icons">assignment_ind</i>
-          Artists
-        </a>
-      </li>
-      <li>
-        <a href="./owners">
-          <i class="small material-icons">perm_identity</i>
-          Owners
-        </a>
-      </li>
+      #loop(menus, "menu") {
+        <li class="menu-item #(menu.active)">
+          <a href="#(menu.href)">
+            <i class="small material-icons">#(menu.icon)</i>
+            #(menu.label)
+          </a>
+        </li>
+      }
     </ul>
     <div class="row">
       <div class="col s10 offset-s1 center-align">

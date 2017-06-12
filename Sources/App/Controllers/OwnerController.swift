@@ -35,10 +35,25 @@ final class OwnerController: ResourceRepresentable,  Pagination {
             "resource_name": "Owner",
             "owners": owners.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
+            "menus": menus(request: request),
             "contains": contains.makeNode(in: nil),
             "current_user": request.currentUser?.makeNode(in: nil) ?? nil
             ])
         return try drop.view.make("owners", parameters)
+    }
+    func menus(request: Request) throws -> Node {
+        var items: [[String:String]] = []
+        for menu in Menu.items {
+            if menu["label"] == "Owners" {
+                items.append(["href":   menu["href"]!,
+                              "label":  menu["label"]!,
+                              "icon":   menu["icon"]!,
+                              "active": "active"])
+            } else {
+                items.append(menu)
+            }
+        }
+        return try items.makeNode(in: nil)
     }
     
     func create(request: Request) throws -> ResponseRepresentable {

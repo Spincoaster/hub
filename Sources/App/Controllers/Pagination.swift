@@ -11,12 +11,23 @@ import Vapor
 import HTTP
 import Fluent
 
+class Menu {
+    static let items: [[String:String]] = [
+        ["href": "./records", "icon": "album"         , "label":"Records", "active": ""],
+        ["href": "./tracks" , "icon": "high_quality"  , "label":"Hi-Res" , "active": ""],
+        ["href": "./albums" , "icon": "library_music" , "label":"Albums" , "active": ""],
+        ["href": "./artists", "icon": "assignment_ind", "label":"Artists", "active": ""],
+        ["href": "./owners" , "icon": "perm_identity" , "label":"Owners" , "active": ""]
+    ]
+}
+
 protocol Pagination {
     associatedtype E: Entity
     func indexQuery(request: Request) throws -> Query<E>
     func indexPath(request: Request) throws -> String
     func pages(request: Request) throws -> Node
     func pagesWithInitialLetter(request: Request) throws -> Node
+    func menus(request: Request) throws -> Node
 }
 
 extension Pagination {
