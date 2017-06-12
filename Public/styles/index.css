@@ -20,3 +20,8 @@
     height:      72px !important;
     line-height: 72px !important;
 }
+
+#title {
+    font-size: 1.4rem;
+}
+

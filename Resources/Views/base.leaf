@@ -27,17 +27,17 @@
               <i class="material-icons">menu</i>
             </a>
           }
-          <span class="brand-logo center">
-            #(title)
+          <span id="title" class="brand-logo center">
+            Index of #(resource_name)
           </span>
           #raw() {
-          <ul class="right">
-            <li>
-              <a id="search" class="show-on-large" data-activates="search">
-                <i class="material-icons">search</i>
-              </a>
-            </li>
-          </ul>
+            <ul class="right">
+              <li>
+                <a id="search" class="show-on-large" data-activates="search">
+                  <i class="material-icons">search</i>
+                </a>
+              </li>
+            </ul>
           }
         </div>
       </nav>
