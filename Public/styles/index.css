@@ -11,3 +11,12 @@
     bottom: 12px;
     opacity: 0.75;
 }
+
+.side-nav > li > a {
+    height:      72px !important;
+    line-height: 72px !important;
+}
+.side-nav > li > a > i {
+    height:      72px !important;
+    line-height: 72px !important;
+}
