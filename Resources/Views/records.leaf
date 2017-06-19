@@ -36,16 +36,18 @@
     </thead>
     <tbody>
       #loop(records, "record") {
-        <tr>
-          <td><a href="/records?artist_id=#(record.artist.id)">#(record.artist.name)</a></td>
-          <td>#(record.name)</td>
+        <tr class="record-item">
+          <td class="artist-name">
+              <a href="/records?artist_id=#(record.artist.id)">#(record.artist.name)</a>
+          </td>
+          <td class="record-name">#(record.name)</td>
           #if(debug) {
             <td>#(record.phonetic_name)</td>
             <td>#(record.furigana)</td>
           }
           <td>#(record.comment)</td>
-          <td><a href="/records?owner_id=#(record.owner.id)">#(record.owner.name)</a></td>
-          <td style="white-space: nowrap;">#(record.location)-#(record.number)</td>
+          <td class="owner-name"><a href="/records?owner_id=#(record.owner.id)">#(record.owner.name)</a></td>
+          <td class="location-name" style="white-space: nowrap;">#(record.location)-#(record.number)</td>
         </tr>
       }
     </tbody>

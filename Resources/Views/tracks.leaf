@@ -34,10 +34,12 @@
     </thead>
     <tbody>
       #loop(tracks, "track") {
-        <tr>
-          <td><a href="/tracks?artist_id=#(track.artist.id)">#(track.artist.name)</a></td>
-          <td>#(track.name)</td>
-          <td><a href="/tracks?album_id=#(track.album.id)">#(track.album.name)</a></td>
+        <tr class="track-item">
+          <td class="artist-name">
+              <a href="/tracks?artist_id=#(track.artist.id)">#(track.artist.name)</a>
+          </td>
+          <td class="track-name">#(track.name)</td>
+          <td class="album-name"><a href="/tracks?album_id=#(track.album.id)">#(track.album.name)</a></td>
           #if(debug) {
             <td>#(track.phonetic_name)</td>
             <td>#(track.furigana)</td>

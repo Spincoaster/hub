@@ -25,3 +25,10 @@
     font-size: 1.4rem;
 }
 
+.name-label {
+    width: 60px;
+}
+
+h5 > span > i {
+    margin-top: 4px;
+}

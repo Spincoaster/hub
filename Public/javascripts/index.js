@@ -44,4 +44,28 @@ $(function() {
       $('.back').show();
     }
   }
+  $('#record-modal').modal();
+  $('tr.record-item').click(function(e) {
+    var $parent = $(e.target).parent();
+    var title = $parent.find('.record-name').text();
+    var artist = $parent.find('.artist-name > a').text();
+    var owner = $parent.find('.owner-name > a').text();
+    var location = $parent.find('.location-name').text();
+    $('#record-title').text(title);
+    $('#artist-title').text(artist);
+    $('#location-title').text(location);
+    $('#owner-title').text(owner);
+    $('#record-modal').modal('open');
+  });
+  $('#track-modal').modal();
+  $('tr.track-item').click(function(e) {
+    var $parent = $(e.target).parent();
+    var title = $parent.find('.track-name').text();
+    var artist = $parent.find('.artist-name > a').text();
+    var album = $parent.find('.album-name > a').text();
+    $('#track-title').text(title);
+    $('#album-title').text(album);
+    $('#artist-title').text(artist);
+    $('#track-modal').modal('open');
+  });
 });
