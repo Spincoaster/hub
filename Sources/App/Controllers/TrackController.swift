@@ -40,10 +40,10 @@ final class TrackController: ResourceRepresentable, Pagination {
         return href
     }
     func index(request: Request) throws -> ResponseRepresentable {
-        request.setRequireLogin()
-        guard let currentUser = request.currentUser else {
-            return try drop.view.make("error")
-        }
+//        request.setRequireLogin()
+//        guard let currentUser = request.currentUser else {
+//            return try drop.view.make("error")
+//        }
         let tracks = try paginate(request: request)
         if tracks.count > 0 {
             let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, tracks.map { $0.artistId.makeNode(in: nil) }))).all()
@@ -61,7 +61,7 @@ final class TrackController: ResourceRepresentable, Pagination {
             "menus": menus(request: request),
             "contains": contains.makeNode(in: nil),
             "debug": (request.query?["debug"]?.bool ?? false).makeNode(in: nil),
-            "current_user": currentUser.makeNode(in: nil),
+//            "current_user": currentUser.makeNode(in: nil),
             ])
         return try drop.view.make("tracks", parameters)
     }
