@@ -31,15 +31,18 @@ drop.get("version") { request in
     }
 }
 
-let auth = drop.grouped([BasicAuthMiddleware()])
-
-auth.resource("records", RecordController())
-auth.resource("artists", ArtistController())
-auth.resource("owners" , OwnerController())
-auth.resource("genres" , GenreController())
-auth.resource("artists", ArtistController())
-auth.resource("albums" , AlbumController())
-auth.resource("tracks" , TrackController())
+var root: RouteBuilder = drop
+let authEnabled = false
+if authEnabled {
+    root = drop.grouped([BasicAuthMiddleware()])
+}
+root.resource("records", RecordController())
+root.resource("artists", ArtistController())
+root.resource("owners" , OwnerController())
+root.resource("genres" , GenreController())
+root.resource("artists", ArtistController())
+root.resource("albums" , AlbumController())
+root.resource("tracks" , TrackController())
 drop.get("/") { request in
     return Response(redirect: "/records")
 }
