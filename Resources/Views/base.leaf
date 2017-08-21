@@ -78,15 +78,15 @@
         <h4 id="record-title">Song Title</h4>
         <h5>
           <i class="material-icons">assignment_ind</i>
-          <span id="artist-title">Artist name</span>
+          <span id="record-artist">Artist name</span>
         </h5>
         <h5>
           <i class="material-icons">perm_identity</i>
-          <span id="owner-title">Owner name</span>
+          <span id="record-owner">Owner name</span>
         </h5>
         <h5>
           <i class="material-icons">markunread_mailbox</i>
-          <span id="location-title">A-A</span>
+          <span id="record-location">A-A</span>
         </h5>
         <p>この曲をご聴きになられたい場合は、この画面をスタッフにをお見せください。</p>
         <p>If you want to listen to this song, show this message to a staff</p>
@@ -98,9 +98,14 @@
     <div id="track-modal" class="modal">
       <div class="modal-content">
         <h4 id="track-title">Track Title</h4>
-        <h5><span class="">artist:</span><span id="artist-title">Artist name</span></h5>
-        <h5><span>album: </span><span id="album-title">A-A</span></h5>
-        <h5><span>artist: </span><span id="artist-title">Artist name</span></h5>
+        <h5>
+          <i class="material-icons">assignment_ind</i>
+          <span id="track-artist">Artist name</span>
+        </h5>
+        <h5>
+          <i class="material-icons">library_music</i>
+          <span id="track-album">Album name</span>
+        </h5>
         <p>この曲をご聴きになられたい場合は、この画面をスタッフにをお見せください。</p>
         <p>If you want to listen to this song, show this message to a staff</p>
       </div>

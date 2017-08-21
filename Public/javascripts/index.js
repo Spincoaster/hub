@@ -52,9 +52,9 @@ $(function() {
     var owner = $parent.find('.owner-name > a').text();
     var location = $parent.find('.location-name').text();
     $('#record-title').text(title);
-    $('#artist-title').text(artist);
-    $('#location-title').text(location);
-    $('#owner-title').text(owner);
+    $('#record-artist').text(artist);
+    $('#record-location').text(location);
+    $('#record-owner').text(owner);
     $('#record-modal').modal('open');
   });
   $('#track-modal').modal();
@@ -64,8 +64,8 @@ $(function() {
     var artist = $parent.find('.artist-name > a').text();
     var album = $parent.find('.album-name > a').text();
     $('#track-title').text(title);
-    $('#album-title').text(album);
-    $('#artist-title').text(artist);
+    $('#track-album').text(album);
+    $('#track-artist').text(artist);
     $('#track-modal').modal('open');
   });
 });
