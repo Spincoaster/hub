@@ -30,6 +30,15 @@
     line-height: 72px !important;
 }
 
+i {
+    color: black !important;
+}
+
+nav i {
+    color: white !important;
+}
+
+
 #title {
     font-size: 1.4rem;
 }
