@@ -58,7 +58,7 @@
         <li class="menu-item #(menu.active)">
           <a href="#(menu.href)">
             <i class="small material-icons">#(menu.icon)</i>
-            #(menu.label)
+            　#(menu.label)
           </a>
         </li>
       }
