@@ -14,7 +14,7 @@ final class TrackController: ResourceRepresentable, Pagination {
         if let albumId = request.query?["album_id"]?.int {
             try query.sort("number", Sort.Direction.ascending).filter("album_id", albumId)
         }
-        if let c = request.query?["has_prefix"]?.string {
+        if let c = getPrefix(request) {
             try query.filter(Artist.self, "phonetic_name", .hasPrefix, c)
         }
         if let c = request.query?["contains"]?.string {

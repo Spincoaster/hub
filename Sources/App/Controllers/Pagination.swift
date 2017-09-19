@@ -31,6 +31,15 @@ protocol Pagination {
 }
 
 extension Pagination {
+    public func getPrefix(_ request: Request) -> String? {
+        if let prefix = request.query?["has_prefix"]?.string {
+            return prefix
+        } else if request.query?["contains"] == nil {
+            return "a"
+        } else {
+            return nil
+        }
+    }
     public func paginate(request: Request) throws -> [E] {
         let offset = request.query?["offset"]?.int ?? 0
         let limit  = request.query?["limit"]?.int ?? 500
@@ -39,11 +48,12 @@ extension Pagination {
     public func pages(request: Request) throws -> Node {
         let offset  = request.query?["offset"]?.int ?? 0
         let limit   = request.query?["limit"]?.int ?? 500
+
         var href    = try indexPath(request: request)
         let count   = try indexQuery(request: request).count()
         let currentPage = offset / limit
         let lastPage = Int(count / limit)
-        if let prefix = request.query?["has_prefix"]?.string {
+        if let prefix = getPrefix(request) {
             href += "has_prefix=\(prefix)&"
         }
         let pages = try (0...lastPage).map { i in
@@ -63,7 +73,7 @@ extension Pagination {
     }
     public func pagesWithInitialLetter(request: Request) throws -> Node {
         let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        let currentLetter = request.query?["has_prefix"]?.string ?? ""
+        let currentLetter = getPrefix(request) ?? ""
         let href    = try indexPath(request: request)
         let pages = try letters.characters.map { c in
             return try [

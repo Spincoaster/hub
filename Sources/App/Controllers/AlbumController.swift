@@ -10,8 +10,9 @@ final class AlbumController: ResourceRepresentable, Pagination {
         if let artistId = request.query?["artist_id"]?.int {
             try query.filter("artist_id", artistId)
         }
-        let c = request.query?["has_prefix"]?.string ?? "a"
-        try query.filter(Artist.self, "phonetic_name", .hasPrefix, c)
+        if let c = getPrefix(request) {
+            try query.filter(Artist.self, "phonetic_name", .hasPrefix, c)
+        }
         if let c = request.query?["contains"]?.string {
             let _ = try query.or { orGroup in
                 try orGroup.contains(Artist.self, "name", c)

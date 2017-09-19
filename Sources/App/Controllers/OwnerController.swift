@@ -15,7 +15,7 @@ import Fluent
 final class OwnerController: ResourceRepresentable,  Pagination {
     func indexQuery(request: Request) throws -> Query<Owner> {
         let query = try Owner.makeQuery().sort("name", Sort.Direction.ascending)
-        if let c = request.query?["has_prefix"]?.string {
+        if let c = getPrefix(request) {
             try query.filter("name", .hasPrefix, c)
         }
         if let c = request.query?["contains"]?.string {
