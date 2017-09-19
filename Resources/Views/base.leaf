@@ -28,7 +28,7 @@
             </a>
           }
           <span id="title" class="brand-logo center">
-            Index of #(resource_name)
+            <img class="logo" src="./images/spin-logo.png">
           </span>
           #raw() {
             <ul class="right">

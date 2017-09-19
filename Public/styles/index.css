@@ -1,3 +1,9 @@
+.logo {
+    margin-top: 18px;
+    width: 240px;
+    height: 44px;
+}
+
 .table-caption {
     float: left;
     font-size: 32px;
