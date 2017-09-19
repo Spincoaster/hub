@@ -33,12 +33,12 @@ protocol Pagination {
 extension Pagination {
     public func paginate(request: Request) throws -> [E] {
         let offset = request.query?["offset"]?.int ?? 0
-        let limit  = request.query?["limit"]?.int ?? 100
+        let limit  = request.query?["limit"]?.int ?? 500
         return try indexQuery(request: request).limit(limit, offset: offset).all()
     }
     public func pages(request: Request) throws -> Node {
         let offset  = request.query?["offset"]?.int ?? 0
-        let limit   = request.query?["limit"]?.int ?? 100
+        let limit   = request.query?["limit"]?.int ?? 500
         var href    = try indexPath(request: request)
         let count   = try indexQuery(request: request).count()
         let currentPage = offset / limit
