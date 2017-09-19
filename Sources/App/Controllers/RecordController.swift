@@ -52,6 +52,7 @@ final class RecordController: ResourceRepresentable, Pagination {
             "resource_name": "Record",
             "records": try records.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
+            "has_pages": try (pagesCount(request: request) > 1).makeNode(in: nil),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
             "menus": menus(request: request),
             "contains": contains.makeNode(in: nil),

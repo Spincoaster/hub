@@ -16,9 +16,8 @@ final class ArtistController: ResourceRepresentable, Pagination {
     typealias E = Artist
     func indexQuery(request: Request) throws -> Query<Artist> {
         let query = try Artist.makeQuery().sort(Sort(Artist.self, "phonetic_name", .ascending))
-        if let c = request.query?["has_prefix"]?.string {
-            try query.filter("phonetic_name", .hasPrefix, c)
-        }
+        let c = request.query?["has_prefix"]?.string ?? "a"
+        try query.filter("phonetic_name", .hasPrefix, c)
         if let c = request.query?["contains"]?.string {
             try query.or { orGroup in
                 try orGroup.contains(Artist.self, "name", c)
@@ -39,6 +38,7 @@ final class ArtistController: ResourceRepresentable, Pagination {
             "resource_name": "Artist",
             "artists": artists.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
+            "has_pages": try (pagesCount(request: request) > 1).makeNode(in: nil),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
             "menus": menus(request: request),
             "contains": contains.makeNode(in: nil),

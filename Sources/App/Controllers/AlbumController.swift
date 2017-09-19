@@ -10,9 +10,8 @@ final class AlbumController: ResourceRepresentable, Pagination {
         if let artistId = request.query?["artist_id"]?.int {
             try query.filter("artist_id", artistId)
         }
-        if let c = request.query?["has_prefix"]?.string {
-            try query.filter(Artist.self, "phonetic_name", .hasPrefix, c)
-        }
+        let c = request.query?["has_prefix"]?.string ?? "a"
+        try query.filter(Artist.self, "phonetic_name", .hasPrefix, c)
         if let c = request.query?["contains"]?.string {
             let _ = try query.or { orGroup in
                 try orGroup.contains(Artist.self, "name", c)
@@ -43,6 +42,7 @@ final class AlbumController: ResourceRepresentable, Pagination {
             "resource_name": "Album",
             "albums": albums.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
+            "has_pages": try (pagesCount(request: request) > 1).makeNode(in: nil),
             "pages_with_initial_letter": pagesWithInitialLetter(request: request),
             "menus": menus(request: request),
             "contains": contains.makeNode(in: nil),

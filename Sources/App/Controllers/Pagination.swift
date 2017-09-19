@@ -55,6 +55,12 @@ extension Pagination {
         }
         return try pages.makeNode(in: nil)
     }
+    public func pagesCount(request: Request) throws -> Int {
+        let limit   = request.query?["limit"]?.int ?? 500
+        let count   = try indexQuery(request: request).count()
+        let lastPage = Int(count / limit)
+        return lastPage
+    }
     public func pagesWithInitialLetter(request: Request) throws -> Node {
         let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         let currentLetter = request.query?["has_prefix"]?.string ?? ""

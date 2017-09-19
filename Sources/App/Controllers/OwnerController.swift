@@ -35,6 +35,7 @@ final class OwnerController: ResourceRepresentable,  Pagination {
             "resource_name": "Owner",
             "owners": owners.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
+            "has_pages": try (pagesCount(request: request) > 1).makeNode(in: nil),
             "menus": menus(request: request),
             "contains": contains.makeNode(in: nil),
             "current_user": request.currentUser?.makeNode(in: nil) ?? nil

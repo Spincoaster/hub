@@ -10,16 +10,21 @@
     }
     <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
   </ul>
-  <br >
-  <ul class="pagination" style="display: inline-block; ">
-    <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
-    #loop(pages, "page") {
-      <li class="#(page.active) waves-effect">
-        <a href="#(page.href)">#(page.label)</a>
-      </li>
-    }
-    <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
-  </ul>
+  #if(has_pages) {
+    <ul class="pagination" style="display: inline-block; ">
+      <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+      #loop(pages, "page") {
+        <li class="#(page.active) waves-effect">
+          <a href="#(page.href)">#(page.label)</a>
+        </li>
+      }
+      <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+    </ul>
+  }
+  <div class="table-caption">
+    <i class="small material-icons">album</i>
+    <span>Records</span>
+  </div>
   <table class="highlight">
     <thead>
       <tr>
@@ -52,4 +57,25 @@
       }
     </tbody>
   </table>
+  <ul class="pagination" style="display: inline-block;">
+    <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+    #loop(pages_with_initial_letter, "page") {
+      <li class="#(page.active) waves-effect">
+        <a href="#(page.href)">#(page.label)</a>
+      </li>
+    }
+    <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+  </ul>
+  <br >
+  #if(has_pages) {
+    <ul class="pagination" style="display: inline-block; ">
+      <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+      #loop(pages, "page") {
+        <li class="#(page.active) waves-effect">
+          <a href="#(page.href)">#(page.label)</a>
+        </li>
+      }
+      <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+    </ul>
+  }
 }

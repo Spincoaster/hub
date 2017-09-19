@@ -1,15 +1,21 @@
 #extend("base")
 
 #export("body") {
-  <ul class="pagination" style="display: inline-block; ">
-    <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
-    #loop(pages, "page") {
-      <li class="#(page.active) waves-effect">
-        <a href="#(page.href)">#(page.label)</a>
-      </li>
-    }
-    <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
-  </ul>
+  #if(has_pages) {
+    <ul class="pagination" style="display: inline-block; ">
+      <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+      #loop(pages, "page") {
+        <li class="#(page.active) waves-effect">
+          <a href="#(page.href)">#(page.label)</a>
+        </li>
+      }
+      <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+    </ul>
+  }
+  <p class="table-caption">
+    <i class="small material-icons">perm_identity</i>
+    <span>Owners</span>
+  </p>
   <table class="highlight">
     <thead>
       <tr>
@@ -30,4 +36,15 @@
       }
     </tbody>
   </table>
+  #if(has_pages) {
+    <ul class="pagination" style="display: inline-block; ">
+      <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+      #loop(pages, "page") {
+        <li class="#(page.active) waves-effect">
+          <a href="#(page.href)">#(page.label)</a>
+        </li>
+      }
+      <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+    </ul>
+  }
 }
