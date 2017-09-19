@@ -13,15 +13,15 @@
   <table class="highlight">
     <thead>
       <tr>
-        <th>name</th>
-        <th>Records</th>
+        <th>Owners</th>
+        <th class="right-edge">Records</th>
       </tr>
     </thead>
     <tbody>
       #loop(owners, "owner") {
         <tr class="owner-item">
           <td>#(owner.name)</td>
-          <td>
+          <td class="right-edge">
             <a href="/records?owner_id=#(owner.id)">
               <i class="small material-icons">album</i>
             </a>

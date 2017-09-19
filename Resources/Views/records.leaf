@@ -23,15 +23,15 @@
   <table class="highlight">
     <thead>
       <tr>
-        <th>Artist</th>
-        <th>Title</th>
+        <th>Artists</th>
+        <th>Albums</th>
         #if(debug) {
           <th>Phonetic title</th>
           <th>Furigana</th>
         }
-        <th>Comment</th>
-        <th>Owner</th>
-        <th>Location</th>
+        <th class="right-edge">Comments</th>
+        <th style="display: none;">Owners</th>
+        <th style="display: none;">Locations</th>
       </tr>
     </thead>
     <tbody>
@@ -45,9 +45,9 @@
             <td>#(record.phonetic_name)</td>
             <td>#(record.furigana)</td>
           }
-          <td>#(record.comment)</td>
-          <td class="owner-name"><a href="/records?owner_id=#(record.owner.id)">#(record.owner.name)</a></td>
-          <td class="location-name" style="white-space: nowrap;">#(record.location)-#(record.number)</td>
+          <td class="right-edge">#(record.comment)</td>
+          <td style="display: none;" class="owner-name"><a href="/records?owner_id=#(record.owner.id)">#(record.owner.name)</a></td>
+          <td style="display: none;" class="location-name" style="white-space: nowrap;">#(record.location)-#(record.number)</td>
         </tr>
       }
     </tbody>

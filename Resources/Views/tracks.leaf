@@ -20,12 +20,16 @@
     }
     <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
   </ul>
+  <div class="table-caption">
+    <i class="small material-icons">high_quality</i>
+    <span>Hi-Res</span>
+  </div>
   <table class="highlight">
     <thead>
       <tr>
-        <th>Artist</th>
-        <th>Title</th>
-        <th>Album</th>
+        <th>Artists</th>
+        <th>Tracks</th>
+        <th class="right-edge">Albums</th>
         #if(debug) {
           <th>Phonetic name</th>
           <th>Furigana</th>
@@ -39,7 +43,7 @@
               <a href="/tracks?artist_id=#(track.artist.id)">#(track.artist.name)</a>
           </td>
           <td class="track-name">#(track.name)</td>
-          <td class="album-name"><a href="/tracks?album_id=#(track.album.id)">#(track.album.name)</a></td>
+          <td class="album-name right-edge"><a href="/tracks?album_id=#(track.album.id)">#(track.album.name)</a></td>
           #if(debug) {
             <td>#(track.phonetic_name)</td>
             <td>#(track.furigana)</td>

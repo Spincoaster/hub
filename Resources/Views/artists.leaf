@@ -23,14 +23,14 @@
   <table class="highlight">
     <thead>
       <tr>
-        <th>Name</th>
+        <th>Artists</th>
         #if(debug) {
           <th>Phonetic name</th>
           <th>Furigana</th>
         }
         <th>Records</th>
         <th>Albums</th>
-        <th style="white-space: nowrap;">Hi-Res</th>
+        <th class="right-edge" style="white-space: nowrap;">Hi-Res</th>
       </tr>
     </thead>
     <tbody>
@@ -51,8 +51,8 @@
               <i class="small material-icons">library_music</i>
             </a>
           </td>
-          <td>
-            <a href="/tracks?artist_id=#(artist.id)"
+          <td class="right-edge">
+            <a href="/tracks?artist_id=#(artist.id)">
               <i class="small material-icons">high_quality</i>
             </a>
           </td>
