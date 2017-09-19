@@ -19,7 +19,9 @@
     opacity: 0.75;
 }
 
+
 .side-nav > li > a {
+    font-size: 32px;
     height:      72px !important;
     line-height: 72px !important;
 }
@@ -48,5 +50,22 @@ h5 > span > i {
     .navbar-fixed {
         height: 80px;
     }
+}
+
+@media only screen and (min-width: 992px) {
+    html {
+        font-size: 30.5px;
+    }
+}
+
+@media only screen and (min-width: 0) {
+    html {
+        font-size: 30px;
+    }
+}
+
+nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons {
+    display: block;
+    font-size: 48px;
 }
 
