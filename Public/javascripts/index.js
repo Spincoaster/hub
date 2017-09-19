@@ -68,4 +68,9 @@ $(function() {
     $('#track-artist').text(artist);
     $('#track-modal').modal('open');
   });
+  $('tr.owner-item').click(function(e) {
+    var $parent = $(e.target).parent();
+    var $a = $parent.find('a');
+    window.location = $a.attr('href');
+  });
 });

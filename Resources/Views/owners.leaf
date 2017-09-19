@@ -19,7 +19,7 @@
     </thead>
     <tbody>
       #loop(owners, "owner") {
-        <tr>
+        <tr class="owner-item">
           <td>#(owner.name)</td>
           <td>
             <a href="/records?owner_id=#(owner.id)">
