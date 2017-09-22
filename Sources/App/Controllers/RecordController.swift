@@ -57,7 +57,7 @@ final class RecordController: ResourceRepresentable, Pagination {
             "menus": menus(request: request),
             "contains": contains.makeNode(in: nil),
             "debug": (request.query?["debug"]?.bool ?? false).makeNode(in: nil),
-            "current_user": request.currentUser?.makeNode(in: nil) ?? nil
+//            "current_user": request.currentUser?.makeNode(in: nil) ?? nil
             ])
         return try drop.view.make("records", parameters)
     }
