@@ -44,6 +44,6 @@ root.resource("artists", ArtistController())
 root.resource("albums" , AlbumController())
 root.resource("tracks" , TrackController())
 drop.get("/") { request in
-    return Response(redirect: "/records")
+    return Response(redirect: "/artists?has_prefix=a")
 }
 try drop.run()
