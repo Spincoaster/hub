@@ -40,9 +40,9 @@ $(function() {
         }, false);
       }
     }
-//    if (document.referrer !== '') {
-    $('.back').show();
-//    }
+    if (document.referrer !== '') {
+      $('.back').show();
+    }
   }
   $('#record-modal').modal();
   $('tr.record-item').click(function(e) {

@@ -58,6 +58,10 @@ nav i {
 }
 
 
+.back > i {
+    color: white !important;
+}
+
 #title {
     font-size: 1.4rem;
 }
