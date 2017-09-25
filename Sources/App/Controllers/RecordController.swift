@@ -13,7 +13,7 @@ final class RecordController: ResourceRepresentable, Pagination {
         if let ownerId = request.query?["owner_id"]?.int {
             try query.filter("owner_id", ownerId)
         }
-        if let c = getPrefix(request) {
+        if let c = request.query?["has_prefix"]?.string {
             try query.filter(Artist.self, "phonetic_name", .hasPrefix, c)
         }
         if let c = request.query?["contains"]?.string {
