@@ -102,6 +102,18 @@ h5 > span > i {
     }
 }
 
+.modal {
+    max-height: 80%;
+}
+
+.modal-content {
+    font-size: 30px;
+}
+
+.modal-footer > .btn-flat {
+    padding: 0 16px;
+}
+
 nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons {
     display: block;
     font-size: 48px;
