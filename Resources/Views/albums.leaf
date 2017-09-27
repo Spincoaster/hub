@@ -22,6 +22,10 @@
       <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
     </ul>
   }
+  <div class="table-caption">
+    <i class="small material-icons">library_music</i>
+    <span>Albums</span>
+  </div>
   <table class="highlight">
     <thead>
       <tr>
