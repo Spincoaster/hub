@@ -52,7 +52,7 @@
       <thead>
         <tr>
           <th style="display: none;">Artists</th>
-          <th>Albums</th>
+          <th class="cell">Albums</th>
           #if(show_phonetic_name) {
             <th>Phonetic name</th>
           }
@@ -62,7 +62,7 @@
       <tbody>
         #loop(albums, "album") {
           <tr class="album-item">
-            <td>#(album.name)</td>
+            <td class="cell">#(album.name)</td>
             #if(show_phonetic_name) {
               <td>#(album.phonetic_name)</td>
             }

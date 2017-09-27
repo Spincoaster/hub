@@ -29,37 +29,25 @@
   <table class="highlight">
     <thead>
       <tr>
-        <th>Artists</th>
+        <th class="cell"></th>
         #if(debug) {
           <th>Phonetic name</th>
           <th>Furigana</th>
         }
-        <th>Records</th>
-        <th>Albums</th>
-        <th class="right-edge" style="white-space: nowrap;">Hi-Res</th>
+        <th class="right-edge" style="white-space: nowrap;"></th>
       </tr>
     </thead>
     <tbody>
       #loop(artists, "artist") {
-        <tr>
-          <td>#(artist.name)</td>
+        <tr class="artist-item">
+          <td class="cell">#(artist.name)</td>
           #if(debug) {
             <td>#(artist.phonetic_name)</td>
             <td>#(artist.furigana)</td>
           }
-          <td>
-            <a href="/records?artist_id=#(artist.id)">
-              <i class="small material-icons">album</i>
-            </a>
-          </td>
-          <td>
-            <a href="/albums?artist_id=#(artist.id)">
-              <i class="small material-icons">library_music</i>
-            </a>
-          </td>
           <td class="right-edge">
-            <a href="/tracks?artist_id=#(artist.id)">
-              <i class="small material-icons">high_quality</i>
+            <a href="/artists/#(artist.id)">
+              <i class="small material-icons">keyboard_arrow_right</i>
             </a>
           </td>
         </tr>

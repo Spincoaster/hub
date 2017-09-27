@@ -132,5 +132,8 @@ th, td {
     border-color: #d0d0d0;
 }
 th.right-edge, td.right-edge {
-    border-width: 0 0px 1px 0;
+    border-width: 0 0 1px 0;
+}
+th.cell, td.cell {
+    border-width: 0 0 1px 0;
 }
