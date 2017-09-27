@@ -1,9 +1,3 @@
-.logo {
-    margin-top: 18px;
-    width: 240px;
-    height: 44px;
-}
-
 .table-caption {
     float: left;
     font-size: 32px;
@@ -74,13 +68,25 @@ h5 > span > i {
     margin-top: 4px;
 }
 
-@media only screen and (min-width: 601px) {
+.logo {
+    margin-top: 8px;
+    width: 240px;
+    height: 44px;
+}
+
+@media only screen and (max-width: 1024px) {
     nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
         height: 80px;
         line-height: 80px;
     }
     .navbar-fixed {
         height: 80px;
+    }
+    .logo {
+        margin-top: 18px;
+    }
+    .table-caption {
+        font-size: 32px;
     }
 }
 
