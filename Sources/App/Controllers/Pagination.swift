@@ -13,11 +13,11 @@ import Fluent
 
 class Menu {
     static let items: [[String:String]] = [
-      ["href": "./artists", "icon": "assignment_ind", "label":"Artists", "active": ""],
+      ["href": "/artists", "icon": "assignment_ind", "label":"Artists", "active": ""],
 //      ["href": "./albums" , "icon": "library_music" , "label":"Albums" , "active": ""],
-      ["href": "./records", "icon": "album"         , "label":"Records", "active": ""],
-      ["href": "./tracks" , "icon": "high_quality"  , "label":"Hi-Res" , "active": ""],
-      ["href": "./owners" , "icon": "perm_identity" , "label":"Owners" , "active": ""]
+      ["href": "/records", "icon": "album"         , "label":"Records", "active": ""],
+      ["href": "/tracks" , "icon": "high_quality"  , "label":"Hi-Res" , "active": ""],
+      ["href": "/owners" , "icon": "perm_identity" , "label":"Owners" , "active": ""]
     ]
 }
 

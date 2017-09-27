@@ -71,7 +71,30 @@ final class ArtistController: ResourceRepresentable, Pagination {
     }
     
     func show(request: Request, artist: Artist) throws -> ResponseRepresentable {
-        return artist
+        let records = try Record.makeQuery().join(Artist.self, baseKey: "artist_id", joinedKey: "id")
+                                            .sort(Sort(Artist.self, "phonetic_name", .ascending))
+                                            .filter("artist_id", artist.id!)
+                                            .all()
+        if records.count > 0 {
+            let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, records.map { $0.artistId.makeNode(in: nil) }))).all()
+            let owners   = try Owner.makeQuery().filter(Filter(Owner.self, .subset("id", Filter.Scope.in, records.map { $0.ownerId.makeNode(in: nil) }))).all()
+            Record.setParents(records: records, owners: owners, artists: artists)
+        }
+        let albums = try Album.makeQuery().join(Artist.self, baseKey: "artist_id", joinedKey: "id")
+                                          .sort(Sort(Artist.self, "phonetic_name", .ascending))
+                                          .filter("artist_id", artist.id!)
+                                          .all()
+        let parameters = try Node.object([
+            "has_records": (records.count > 0).makeNode(in: nil),
+            "records": records.map { try $0.makeLeafNode() }.makeNode(in: nil),
+            "albums": albums.map { try $0.makeLeafNode() }.makeNode(in: nil),
+            "has_albums": (albums.count > 0).makeNode(in: nil),
+            "artist": artist.makeLeafNode(),
+            "title": getTitle()?.makeNode(in: nil) ?? "",
+            "menus": menus(request: request),
+            "debug": (request.query?["debug"]?.bool ?? false).makeNode(in: nil),
+            ])
+        return try drop.view.make("artist", parameters)
     }
     
     func delete(request: Request, artist: Artist) throws -> ResponseRepresentable {

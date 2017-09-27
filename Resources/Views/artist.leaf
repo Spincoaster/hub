@@ -1,0 +1,79 @@
+#extend("base")
+
+#export("body") {
+  <h3>#(artist.name)</h3>
+
+
+  #if(has_records) {
+    <div class="table-caption">
+      <i class="small material-icons">album</i>
+      <span>Records</span>
+    </div>
+    <table class="highlight">
+      <thead>
+        <tr>
+          <th>Albums</th>
+          #if(debug) {
+            <th>Phonetic title</th>
+            <th>Furigana</th>
+          }
+          <th class="right-edge">Comments</th>
+          <th style="display: none;">Artists</th>
+          <th style="display: none;">Owners</th>
+          <th style="display: none;">Locations</th>
+        </tr>
+      </thead>
+      <tbody>
+        #loop(records, "record") {
+          <tr class="record-item">
+            <td class="record-name">#(record.name)</td>
+            #if(debug) {
+              <td>#(record.phonetic_name)</td>
+              <td>#(record.furigana)</td>
+            }
+            <td class="right-edge">#(record.comment)</td>
+            <td style="display: none;" class="artist-name">
+              <a href="/records?artist_id=#(record.artist.id)">#(record.artist.name)</a>
+            </td>
+
+            <td style="display: none;" class="owner-name"><a href="/records?owner_id=#(record.owner.id)">#(record.owner.name)</a></td>
+            <td style="display: none;" class="location-name" style="white-space: nowrap;">#(record.location)-#(record.number)</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+  #if(has_albums) {
+    <div class="table-caption">
+      <i class="small material-icons">library_music</i>
+      <span>Albums</span>
+    </div>
+    <table class="highlight">
+      <thead>
+        <tr>
+          <th style="display: none;">Artists</th>
+          <th>Albums</th>
+          #if(show_phonetic_name) {
+            <th>Phonetic name</th>
+          }
+          <th class="right-edge" style="white-space: nowrap;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        #loop(albums, "album") {
+          <tr class="album-item">
+            <td>#(album.name)</td>
+            #if(show_phonetic_name) {
+              <td>#(album.phonetic_name)</td>
+            }
+            <td class="right-edge" style="width: 60px;">
+              <a href="/tracks?album_id=#(album.id)">
+                <i class="small material-icons">keyboard_arrow_right</i>
+              </a>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+}

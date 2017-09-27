@@ -44,6 +44,12 @@ $(function() {
       $('.back').show();
     }
   }
+  $('tr.artist-item').click(function(e) {
+    window.location = $(e.target).parent().find('a').attr('href');
+  });
+  $('tr.album-item').click(function(e) {
+    window.location = $(e.target).parent().find('a').attr('href');
+  });
   $('#record-modal').modal();
   $('tr.record-item').click(function(e) {
     var $parent = $(e.target).parent();
