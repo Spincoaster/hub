@@ -13,8 +13,10 @@ import FluentProvider
 extension Query {
     @discardableResult
     public func contains<T: Entity> (_ entity: T.Type, _ field: String, _ value: String) throws -> Query {
-        let node = "%\(value.trim())%".makeNode(in: nil)
-        return try self.filter(Filter(entity, .compare(field, .custom("ILIKE"), node)))
+        return try or { orGroup in
+            try orGroup.filter(Filter(entity, .compare(field, .custom("ILIKE"), "%\(value.trim())%".makeNode(in: nil))))
+            try orGroup.filter(Filter(entity, .compare(field, .custom("ILIKE"), "%\(value.trim().toHiragana())%".makeNode(in: nil))))
+        }
     }
     @discardableResult
     public func filterByHasPrefix<T: Entity> (_ entity: T.Type, _ key: String, _ value: String) throws -> Query {
