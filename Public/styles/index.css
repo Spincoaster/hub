@@ -120,6 +120,13 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons {
     font-size: 48px;
 }
 
+.search-results {
+}
+
+.search-bar-icons {
+    color: black !important;
+}
+
 tbody {
     border-bottom: 1px 0px 0 1px solid #d0d0d0;
 }

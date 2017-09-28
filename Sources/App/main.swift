@@ -25,7 +25,7 @@ let drop = try Droplet(config: config, commands: commands)
 drop.get("version") { request in
     if let db = drop.database?.driver as? PostgreSQLDriver.Driver {
         let version = try db.raw("SELECT version()")
-        return try JSON(node: version)
+        return JSON(node: version)
     } else {
         return "No db connection"
     }
@@ -43,6 +43,8 @@ root.resource("genres" , GenreController())
 root.resource("artists", ArtistController())
 root.resource("albums" , AlbumController())
 root.resource("tracks" , TrackController())
+let searchController = SearchController()
+root.get("search", handler: searchController.search)
 drop.get("/") { request in
     return Response(redirect: "/artists?has_prefix=a")
 }
