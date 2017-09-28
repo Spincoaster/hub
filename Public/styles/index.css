@@ -1,6 +1,7 @@
 .table-caption {
     float: left;
     font-size: 32px;
+    margin: 0;
 }
 .table-caption > i {
     float: left;
@@ -136,4 +137,9 @@ th.right-edge, td.right-edge {
 }
 th.cell, td.cell {
     border-width: 0 0 1px 0;
+}
+
+.pagination {
+    margin-top: 8px;
+    margin-bottom: 0px;
 }

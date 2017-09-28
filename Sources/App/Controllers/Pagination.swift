@@ -10,6 +10,7 @@ import Foundation
 import Vapor
 import HTTP
 import Fluent
+import FluentProvider
 
 class Menu {
     static let items: [[String:String]] = [
@@ -62,7 +63,7 @@ extension Pagination {
         return lastPage
     }
     public func pagesWithInitialLetter(request: Request) throws -> Node {
-        let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZあかさたなはまやらわ＃"
         let currentLetter = request.query?["has_prefix"]?.string ?? ""
         let href    = try indexPath(request: request)
         let pages = try letters.characters.map { c in

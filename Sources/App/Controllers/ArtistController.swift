@@ -17,7 +17,7 @@ final class ArtistController: ResourceRepresentable, Pagination {
     func indexQuery(request: Request) throws -> Query<Artist> {
         let query = try Artist.makeQuery().sort(Sort(Artist.self, "phonetic_name", .ascending))
         if let c = request.query?["has_prefix"]?.string {
-            try query.filter(Artist.self, "phonetic_name", .hasPrefix, c)
+            try query.filterByHasPrefix(Artist.self, "name", c)
         }
         if let c = request.query?["contains"]?.string {
             try query.or { orGroup in

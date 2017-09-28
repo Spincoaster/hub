@@ -2,15 +2,14 @@
 
 #export("body") {
   <ul class="pagination" style="display: inline-block; ">
-    <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+    <li class="disabled"><i class="material-icons">chevron_left</i></li>
     #loop(pages_with_initial_letter, "page") {
       <li class="#(page.active) waves-effect">
         <a href="#(page.href)">#(page.label)</a>
       </li>
     }
-    <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+    <li class="disabled"><i class="material-icons">chevron_right</i></li>
   </ul>
-  <br >
   #if(has_pages) {
     <ul class="pagination">
       <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
@@ -45,7 +44,7 @@
             <td>#(artist.phonetic_name)</td>
             <td>#(artist.furigana)</td>
           }
-          <td class="right-edge">
+          <td class="right-edge" style="width: 60px;">
             <a href="/artists/#(artist.id)">
               <i class="small material-icons">keyboard_arrow_right</i>
             </a>
