@@ -84,16 +84,29 @@ final class ArtistController: ResourceRepresentable, Pagination {
                                           .sort(Sort(Artist.self, "phonetic_name", .ascending))
                                           .filter("artist_id", artist.id!)
                                           .all()
-        let parameters = try Node.object([
+        var tracks: [Track] = []
+        if albums.count == 0 {
+            tracks = try Track.makeQuery().join(Artist.self, baseKey: "artist_id", joinedKey: "id")
+                                          .sort(Sort(Artist.self, "phonetic_name", .ascending))
+                                          .filter("artist_id", artist.id!)
+                                          .all()
+            let trackAlbums = try Album.makeQuery().filter(Filter(Album.self, .subset("id", Filter.Scope.in, tracks.map { $0.albumId.makeNode(in: nil) }))).all()
+            let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, tracks.map { $0.artistId.makeNode(in: nil) }))).all()
+            Track.setParents(tracks: tracks, albums: trackAlbums, artists: artists)
+        }
+        let obj: [String: Node] = try [
             "has_records": (records.count > 0).makeNode(in: nil),
             "records": records.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "albums": albums.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "has_albums": (albums.count > 0).makeNode(in: nil),
+            "tracks": tracks.map { try $0.makeLeafNode() }.makeNode(in: nil),
+            "has_tracks": (tracks.count > 0).makeNode(in: nil),
             "artist": artist.makeLeafNode(),
             "title": getTitle()?.makeNode(in: nil) ?? "",
             "menus": menus(request: request),
             "debug": (request.query?["debug"]?.bool ?? false).makeNode(in: nil),
-            ])
+            ]
+        let parameters = Node.object(obj)
         return try drop.view.make("artist", parameters)
     }
     

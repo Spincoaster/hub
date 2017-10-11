@@ -76,4 +76,37 @@
       </tbody>
     </table>
   }
+  #if(has_tracks) {
+    <div class="table-caption">
+      <i class="small material-icons">library_music</i>
+      <span>Tracks</span>
+    </div>
+    <table class="highlight">
+      <thead>
+        <tr>
+          <th style="display: none;">Artists</th>
+          <th class="cell">Albums</th>
+          #if(show_phonetic_name) {
+            <th>Phonetic name</th>
+          }
+          <th class="right-edge" style="white-space: nowrap;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        #loop(tracks, "track") {
+          <tr class="track-item">
+            <td class="artist-name">
+              <a href="/tracks?artist_id=#(track.artist.id)">#(track.artist.name)</a>
+            </td>
+            <td class="track-name">#(track.name)</td>
+            <td class="album-name right-edge"><a href="/tracks?album_id=#(track.album.id)">#(track.album.name)</a></td>
+            #if(debug) {
+              <td>#(track.phonetic_name)</td>
+              <td>#(track.furigana)</td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
 }
