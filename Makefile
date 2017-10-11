@@ -7,9 +7,21 @@ prepare:
 records:
 	swift build -Xlinker -L/usr/local/lib/
 	vapor run records
-tracks:
+
+tracks: internal external
+internal:
 	swift build -Xlinker -L/usr/local/lib/
-	vapor run tracks
+	vapor run tracks internal
+external:
+	swift build -Xlinker -L/usr/local/lib/
+	vapor run tracks external
+gen_track_list:
+	cd /Volumes/HAP_Internal
+	find . > `ghq list kumabook/recordhub -p`/internal.txt
+	cd /Volumes/HAP_External
+	find . > `ghq list kumabook/recordhub -p`/external.txt
+	cd `ghq list kumabook/recordhub -p`
+
 run:
 	swift build -Xlinker -L/usr/local/lib/
 	vapor run serve
@@ -19,6 +31,8 @@ createdb:
 	createdb recordhub
 dropdb:
 	dropdb recordhub
+
+import: gen_track_list dropdb createdb records tracks
 export:
 	pg_dump -Fc --no-acl --no-owner  recordhub > recordhub.dump
 	aws s3 cp recordhub.dump s3://recordhub/ --acl public-read --profile=recordhub
