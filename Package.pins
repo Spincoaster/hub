@@ -29,7 +29,7 @@
       "package": "CSV",
       "reason": null,
       "repositoryURL": "https://github.com/yaslab/CSV.swift.git",
-      "version": "1.1.2"
+      "version": "2.0.0"
     },
     {
       "package": "CTLS",
@@ -65,19 +65,19 @@
       "package": "Engine",
       "reason": null,
       "repositoryURL": "https://github.com/vapor/engine.git",
-      "version": "2.0.3"
+      "version": "2.1.0"
     },
     {
       "package": "Fluent",
       "reason": null,
       "repositoryURL": "https://github.com/vapor/fluent.git",
-      "version": "2.0.3"
+      "version": "2.1.1"
     },
     {
       "package": "FluentProvider",
       "reason": null,
       "repositoryURL": "https://github.com/vapor/fluent-provider.git",
-      "version": "1.0.0"
+      "version": "1.1.1"
     },
     {
       "package": "JSON",
@@ -119,13 +119,13 @@
       "package": "PostgreSQL",
       "reason": null,
       "repositoryURL": "https://github.com/vapor-community/postgresql.git",
-      "version": "2.0.1"
+      "version": "2.0.2"
     },
     {
       "package": "PostgreSQLDriver",
       "reason": null,
       "repositoryURL": "https://github.com/vapor/postgresql-driver.git",
-      "version": "2.0.0"
+      "version": "2.0.1"
     },
     {
       "package": "PostgreSQLProvider",
@@ -137,7 +137,7 @@
       "package": "Random",
       "reason": null,
       "repositoryURL": "https://github.com/vapor/random.git",
-      "version": "1.0.0"
+      "version": "1.1.1"
     },
     {
       "package": "ReactiveSwift",
@@ -179,7 +179,7 @@
       "package": "Vapor",
       "reason": null,
       "repositoryURL": "https://github.com/vapor/vapor.git",
-      "version": "2.0.5"
+      "version": "2.1.1"
     }
   ],
   "version": 1
