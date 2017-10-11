@@ -203,7 +203,7 @@ func readFile(path: String) -> [String] {
 }
 
 func trackInfo(of path: String) -> TrackInfo? {
-    if (path as NSString).pathExtension != "flac" {
+    guard let url = URL(string: path), url.pathExtension == "flac" else {
         return nil
     }
     var tags: [String:String] = [:]
