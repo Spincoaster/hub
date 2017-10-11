@@ -52,6 +52,7 @@ $(function() {
   });
   $('#record-modal').modal();
   $('tr.record-item').click(function(e) {
+    if (e.target.tagName === 'A') { return }
     var $parent = $(e.target).parent();
     var title = $parent.find('.record-name').text();
     var artist = $parent.find('.artist-name > a').text();
@@ -65,6 +66,7 @@ $(function() {
   });
   $('#track-modal').modal();
   $('tr.track-item').click(function(e) {
+    if (e.target.tagName === 'A') { return }
     var $parent = $(e.target).parent();
     var title = $parent.find('.track-name').text();
     var artist = $parent.find('.artist-name > a').text();
@@ -75,6 +77,7 @@ $(function() {
     $('#track-modal').modal('open');
   });
   $('tr.owner-item').click(function(e) {
+    if (e.target.tagName === 'A') { return }
     var $parent = $(e.target).parent();
     var $a = $parent.find('a');
     window.location = $a.attr('href');
