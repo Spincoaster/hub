@@ -166,20 +166,6 @@ final class ImportTracksCommand: Command {
         guard let track    = Track.firstOrCreateBy(name: trackInfo.title, number: trackInfo.trackNumber, artistId: Identifier(artistId), albumId: albumId) else { return }
         print("\(trackInfo.artist) \(trackInfo.album) \(track.number) \(track.name)")
     }
-
-    func importFromCSV(fileName: String) throws {
-        let dir = FileManager.default.currentDirectoryPath
-        let str = try String(contentsOf: URL(string: "file://\(dir)/\(fileName)")!)
-        var csv = try CSV(string: str)
-        var _ = csv.next()
-        while true {
-            if let row = csv.next() {
-                TrackInfo(trackNumber: Int(row[0])!, title: row[1], album: row[2], artist: row[3])
-            } else {
-                break
-            }
-        }
-    }
 }
 
 func shell(launchPath: String, arguments: [String]) -> String {
