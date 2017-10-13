@@ -1,0 +1,64 @@
+#extend("base")
+
+#export("body") {
+  <h5>Properties</h5>
+  <form class="col s12" method="post">
+    <input type="hidden" name="_method" value="patch" />
+    <div class="row">
+      <div class="input-field col s6">
+        <input placeholder="Placeholder" id="name" name="name" type="text" class="validate" value="#(feature.name)">
+        <label for="name">Name</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <input value="#(feature.number)" id="number" name="number" type="number" class="validate">
+        <label for="number">Number</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s6">
+        <button class="col btn waves-effect waves-light feature-button" type="submit">
+          Update
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <table class="highlight">
+    <caption class="feature-item-table-caption">
+      <h5>items</h5>
+    </caption>
+    <thead>
+      <tr>
+        <th>number</th>
+        <th>type</th>
+        <th>name</th>
+        <th class="feature-item-button">
+          <a class="btn-floating btn-large waves-effect waves-light">
+            <i class="material-icons">add</i>
+          </a>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      #loop(items, "item") {
+        <tr>
+          <td>#(item.number)</td>
+          <td>#(item.type)</td>
+          #if(item.is_track) {
+            <td><a href="/tracks/#(item.item.id)">#(item.item.name)</a></td>
+          }
+          #if(item.is_record) {
+            <td><a href="/records/#(item.item.id)">#(item.item.name)</a></td>
+          }
+          <td class="feature-item-button">
+            <a class="btn-floating btn-large waves-effect waves-light">
+              <i class="material-icons">remove</i>
+            </a>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

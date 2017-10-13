@@ -150,3 +150,15 @@ th.cell, td.cell {
     margin-top: 8px;
     margin-bottom: 0px;
 }
+
+.feature-item-button {
+    display: none;
+}
+
+.feature-item-table-caption {
+    text-align: left;
+}
+
+.feature-item-button > a > i {
+    color: white !important;
+}

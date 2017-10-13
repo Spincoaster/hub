@@ -1,0 +1,40 @@
+#extend("base")
+
+#export("body") {
+  <ul class="pagination" style="display: inline-block; ">
+    <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+    #loop(pages_with_initial_letter, "page") {
+      <li class="#(page.active) waves-effect">
+        <a href="#(page.href)">#(page.label)</a>
+      </li>
+    }
+    <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+  </ul>
+  <br >
+  #if(has_pages) {
+    <ul class="pagination" style="display: inline-block; ">
+      <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
+      #loop(pages, "page") {
+        <li class="#(page.active) waves-effect">
+          <a href="#(page.href)">#(page.label)</a>
+        </li>
+      }
+      <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
+    </ul>
+  }
+  <table class="highlight">
+    <thead>
+      <tr>
+        <th>Features</th>
+      </tr>
+    </thead>
+    <tbody>
+      #loop(features, "feature") {
+        <tr>
+          <td><a href="/features/#(feature.id)">#(feature.name)</a></td>
+          <td class="right-edge"></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

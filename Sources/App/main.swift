@@ -40,13 +40,15 @@ let authEnabled = false
 if authEnabled {
     root = drop.grouped([BasicAuthMiddleware()])
 }
-root.resource("records", RecordController())
-root.resource("artists", ArtistController())
-root.resource("owners" , OwnerController())
-root.resource("genres" , GenreController())
-root.resource("artists", ArtistController())
-root.resource("albums" , AlbumController())
-root.resource("tracks" , TrackController())
+root.resource("records" , RecordController())
+root.resource("artists" , ArtistController())
+root.resource("owners"  , OwnerController())
+root.resource("genres"  , GenreController())
+root.resource("artists" , ArtistController())
+root.resource("albums"  , AlbumController())
+root.resource("tracks"  , TrackController())
+root.resource("features", FeatureController())
+
 let searchController = SearchController()
 root.get("search", handler: searchController.search)
 drop.get("/") { request in
