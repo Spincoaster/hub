@@ -115,6 +115,7 @@ extension Request {
         guard let data = formURLEncoded else { throw Abort.badRequest }
         guard let name = data["name"]?.string else { throw Abort.badRequest }
         guard let number = data["number"]?.int else { throw Abort.badRequest }
-        return Feature(name: name, number: number)
+        guard let description = data["description"]?.string else { throw Abort.badRequest }
+        return Feature(name: name, number: number, description: description)
     }
 }

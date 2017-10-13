@@ -47,21 +47,27 @@ public final class Feature: Model {
     public var id:           Identifier?
     public var name:         String
     public var number:       Int
+    public var description:  String
 
-    public init(name: String, number: Int) {
+    public var items:        [Item]?
+
+    public init(name: String, number: Int, description: String) {
         self.name         = name
         self.number       = number
+        self.description  = description
     }
     
     public init(row: Row) throws {
         name         = try row.get("name")
         number       = try row.get("number")
+        description  = try row.get("description")
     }
     
     public func makeRow() throws -> Row {
         var row = Row()
         try row.set("name"         , name)
         try row.set("number"       , number)
+        try row.set("description"  , description)
         return row
     }
     
@@ -77,7 +83,7 @@ public final class Feature: Model {
             if let feature = try Feature.makeQuery().filter("name", name).first() {
                 return feature
             } else {
-                let feature = Feature(name: name, number: -1)
+                let feature = Feature(name: name, number: -1, description: "")
                 try feature.save()
                 return feature
             }
@@ -127,6 +133,7 @@ extension Feature: Preparation {
             features.id()
             features.string("name")
             features.int("number")
+            features.string("description")
         }
     }
 
@@ -140,7 +147,8 @@ extension Feature: JSONConvertible {
     public convenience init(json: JSON) throws {
         try self.init(
             name         : json.get("name"),
-            number       : json.get("number")
+            number       : json.get("number"),
+            description  : json.get("description")
         )
     }
     
@@ -149,12 +157,15 @@ extension Feature: JSONConvertible {
         try json.set("id", id)
         try json.set("number", number)
         try json.set("name", name)
+        try json.set("description", description)
+        if let items = items {
+            try json.set("items", items.map { try $0.makeNode() }.makeNode(in: nil))
+        }
         return json
     }
 }
 
 extension Feature {
-//    public convenience init(formURLEncoded: )
 }
 
 extension Feature: ResponseRepresentable { }
