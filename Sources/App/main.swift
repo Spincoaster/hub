@@ -2,10 +2,12 @@ import PostgreSQLProvider
 import LeafProvider
 import Fluent
 import Console
+import BrowserMethodMiddlewareProvider
 
 let config = try Config()
 try config.addProvider(PostgreSQLProvider.Provider.self)
 try config.addProvider(LeafProvider.Provider.self)
+try config.addProvider(BrowserMethodMiddlewareProvider.Provider.self)
 
 config.preparations.append(Owner.self)
 config.preparations.append(Artist.self)

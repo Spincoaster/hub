@@ -6,17 +6,11 @@
     "hash": "crypto",
     "cipher": "crypto",
     "view": "leaf",
-    "middleware": {
-        "server": [
-            "file",
-            "abort",
-            "validation",
-            "type-safe",
-            "date",
-            "sessions"
-        ],
-        "client": [
-        
-        ]
-    }
+    "middleware": [
+      "error",
+      "file",
+      "browser-method",
+      "date",
+      "sessions"
+    ]
 }
