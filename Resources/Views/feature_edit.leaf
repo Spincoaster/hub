@@ -1,0 +1,100 @@
+#extend("base")
+
+#export("body") {
+  <script src="/javascripts/feature_edit.js"></script>
+  <h5>Properties</h5>
+  <form class="col s12" method="post">
+    <input type="hidden" name="id" value="#(feature.id)" id="feature-id" />
+    <input type="hidden" name="_method" value="patch" />
+    <div class="row">
+      <div class="input-field col s6">
+        <input placeholder="Placeholder" id="name" name="name" type="text" class="validate" value="#(feature.name)">
+        <label for="name">Name</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <input value="#(feature.number)" id="number" name="number" type="number" class="validate">
+        <label for="number">Number</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <textarea id="description" name="description" class="materialize-textarea" placeholder="description">#(feature.description)</textarea>
+        <label for="description">Description</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s6">
+        <button class="col btn waves-effect waves-light feature-button" type="submit">
+          Update
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <table class="highlight">
+    <caption class="feature-item-table-caption">
+      <h5>items</h5>
+    </caption>
+    <thead>
+      <tr>
+        <th>number</th>
+        <th>type</th>
+        <th>name</th>
+        <th class="feature-item-button">
+          <a class="add-featured-item-button btn-floating btn-large waves-effect waves-light">
+            <i class="material-icons">add</i>
+          </a>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      #loop(feature.items, "item") {
+        <tr>
+          <td>#(item.number)</td>
+          <td>#(item.type)</td>
+          #if(item.is_track) {
+            <td><a href="/tracks/#(item.item.id)">#(item.item.name)</a></td>
+          }
+          #if(item.is_record) {
+            <td><a href="/records/#(item.item.id)">#(item.item.name)</a></td>
+          }
+          <td class="feature-item-button">
+            <a class="remove-featured-item-button btn-floating btn-large waves-effect waves-light">
+              <i class="material-icons" data-id="#(item.id)">remove</i>
+            </a>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <div id="new-featured-item-modal" class="modal">
+    <div class="modal-content">
+      <h4>New item</h4>
+      <div class="input-field">
+        <input type="text" id="item-input" class="autocomplete" placeholder="enter track of record name">
+        <label for="autocomplete-input">track or record</label>
+      </div>
+      <br />
+      <div class="input-field">
+        <input value="0" id="item-number" name="number" type="number" class="validate">
+        <label for="number">Number</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a id="add-featured-item-submit-button" class="modal-action modal-close waves-effect waves-green btn-flat">Add</a>
+    </div>
+  </div>
+
+  <div id="remove-featured-item-modal" class="modal">
+    <div class="modal-content">
+      Are you sure to delete the item from this feature?
+    </div>
+    <div class="modal-footer">
+      <a id="remove-featured-item-submit-button" class="modal-action modal-close waves-effect waves-green btn-flat">Delete</a>
+    </div>
+  </div>
+
+}

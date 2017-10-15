@@ -13,6 +13,14 @@ import Fluent
 
 final class FeatureController: ResourceRepresentable, Pagination {
     typealias E = Feature
+    enum Mode {
+        case admin
+        case member
+    }
+    var mode: Mode
+    public init(mode: Mode) {
+        self.mode = mode
+    }
     func indexQuery(request: Request) throws -> Query<Feature> {
         let query = try Feature.makeQuery()
                                .sort(Sort(Feature.self, "number", .descending))
@@ -69,7 +77,13 @@ final class FeatureController: ResourceRepresentable, Pagination {
     }
     
     func show(request: Request, feature: Feature) throws -> ResponseRepresentable {
-        return try drop.view.make("feature", featureParameters(request: request, feature: feature))
+        switch mode {
+        case .admin:
+            guard let _ = request.currentUser else { return try drop.view.make("error") }
+            return try drop.view.make("feature_edit", featureParameters(request: request, feature: feature))
+        case .member:
+            return try drop.view.make("feature", featureParameters(request: request, feature: feature))
+        }
     }
     
     func delete(request: Request, feature: Feature) throws -> ResponseRepresentable {
