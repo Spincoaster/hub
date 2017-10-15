@@ -99,6 +99,28 @@ public final class Feature: Model {
             return nil
         }
     }
+    public static func setItems(features: [Feature]) throws {
+        let items     = try FeaturedItem.makeQuery().filter(Filter(FeaturedItem.self, .subset("feature_id", .in, features.map { try $0.id.makeNode(in: nil) }))).all()
+        let trackIds  = items.filter { $0.itemType == Track.self.name }.map { $0.itemId.makeNode(in: nil) }
+        let tracks    = try Track.makeQuery().filter(Filter(Track.self, .subset("id", .in, trackIds))).all()
+        try Track.setParents(tracks: tracks)
+        let recordIds = items.filter { $0.itemType == Record.self.name }.map { $0.itemId.makeNode(in: nil) }
+        let records   = try Record.makeQuery().filter(Filter(Record.self, .subset("id", .in, recordIds))).all()
+        try Record.setParents(records: records)
+        for feature in features {
+            let featureItems = items.filter { $0.featureId == feature.id }.sorted(by: { $0.0.number > $0.1.number })
+            feature.items = featureItems.map { (i: FeaturedItem) -> Item? in
+                switch i.itemType {
+                case Track.self.name:
+                    return tracks.first { $0.id == i.itemId }.map { .track(i.id!, $0, i.number) }
+                case Record.self.name:
+                    return records.first { $0.id == i.itemId }.map { .record(i.id!, $0, i.number) }
+                default:
+                    return nil
+                }
+            }.filter { $0 != nil }.map { $0! }
+        }
+    }
     public func tracks() throws -> Query<Track> {
         return try siblings(to: Track.self, through: FeaturedItem.self, localIdKey: "feature_id", foreignIdKey: "item_id")
                 .filter(Filter(FeaturedItem.self, .compare("item_type", .equals, Track.self.name.makeNode(in: nil))))
@@ -106,21 +128,6 @@ public final class Feature: Model {
     public func records() throws -> Query<Record> {
         return try siblings(to: Record.self, through: FeaturedItem.self, localIdKey: "feature_id", foreignIdKey: "item_id")
                 .filter(Filter(FeaturedItem.self, .compare("item_type", .equals, Record.self.name.makeNode(in: nil))))
-    }
-    public func items() throws -> [Item] {
-        let ts = try tracks().all()
-        if ts.count > 0 {
-            let trackAlbums = try Album.makeQuery().filter(Filter(Album.self, .subset("id", Filter.Scope.in, ts.map { $0.albumId.makeNode(in: nil) }))).all()
-            let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, ts.map { $0.artistId.makeNode(in: nil) }))).all()
-            Track.setParents(tracks: ts, albums: trackAlbums, artists: artists)
-        }
-        let rs = try records().all()
-        if rs.count > 0 {
-            let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, rs.map { $0.artistId.makeNode(in: nil) }))).all()
-            let owners   = try Owner.makeQuery().filter(Filter(Owner.self, .subset("id", Filter.Scope.in, rs.map { $0.ownerId.makeNode(in: nil) }))).all()
-            Record.setParents(records: rs, owners: owners, artists: artists)
-        }
-        return [ts.map { .track($0) }, rs.map { .record($0) }].flatMap { $0 }.sorted(by: { $0.0.number > $0.1.number })
     }
     public func add(track: Track) throws {
         if let id = id, let trackId = track.id {

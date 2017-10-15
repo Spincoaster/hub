@@ -52,10 +52,9 @@ final class FeatureController: ResourceRepresentable, Pagination {
         return try items.makeNode(in: nil)
     }
     func featureParameters(request: Request, feature: Feature) throws -> Node {
-        let items = try feature.items()
+        try Feature.setItems(features: [feature])
         let obj: [String: Node] = try [
             "feature": feature.makeLeafNode(),
-            "items": items.map { try $0.makeNode() }.makeNode(in: nil),
             "title": getTitle()?.makeNode(in: nil) ?? "",
             "menus": menus(request: request),
             "debug": (request.query?["debug"]?.bool ?? false).makeNode(in: nil),
