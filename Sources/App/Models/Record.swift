@@ -172,6 +172,8 @@ extension Record: JSONConvertible {
         try json.set("owner_id", ownerId)
         try json.set("phonetic_name", phoneticName)
         try json.set("furigana", furigana)
+        try json.set("artist", artist?.makeJSON())
+        try json.set("owner", owner?.makeJSON())
         
         return json
     }
