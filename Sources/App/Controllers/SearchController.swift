@@ -52,6 +52,23 @@ final class SearchController {
         let parameters = Node.object(obj)
         return try drop.view.make("search", parameters)
     }
+    func searchApi(_ request: Request) throws -> ResponseRepresentable {
+        guard let q = request.data["query"]?.string else {
+            throw Abort(.badRequest)
+        }
+        let tracks: (count: Int, items: [Track]) = try searchTracks(q)
+        if tracks.count > 0 {
+            try Track.setParents(tracks: tracks.items)
+        }
+        let records: (count: Int, items: [Record]) = try searchRecords(q)
+        if records.count > 0 {
+            try Record.setParents(records: records.items)
+        }
+        var json = JSON()
+        try json.set("tracks", try tracks.items.map { try $0.makeJSON() })
+        try json.set("records", records.items.map { try $0.makeJSON() })
+        return json
+    }
     func searchTracks(_ c: String) throws -> (count: Int, items: [Track]) {
         let query = try Track.makeQuery().join(Artist.self, baseKey: "artist_id", joinedKey: "id")
                                          .join(Album.self, baseKey: "album_id", joinedKey: "id")
