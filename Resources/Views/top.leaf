@@ -1,0 +1,41 @@
+#extend("base")
+
+#export("body") {
+  <h4>特集</h4>
+  <br >
+  #loop(features, "feature") {
+    <a href="/features/#(feature.id)">
+      <h5>#(feature.name)</h5>
+      <div>#(feature.description)</div>
+    </a>
+    <div class="top-carousel">
+      <div class="top-carousel-inner">
+      #loop(feature.items, "item") {
+        #if(item.is_track) {
+          <div class="top-carousel-item track-item">
+            <i class="top-carousel-item-icon material-icons">high_quality</i>
+            <div>#(item.item.name)</div>
+            <div class="artist-name"><a href="/artists/#(artist.id)">#(item.item.artist.name)</a></div>
+            <div class="album-name"><a href="/albums/#(album.id)">#(item.item.album.name)</a></div>
+          </div>
+        }
+        #if(item.is_record) {
+          <div class="top-carousel-item record-item">
+            <i class="top-carousel-item-icon material-icons">album</i>
+            <div>#(item.item.name)</div>
+            <div class="artist-name"><a href="/artists/#(artist.id)">#(item.item.artist.name)</a></div>
+            <div class="owner-name" style="display: none;"><a href="/owners/#(owner.id)">#(item.item.owner.name)</a></div>
+            <div class="location-name" style="display: none;">#(item.item.location)-#(item.item..number)</div>
+            <div>　</div>
+          </div>
+        }
+      }
+      </div>
+    </div>
+  }
+  <h4>索引</h4>
+  <div><a href="/artists?has_prefix=a">アーティスト一覧から探す</a></div>
+  <div><a href="/records?has_prefix=a">レコード一覧から探す</a></div>
+  <div><a href="/tracks?has_prefix=a">ハイレゾ一覧から探す</a></div>
+  <div>※検索は右上の<i class="material-icons">search</i>から</div>
+}

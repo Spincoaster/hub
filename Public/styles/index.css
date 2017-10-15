@@ -152,7 +152,6 @@ th.cell, td.cell {
 }
 
 .feature-item-button {
-    display: none;
 }
 
 .feature-item-table-caption {
@@ -161,4 +160,28 @@ th.cell, td.cell {
 
 .feature-item-button > a > i {
     color: white !important;
+}
+
+.top-carousel {
+    height: 200px;
+    width: 100%;
+    overflow-x: scroll;
+    --webkit-overflow-scrolling: touch;
+}
+
+.top-carousel-inner {
+    display: inline-block;
+    white-space: nowrap;
+    padding: 0;
+}
+
+.top-carousel-item {
+    display: inline-block;
+    height: 100px;
+    margin: 8px;
+    float: top;
+}
+
+.top-carousel-item-icon {
+    font-size: 40px;
 }

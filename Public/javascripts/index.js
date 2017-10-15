@@ -44,16 +44,16 @@ $(function() {
       $('.back').show();
     }
   }
-  $('tr.artist-item').click(function(e) {
+  $('.artist-item').click(function(e) {
     window.location = $(e.target).parent().find('a').attr('href');
   });
-  $('tr.album-item').click(function(e) {
+  $('.album-item').click(function(e) {
     window.location = $(e.target).parent().find('a').attr('href');
   });
   $('#record-modal').modal();
-  $('tr.record-item').click(function(e) {
+  $('.record-item').click(function(e) {
     if (e.target.tagName === 'A') { return }
-    var $parent = $(e.target).parent();
+    var $parent = $(e.target).closest('.record-item');
     var title = $parent.find('.record-name').text();
     var artist = $parent.find('.artist-name > a').text();
     var owner = $parent.find('.owner-name > a').text();
@@ -65,9 +65,9 @@ $(function() {
     $('#record-modal').modal('open');
   });
   $('#track-modal').modal();
-  $('tr.track-item').click(function(e) {
+  $('.track-item').click(function(e) {
     if (e.target.tagName === 'A') { return }
-    var $parent = $(e.target).parent();
+    var $parent = $(e.target).closest('.track-item');
     var title = $parent.find('.track-name').text();
     var artist = $parent.find('.artist-name > a').text();
     var album = $parent.find('.album-name > a').text();
