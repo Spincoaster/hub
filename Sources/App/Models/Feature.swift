@@ -12,31 +12,38 @@ import FluentProvider
 
 public final class Feature: Model {
     public enum Item {
-        case track(Track)
-        case record(Record)
-        var number: Int {
-            switch self {
-            case .track(let t): return t.number
-            case .record(let r): return r.number
-            }
-        }
+        case track(Identifier, Track, Int)
+        case record(Identifier, Record, Int)
         var type: String {
             switch self {
-            case .track: return "track"
-            case .record: return "record"
+            case .track: return Track.self.name
+            case .record: return Record.self.name
+            }
+        }
+        var id: Int {
+            switch self {
+            case .track(let i, _, _): return i.wrapped.int!
+            case .record(let i, _, _): return i.wrapped.int!
+            }
+        }
+        var number: Int {
+            switch self {
+            case .track(_, _, let number): return number
+            case .record(_, _, let number): return number
             }
         }
         func itemNode() throws -> Node {
             switch self {
-            case .track(let t): return try t.makeLeafNode()
-            case .record(let r): return try r.makeLeafNode()
+            case .track(_, let t, _): return try t.makeLeafNode()
+            case .record(_, let r, _): return try r.makeLeafNode()
             }
         }
         func makeNode() throws -> Node {
             return try [
-                "number": number,
+                "id": id,
                 "type": type,
                 "item": itemNode(),
+                "number": number,
                 "is_track": type == "track",
                 "is_record": type == "record",
             ].makeNode(in: nil)
