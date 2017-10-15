@@ -18,12 +18,14 @@ public final class FeaturedItem: Model {
     public var itemId:       Identifier
     public var itemType:     String
     public var number:       Int
+    public var comment:      String
     
-    public init(featureId: Identifier, itemId: Identifier, itemType: String, number: Int) {
+    public init(featureId: Identifier, itemId: Identifier, itemType: String, number: Int, comment: String) {
         self.featureId = featureId
         self.itemId    = itemId
         self.itemType  = itemType
         self.number    = number
+        self.comment   = comment
     }
     
     public init(row: Row) throws {
@@ -31,6 +33,7 @@ public final class FeaturedItem: Model {
         itemId    = try row.get("item_id")
         itemType  = try row.get("item_type")
         number    = try row.get("number")
+        comment   = try row.get("comment")
     }
     
     public func makeRow() throws -> Row {
@@ -40,6 +43,7 @@ public final class FeaturedItem: Model {
         try row.set("item_id"   , itemId)
         try row.set("item_type" , itemType)
         try row.set("number"    , number)
+        try row.set("comment"   , comment)
         return row
     }
     
@@ -56,6 +60,7 @@ extension FeaturedItem: Preparation {
             featuredItems.parent(Track.self, optional: true, unique: false, foreignIdKey: "item_id")
             featuredItems.string("item_type")
             featuredItems.int("number")
+            featuredItems.string("comment")
         }
         try database.raw("CREATE UNIQUE INDEX featured_items_idx ON featured_items (feature_id, item_id, item_type)")
     }
@@ -72,7 +77,8 @@ extension FeaturedItem: JSONConvertible {
             featureId: json.get("featured_id"),
             itemId:    json.get("item_id"),
             itemType:  json.get("item_type"),
-            number  :  json.get("number")
+            number  :  json.get("number"),
+            comment:   json.get("comment")
         )
     }
     
@@ -83,6 +89,7 @@ extension FeaturedItem: JSONConvertible {
         try json.set("item_id"   , itemId)
         try json.set("item_type" , itemType)
         try json.set("number"    , number)
+        try json.set("comment"   , comment)
         return json
     }
 }

@@ -45,9 +45,11 @@ extension Request {
         guard let itemId    = data["item_id"]?.int      else { throw Abort.badRequest }
         guard let itemType  = data["item_type"]?.string else { throw Abort.badRequest }
         guard let number    = data["number"]?.int       else { throw Abort.badRequest }
+        let comment = data["comment"]?.string ?? ""
         return FeaturedItem(featureId: Identifier(.number(.int(featureId)), in: nil),
                                itemId: Identifier(.number(.int(itemId)), in: nil),
                              itemType: itemType,
-                               number: number)
+                               number: number,
+                              comment: comment)
     }
 }

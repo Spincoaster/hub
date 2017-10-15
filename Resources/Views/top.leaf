@@ -13,10 +13,24 @@
       #loop(feature.items, "item") {
         #if(item.is_track) {
           <div class="top-carousel-item track-item">
-            <i class="top-carousel-item-icon material-icons">high_quality</i>
-            <div>#(item.item.name)</div>
-            <div class="artist-name"><a href="/artists/#(artist.id)">#(item.item.artist.name)</a></div>
-            <div class="album-name"><a href="/albums/#(album.id)">#(item.item.album.name)</a></div>
+            <div>
+              <i class="material-icons">high_quality</i>
+              #(item.item.name)
+            </div>
+            <div class="artist-name">
+              <i class="material-icons">assignment_ind</i>
+              <a href="/artists/#(artist.id)">#(item.item.artist.name)</a>
+            </div>
+            <div class="album-name">
+              <i class="material-icons">album</i>
+              <a href="/albums/#(album.id)">#(item.item.album.name)</a>
+            </div>
+            #if(item.comment) {
+              <div>
+                <i class="material-icons">comment</i>
+                #(item.comment)
+              </div>
+            }
           </div>
         }
         #if(item.is_record) {
@@ -26,7 +40,13 @@
             <div class="artist-name"><a href="/artists/#(artist.id)">#(item.item.artist.name)</a></div>
             <div class="owner-name" style="display: none;"><a href="/owners/#(owner.id)">#(item.item.owner.name)</a></div>
             <div class="location-name" style="display: none;">#(item.item.location)-#(item.item..number)</div>
-            <div>　</div>
+            <div>　</div
+            #if(item.comment) {
+              <div>
+                <i class="material-icons">comment</i>
+                #(item.comment)
+              </div>
+            }
           </div>
         }
       }

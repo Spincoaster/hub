@@ -82,6 +82,10 @@
         <input value="0" id="item-number" name="number" type="number" class="validate">
         <label for="number">Number</label>
       </div>
+      <div class="input-field">
+        <input value="" id="item-comment" name="comment" type="text" placeholder="comment" class="validate">
+        <label for="comment">Comment</label>
+      </div>
     </div>
     <div class="modal-footer">
       <a id="add-featured-item-submit-button" class="modal-action modal-close waves-effect waves-green btn-flat">Add</a>

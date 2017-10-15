@@ -12,8 +12,8 @@ import FluentProvider
 
 public final class Feature: Model {
     public enum Item {
-        case track(Identifier, Track, Int)
-        case record(Identifier, Record, Int)
+        case track(Identifier, Track, Int, String)
+        case record(Identifier, Record, Int, String)
         var type: String {
             switch self {
             case .track: return Track.self.name
@@ -22,20 +22,26 @@ public final class Feature: Model {
         }
         var id: Int {
             switch self {
-            case .track(let i, _, _): return i.wrapped.int!
-            case .record(let i, _, _): return i.wrapped.int!
+            case .track(let i, _, _, _): return i.wrapped.int!
+            case .record(let i, _, _, _): return i.wrapped.int!
             }
         }
         var number: Int {
             switch self {
-            case .track(_, _, let number): return number
-            case .record(_, _, let number): return number
+            case .track(_, _, let number, _): return number
+            case .record(_, _, let number, _): return number
+            }
+        }
+        var comment: String {
+            switch self {
+            case .track(_, _, _, let comment): return comment
+            case .record(_, _, _, let comment): return comment
             }
         }
         func itemNode() throws -> Node {
             switch self {
-            case .track(_, let t, _): return try t.makeLeafNode()
-            case .record(_, let r, _): return try r.makeLeafNode()
+            case .track(_, let t, _, _): return try t.makeLeafNode()
+            case .record(_, let r, _, _): return try r.makeLeafNode()
             }
         }
         func makeNode() throws -> Node {
@@ -44,6 +50,7 @@ public final class Feature: Model {
                 "type": type,
                 "item": itemNode(),
                 "number": number,
+                "comment": comment,
                 "is_track": type == "track",
                 "is_record": type == "record",
             ].makeNode(in: nil)
@@ -112,9 +119,9 @@ public final class Feature: Model {
             feature.items = featureItems.map { (i: FeaturedItem) -> Item? in
                 switch i.itemType {
                 case Track.self.name:
-                    return tracks.first { $0.id == i.itemId }.map { .track(i.id!, $0, i.number) }
+                    return tracks.first { $0.id == i.itemId }.map { .track(i.id!, $0, i.number, i.comment) }
                 case Record.self.name:
-                    return records.first { $0.id == i.itemId }.map { .record(i.id!, $0, i.number) }
+                    return records.first { $0.id == i.itemId }.map { .record(i.id!, $0, i.number, i.comment) }
                 default:
                     return nil
                 }
@@ -131,12 +138,12 @@ public final class Feature: Model {
     }
     public func add(track: Track) throws {
         if let id = id, let trackId = track.id {
-            try FeaturedItem(featureId: id, itemId: trackId, itemType: Track.self.name, number: 0).save()
+            try FeaturedItem(featureId: id, itemId: trackId, itemType: Track.self.name, number: 0, comment: "").save()
         }
     }
     public func add(record: Record) throws {
         if let id = id, let recordId = record.id {
-            try FeaturedItem(featureId: id, itemId: recordId, itemType: Record.self.name, number: 0).save()
+            try FeaturedItem(featureId: id, itemId: recordId, itemType: Record.self.name, number: 0, comment: "").save()
         }
     }
 }

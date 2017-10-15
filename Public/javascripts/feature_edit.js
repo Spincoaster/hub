@@ -8,7 +8,6 @@ $(function() {
   var $itemInput = $('#item-input');
   var items = {};
   $itemInput.on('input', $.debounce(250, function() {
-    console.log('-------- input');
     $.get('/admin/search', { query: $itemInput.val() }).done(function(result) {
       var data = {};
       result.tracks.forEach(function(track) {
@@ -43,12 +42,13 @@ $(function() {
       return;
     }
     var itemNumber = $('#item-number').val();
-    console.log(itemNumber);
+    var itemComment = $('#item-comment').val();
     $.post('/admin/featured_items', {
       feature_id: featureId,
       item_id:    item.id,
       item_type:  item.type,
       number:     itemNumber,
+      comment:    itemComment,
     }).done(function() {
       window.location.reload();
     }).fail(function(e) {
