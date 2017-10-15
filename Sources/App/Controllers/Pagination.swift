@@ -20,6 +20,10 @@ class Menu {
       ["href": "/tracks?has_prefix=a" , "icon": "high_quality"  , "label":"Hi-Res" , "active": ""],
       ["href": "/owners" , "icon": "perm_identity" , "label":"Owners" , "active": ""]
     ]
+    static let adminItems: [[String:String]] = [
+        ["href": "/top", "icon": "home", "label":"Top", "active": ""],
+        ["href": "/admin/features", "icon": "face", "label":"Features", "active": ""],
+    ]
 }
 
 protocol Pagination {

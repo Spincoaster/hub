@@ -39,7 +39,7 @@ final class FeatureController: ResourceRepresentable, Pagination {
     }
     func menus(request: Request) throws -> Node {
         var items: [[String:String]] = []
-        for menu in Menu.items {
+        for menu in Menu.adminItems {
             if menu["label"] == "Features" {
                 items.append(["href": menu["href"]!,
                               "label":  menu["label"]!,
