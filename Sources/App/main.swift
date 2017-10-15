@@ -36,10 +36,6 @@ drop.get("version") { request in
 }
 
 var root: RouteBuilder = drop
-let authEnabled = false
-if authEnabled {
-    root = drop.grouped([BasicAuthMiddleware()])
-}
 root.resource("records" , RecordController())
 root.resource("artists" , ArtistController())
 root.resource("owners"  , OwnerController())
@@ -47,11 +43,17 @@ root.resource("genres"  , GenreController())
 root.resource("artists" , ArtistController())
 root.resource("albums"  , AlbumController())
 root.resource("tracks"  , TrackController())
-root.resource("features", FeatureController())
+root.resource("features", FeatureController(mode: .member))
+root.get("search", handler: SearchController().search)
+root.get("top"   , handler: TopController().show)
 
-let searchController = SearchController()
-root.get("search", handler: searchController.search)
+let admin = drop.grouped([BasicAuthMiddleware()])
+admin.resource("admin/features"      ,  FeatureController(mode: .admin))
+admin.resource("admin/featured_items", FeaturedItemController())
+admin.get("admin/search", handler: SearchController().searchApi)
+
 drop.get("/") { request in
     return Response(redirect: "/artists?has_prefix=a")
 }
+
 try drop.run()
