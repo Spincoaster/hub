@@ -60,10 +60,7 @@ public final class Track: Model {
     }
 
     public func makeLeafNode() throws -> Node {
-        var node: Node = try makeJSON().converted()
-        try node.set("artist", artist?.makeLeafNode())
-        try node.set("album", album?.makeLeafNode())
-        return node
+        return try makeJSON().converted()
     }
 
     public static func firstOrCreateBy(name: String, number: Int, artistId: Identifier, albumId: Identifier) -> Track? {
@@ -133,6 +130,8 @@ extension Track: JSONConvertible {
         try json.set("album_id", albumId)
         try json.set("phonetic_name", phoneticName)
         try json.set("furigana", furigana)
+        try json.set("artist", artist?.makeJSON())
+        try json.set("album", album?.makeJSON())
         
         return json
     }
