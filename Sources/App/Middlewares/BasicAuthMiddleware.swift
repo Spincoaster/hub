@@ -19,7 +19,7 @@ extension Request {
         storage["require_login"] = true
     }
     var requireLogin: Bool {
-        return storage["require_login"] as? Bool ?? false
+        return storage["require_login"] as? Bool ?? true
     }
 }
 
