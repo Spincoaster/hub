@@ -71,6 +71,7 @@ final class FeatureController: ResourceRepresentable, Pagination {
     }
     
     func create(request: Request) throws -> ResponseRepresentable {
+        guard let _ = request.currentUser else { return try drop.view.make("error") }
         let feature = try request.feature()
         try feature.save()
         return feature
@@ -87,26 +88,22 @@ final class FeatureController: ResourceRepresentable, Pagination {
     }
     
     func delete(request: Request, feature: Feature) throws -> ResponseRepresentable {
+        guard let _ = request.currentUser else { return try drop.view.make("error") }
+        guard let id = feature.id else { return JSON([:]) }
+        try FeaturedItem.makeQuery().filter(Filter(FeaturedItem.self, .compare("feature_id", .equals, Node(id)))).delete()
         try feature.delete()
         return JSON([:])
     }
     
-    func clear(request: Request) throws -> ResponseRepresentable {
-        try Feature.makeQuery().delete()
-        return JSON([])
-    }
-    
     func update(request: Request, feature: Feature) throws -> ResponseRepresentable {
-        let new = try request.feature()
-        feature.name = new.name
-        feature.number = new.number
+        if mode != .admin { throw Abort.unauthorized }
+        guard let _ = request.currentUser else { return try drop.view.make("error") }
+        let new             = try request.feature()
+        feature.name        = new.name
+        feature.number      = new.number
+        feature.description = new.description
         try feature.save()
-        return try drop.view.make("feature", featureParameters(request: request, feature: feature))
-    }
-    
-    func replace(request: Request, feature: Feature) throws -> ResponseRepresentable {
-        try feature.delete()
-        return try create(request: request)
+        return try drop.view.make("feature_edit", featureParameters(request: request, feature: feature))
     }
 
     func makeResource() -> Resource<Feature> {
@@ -115,9 +112,7 @@ final class FeatureController: ResourceRepresentable, Pagination {
             store:   create,
             show:    show,
             update:  update,
-            replace: replace,
-            destroy: delete,
-            clear:   clear
+            destroy: delete
         )
         return resource
     }
@@ -128,7 +123,7 @@ extension Request {
         guard let data = formURLEncoded else { throw Abort.badRequest }
         guard let name = data["name"]?.string else { throw Abort.badRequest }
         guard let number = data["number"]?.int else { throw Abort.badRequest }
-        guard let description = data["description"]?.string else { throw Abort.badRequest }
+        let description = data["description"]?.string ?? ""
         return Feature(name: name, number: number, description: description)
     }
 }
