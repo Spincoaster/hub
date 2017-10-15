@@ -41,9 +41,7 @@ final class RecordController: ResourceRepresentable, Pagination {
     func index(request: Request) throws -> ResponseRepresentable {
         let records = try paginate(request: request)
         if records.count > 0 {
-            let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, records.map { $0.artistId.makeNode(in: nil) }))).all()
-            let owners   = try Owner.makeQuery().filter(Filter(Owner.self, .subset("id", Filter.Scope.in, records.map { $0.ownerId.makeNode(in: nil) }))).all()
-            Record.setParents(records: records, owners: owners, artists: artists)
+            try Record.setParents(records: records)
         }
         let contains = request.query?["contains"]?.string ?? "";
         let parameters = try Node.object([

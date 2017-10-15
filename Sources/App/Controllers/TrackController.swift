@@ -46,9 +46,7 @@ final class TrackController: ResourceRepresentable, Pagination {
 //        }
         let tracks = try paginate(request: request)
         if tracks.count > 0 {
-            let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, tracks.map { $0.artistId.makeNode(in: nil) }))).all()
-            let albums  = try Album.makeQuery().filter(Filter(Album.self, .subset("id", Filter.Scope.in, tracks.map { $0.albumId.makeNode(in: nil) }))).all()
-            Track.setParents(tracks: tracks, albums: albums, artists: artists)
+            try Track.setParents(tracks: tracks)
         }
         let contains: String = request.query?["contains"]?.string ?? "";
         let parameters = try Node.object([

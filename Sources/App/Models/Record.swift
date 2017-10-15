@@ -106,7 +106,9 @@ public final class Record: Model {
         }
     }
 
-    public static func setParents(records: [Record], owners: [Owner], artists: [Artist]) {
+    public static func setParents(records: [Record]) throws {
+        let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, records.map { $0.artistId.makeNode(in: nil) }))).all()
+        let owners   = try Owner.makeQuery().filter(Filter(Owner.self, .subset("id", Filter.Scope.in, records.map { $0.ownerId.makeNode(in: nil) }))).all()
         records.forEach { r in
             r.owner   = owners.filter { u in u.id == r.ownerId }.first
             r.artist = artists.filter { a in a.id == r.artistId }.first

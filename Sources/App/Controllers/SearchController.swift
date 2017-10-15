@@ -29,15 +29,11 @@ final class SearchController {
         }
         let tracks: (count: Int, items: [Track]) = try searchTracks(q)
         if tracks.count > 0 {
-            let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, tracks.items.map { $0.artistId.makeNode(in: nil) }))).all()
-            let albums  = try Album.makeQuery().filter(Filter(Album.self, .subset("id", Filter.Scope.in, tracks.items.map { $0.albumId.makeNode(in: nil) }))).all()
-            Track.setParents(tracks: tracks.items, albums: albums, artists: artists)
+            try Track.setParents(tracks: tracks.items)
         }
         let records: (count: Int, items: [Record]) = try searchRecords(q)
         if records.count > 0 {
-            let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, records.items.map { $0.artistId.makeNode(in: nil) }))).all()
-            let owners   = try Owner.makeQuery().filter(Filter(Owner.self, .subset("id", Filter.Scope.in, records.items.map { $0.ownerId.makeNode(in: nil) }))).all()
-            Record.setParents(records: records.items, owners: owners, artists: artists)
+            try Record.setParents(records: records.items)
         }
         let obj: [String: Node] = [
             "title": "Search results",

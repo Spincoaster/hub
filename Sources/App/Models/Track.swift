@@ -81,7 +81,9 @@ public final class Track: Model {
         }
     }
     
-    public static func setParents(tracks: [Track], albums: [Album], artists: [Artist]) {
+    public static func setParents(tracks: [Track]) throws {
+        let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, tracks.map { $0.artistId.makeNode(in: nil) }))).all()
+        let albums  = try Album.makeQuery().filter(Filter(Album.self, .subset("id", Filter.Scope.in, tracks.map { $0.albumId.makeNode(in: nil) }))).all()
         tracks.forEach { r in
             r.album  = albums.filter { a in a.id == r.albumId }.first
             r.artist = artists.filter { a in a.id == r.artistId }.first

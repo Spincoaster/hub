@@ -76,9 +76,7 @@ final class ArtistController: ResourceRepresentable, Pagination {
                                             .filter("artist_id", artist.id!)
                                             .all()
         if records.count > 0 {
-            let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, records.map { $0.artistId.makeNode(in: nil) }))).all()
-            let owners   = try Owner.makeQuery().filter(Filter(Owner.self, .subset("id", Filter.Scope.in, records.map { $0.ownerId.makeNode(in: nil) }))).all()
-            Record.setParents(records: records, owners: owners, artists: artists)
+            try Record.setParents(records: records)
         }
         let albums = try Album.makeQuery().join(Artist.self, baseKey: "artist_id", joinedKey: "id")
                                           .sort(Sort(Artist.self, "phonetic_name", .ascending))
@@ -90,9 +88,7 @@ final class ArtistController: ResourceRepresentable, Pagination {
                                           .sort(Sort(Artist.self, "phonetic_name", .ascending))
                                           .filter("artist_id", artist.id!)
                                           .all()
-            let trackAlbums = try Album.makeQuery().filter(Filter(Album.self, .subset("id", Filter.Scope.in, tracks.map { $0.albumId.makeNode(in: nil) }))).all()
-            let artists = try Artist.makeQuery().filter(Filter(Artist.self, .subset("id", Filter.Scope.in, tracks.map { $0.artistId.makeNode(in: nil) }))).all()
-            Track.setParents(tracks: tracks, albums: trackAlbums, artists: artists)
+            try Track.setParents(tracks: tracks)
         }
         let obj: [String: Node] = try [
             "has_records": (records.count > 0).makeNode(in: nil),
