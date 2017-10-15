@@ -50,12 +50,12 @@ public final class FeaturedItem: Model {
 
 extension FeaturedItem: Preparation {
     public static func prepare(_ database: Database) throws {
-        try database.create(self) { features in
-            features.id()
-            features.parent(Feature.self)
-            features.parent(Track.self, optional: true, unique: false, foreignIdKey: "item_id")
-            features.string("item_type")
-            features.int("number")
+        try database.create(self) { featuredItems in
+            featuredItems.id()
+            featuredItems.parent(Feature.self)
+            featuredItems.parent(Track.self, optional: true, unique: false, foreignIdKey: "item_id")
+            featuredItems.string("item_type")
+            featuredItems.int("number")
         }
         try database.raw("CREATE UNIQUE INDEX featured_items_idx ON featured_items (feature_id, item_id, item_type)")
     }
