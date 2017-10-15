@@ -1,16 +1,7 @@
 #extend("base")
 
 #export("body") {
-  <ul class="pagination" style="display: inline-block; ">
-    <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
-    #loop(pages_with_initial_letter, "page") {
-      <li class="#(page.active) waves-effect">
-        <a href="#(page.href)">#(page.label)</a>
-      </li>
-    }
-    <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
-  </ul>
-  <br >
+  <script src="/javascripts/features.js"></script>
   #if(has_pages) {
     <ul class="pagination" style="display: inline-block; ">
       <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
@@ -25,16 +16,53 @@
   <table class="highlight">
     <thead>
       <tr>
-        <th>Features</th>
+        <th class="right-edge">Features</th>
+        <th class="feature-item-button">
+          <a class="add-feature-button btn-floating btn-large waves-effect waves-light">
+            <i class="material-icons">add</i>
+          </a>
+        </th>
       </tr>
     </thead>
     <tbody>
       #loop(features, "feature") {
         <tr>
-          <td><a href="/features/#(feature.id)">#(feature.name)</a></td>
-          <td class="right-edge"></td>
+          <td class="right-edge"><a href="/admin/features/#(feature.id)">#(feature.name)</a></td>
+          <td class="feature-item-button">
+            <a class="remove-feature-button btn-floating btn-large waves-effect waves-light">
+              <i class="material-icons" data-id="#(feature.id)">remove</i>
+            </a>
+          </td>
         </tr>
       }
     </tbody>
   </table>
+  <div id="new-feature-modal" class="modal">
+    <div class="modal-content">
+      <div class="input-field">
+        <input id="name" name="name" type="text" class="validate" placeholder="title" >
+        <label for="name">Name</label>
+      </div>
+      <div class="input-field">
+        <input value="0" id="number" name="number" type="number" class="validate">
+        <label for="number">Number</label>
+      </div>
+      <div class="input-field">
+        <textarea id="description" name="description" class="materialize-textarea" placeholder="description"></textarea>
+        <label for="description">Description</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a id="add-feature-submit-button" class="modal-action modal-close waves-effect waves-green btn-flat">Add</a>
+    </div>
+  </div>
+
+  <div id="remove-feature-modal" class="modal admin-modal">
+    <div class="modal-content">
+      Are you sure to delete the feature?
+    </div>
+    <div class="modal-footer">
+      <a id="remove-feature-submit-button" class="modal-action modal-close waves-effect waves-green btn-flat">Delete</a>
+    </div>
+  </div>
 }
