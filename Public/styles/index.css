@@ -151,6 +151,12 @@ th.cell, td.cell {
     margin-bottom: 0px;
 }
 
+.album-name, .artist-name, .track-name, .record-name {
+    max-width: 400px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 .feature-item-button {
 }
 
@@ -163,23 +169,23 @@ th.cell, td.cell {
 }
 
 .top-carousel {
-    height: 200px;
+    height: 300px;
     width: 100%;
     overflow-x: scroll;
     --webkit-overflow-scrolling: touch;
 }
 
 .top-carousel-inner {
-    display: inline-block;
+    top: 0px;
     white-space: nowrap;
     padding: 0;
 }
 
 .top-carousel-item {
+    vertical-align: top;
+    height: 200px;
     display: inline-block;
-    height: 100px;
     margin: 8px;
-    float: top;
 }
 
 .top-carousel-item-icon {

@@ -1,10 +1,8 @@
 #extend("base")
 
 #export("body") {
-  <h5>Properties</h5>
+  <h5>#(feature.name)</h5>
   <div class="row">
-    #(feature.name)
-    <br >
     #(feature.description)
   </div>
   <table class="highlight">
@@ -13,20 +11,37 @@
     </caption>
     <thead>
       <tr>
-        <th>type</th>
+        <th>artist</th>
         <th>name</th>
+        <th>album</th>
+        <th class="right-edge">comment</th>
       </tr>
     </thead>
     <tbody>
       #loop(feature.items, "item") {
-        <tr>
-          <td>#(item.type)</td>
-          #if(item.is_track) {
-            <td><a href="/tracks/#(item.item.id)">#(item.item.name)</a></td>
-          }
-          #if(item.is_record) {
-            <td><a href="/records/#(item.item.id)">#(item.item.name)</a></td>
-          }
+        #if(item.is_track) {
+          <tr class="track-item">
+            <td class="artist-name">
+              <a href="/tracks?artist_id=#(item.item.artist.id)">#(item.item.artist.name)</a>
+            </td>
+            <td class="track-name">#(item.item.name)</td>
+            <td class="album-name"><a href="/tracks?album_id=#(item.item.album.id)">#(item.item.album.name)</a></td>
+            <td class="right-edge">#(item.comment)</td>
+          </tr>
+        }
+        #if(item.is_record) {
+          <tr class="record-item">
+            <td class="artist-name">
+              <a href="/records?artist_id=#(item.item.artist.id)">#(item.item.artist.name)</a>
+            </td>
+            <td class="record-name">#(item.item.name)</td>
+            <td class="right-edge">#(item.item.comment)</td>
+            <td style="display: none;" class="owner-name"><a href="/records?owner_id=#(item.item.owner.id)">#(item.item.owner.name)</a></td>
+            <td style="display: none;" class="location-name" style="white-space: nowrap;">#(item.item.location)-#(item.item.number)</td>
+            <td>-</td>
+            <td>#(item.comment)</td>
+          </tr>
+        }
         </tr>
       }
     </tbody>
