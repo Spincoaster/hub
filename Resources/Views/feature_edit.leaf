@@ -42,6 +42,7 @@
         <th>number</th>
         <th>type</th>
         <th>name</th>
+        <th>comment</th>
         <th class="feature-item-button">
           <a class="add-featured-item-button btn-floating btn-large waves-effect waves-light">
             <i class="material-icons">add</i>
@@ -60,6 +61,7 @@
           #if(item.is_record) {
             <td><a href="/records/#(item.item.id)">#(item.item.name)</a></td>
           }
+          <td>#(item.comment)</td>
           <td class="feature-item-button">
             <a class="remove-featured-item-button btn-floating btn-large waves-effect waves-light">
               <i class="material-icons" data-id="#(item.id)">remove</i>
