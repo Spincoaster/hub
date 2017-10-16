@@ -14,7 +14,7 @@ import Console
 import Fluent
 import CSV
 
-final class ImportReordsCommand: Command {
+final class ImportRecordsCommand: Command {
     public let id = "records"
     public let help = ["This command imports tracks."]
     public let console: ConsoleProtocol
@@ -35,6 +35,7 @@ final class ImportReordsCommand: Command {
         
         let fileId = getEnvironmentVar("FILE_ID") ?? ""
         GoogleDrive.apiKey = getEnvironmentVar("API_KEY") ?? ""
+        try Record.makeQuery().delete()
         let _ = GoogleDrive().fetchCSV(fileId: fileId).on() { (csv: CSV) -> Void in
             csv.forEach {
                 guard $0.count > 7 else { return }

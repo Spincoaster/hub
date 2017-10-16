@@ -21,7 +21,7 @@ config.preparations.append(FeaturedItem.self)
 
 let console: ConsoleProtocol = Terminal(arguments: CommandLine.arguments)
 let commands: [Command] = [
-    ImportReordsCommand(console: console),
+    ImportRecordsCommand(console: console),
     ImportTracksCommand(console: console)
 ]
 let drop = try Droplet(config: config, commands: commands)
