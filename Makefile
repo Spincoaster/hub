@@ -15,9 +15,11 @@ internal:
 external:
 	swift build -Xlinker -L/usr/local/lib/
 	vapor run tracks external
-gen_track_list:
+gen_internal_track_list:
 	cd /Volumes/HAP_Internal
 	find . > `ghq list kumabook/recordhub -p`/internal.txt
+	cd `ghq list kumabook/recordhub -p`
+gen_external_track_list:
 	cd /Volumes/HAP_External
 	find . > `ghq list kumabook/recordhub -p`/external.txt
 	cd `ghq list kumabook/recordhub -p`
@@ -32,9 +34,14 @@ createdb:
 dropdb:
 	dropdb recordhub
 
-import: gen_track_list dropdb createdb records tracks
+import: dropdb createdb
+	rm -f latest.dump
+	heroku pg:backups:capture
+	heroku pg:backups:download
+	pg_restore --verbose latest.dump  -d recordhub
 export:
 	pg_dump -Fc --no-acl --no-owner  recordhub > recordhub.dump
 	aws s3 cp recordhub.dump s3://recordhub/ --acl public-read --profile=recordhub
 	heroku pg:backups:restore 'https://s3-ap-northeast-1.amazonaws.com/recordhub/recordhub.dump' DATABASE_URL
 	aws s3 rm s3://recordhub/recordhub.dump --profile=recordhub
+
