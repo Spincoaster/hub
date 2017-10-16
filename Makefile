@@ -38,6 +38,7 @@ import: dropdb createdb
 	rm -f latest.dump
 	heroku pg:backups:capture
 	heroku pg:backups:download
+# you need to create role of heroku database and create postgres role as superuser
 	pg_restore --verbose latest.dump  -d recordhub
 export:
 	pg_dump -Fc --no-acl --no-owner  recordhub > recordhub.dump
