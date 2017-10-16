@@ -172,7 +172,7 @@ th.cell, td.cell {
     height: 300px;
     width: 100%;
     overflow-x: scroll;
-    --webkit-overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch;
 }
 
 .top-carousel-inner {
