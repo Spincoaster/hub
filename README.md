@@ -27,6 +27,8 @@
   # edit below
   # dicdir = /usr/local/lib/mecab/dic/mecab-ipadic-neologd
   ```
+- flac
+  - We use `metaflac` command so install from [xiph/flac](https://github.com/xiph/flac)
 - heroku cli
   ```
   brew install heroku/brew/heroku
