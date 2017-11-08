@@ -43,7 +43,7 @@ import: dropdb createdb
 export:
 	pg_dump -Fc --no-acl --no-owner  recordhub > recordhub.dump
 	aws s3 cp recordhub.dump s3://recordhub/ --acl public-read --profile=recordhub
-	heroku pg:backups:restore 'https://s3-ap-northeast-1.amazonaws.com/recordhub/recordhub.dump' DATABASE_URL
+	heroku pg:backups:restore 'https://s3-ap-northeast-1.amazonaws.com/recordhub/recordhub.dump' DATABASE_URL --confirm ${APP}
 	aws s3 rm s3://recordhub/recordhub.dump --profile=recordhub
 update_records: import records export
 add_new_tracks: import gen_external_track_list external export
