@@ -20,8 +20,8 @@ gen_internal_track_list:
 	find . > `ghq list kumabook/recordhub -p`/internal.txt
 	cd `ghq list kumabook/recordhub -p`
 gen_external_track_list:
-	cd /Volumes/HAP_External
-	find . > `ghq list kumabook/recordhub -p`/external.txt
+	cd /Volumes/HAP_External && \
+	find . > `ghq list kumabook/recordhub -p`/external.txt && \
 	cd `ghq list kumabook/recordhub -p`
 
 run:
