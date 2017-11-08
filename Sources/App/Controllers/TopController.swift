@@ -13,7 +13,7 @@ import Fluent
 final class TopController {
     func menus(request: Request) throws -> Node {
         var items: [[String:String]] = []
-        for menu in Menu.adminItems {
+        for menu in Menu.items {
             if menu["label"] == "Top" {
                 items.append(["href":   menu["href"]!,
                               "label":  menu["label"]!,

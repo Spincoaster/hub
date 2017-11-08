@@ -14,6 +14,7 @@ import FluentProvider
 
 class Menu {
     static let items: [[String:String]] = [
+      ["href": "/top", "icon": "home", "label":"Top", "active": ""],
       ["href": "/artists?has_prefix=a", "icon": "assignment_ind", "label":"Artists", "active": ""],
 //      ["href": "./albums" , "icon": "library_music" , "label":"Albums" , "active": ""],
       ["href": "/records?has_prefix=a", "icon": "album"         , "label":"Records", "active": ""],
