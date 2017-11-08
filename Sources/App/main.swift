@@ -53,7 +53,7 @@ admin.resource("admin/featured_items", FeaturedItemController())
 admin.get("admin/search", handler: SearchController().searchApi)
 
 drop.get("/") { request in
-    return Response(redirect: "/artists?has_prefix=a")
+    return Response(redirect: "/top")
 }
 
 try drop.run()
