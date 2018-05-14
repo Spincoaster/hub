@@ -11,6 +11,10 @@ import HTTP
 import Fluent
 
 final class TopController {
+    func getHomeIconUrl() -> String? {
+        guard let rawValue = getenv("HOME_ICON_URL") else { return nil }
+        return String(utf8String: rawValue)
+    }
     func menus(request: Request) throws -> Node {
         var items: [[String:String]] = []
         for menu in Menu.items {
@@ -31,6 +35,7 @@ final class TopController {
                                   .sort("number", Sort.Direction.descending).all()
         try Feature.setItems(features: features)
         let parameters = Node.object([
+            "home_icon_url": getHomeIconUrl()?.makeNode(in: nil) ?? "",
             "features": try features.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "menus": try menus(request: request)
             ])
