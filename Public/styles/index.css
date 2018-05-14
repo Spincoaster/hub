@@ -191,3 +191,7 @@ th.cell, td.cell {
 .top-carousel-item-icon {
     font-size: 40px;
 }
+/* for ipad mini */
+nav .brand-logo.center {
+    -webkit-transform: translateX(-50%);
+}
