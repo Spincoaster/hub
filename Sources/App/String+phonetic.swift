@@ -66,19 +66,19 @@ class MeCabHelper {
         }
         var romanString = ""
         var offset = 0
-        let count = string.characters.count
+        let count = string.count
         while (offset < count) {
             let index = string.index(string.startIndex, offsetBy: offset)
             if offset + 2 < count {
                 let c = string[index..<string.index(index, offsetBy: 2)]
-                if let a = katakana2romanDic[c] {
+                if let a = katakana2romanDic[String(c)] {
                     romanString += a
                     offset += 2
                     continue
                 }
             }
             let c = string[index..<string.index(index, offsetBy: 1)]
-            if let a = katakana2romanDic[c] {
+            if let a = katakana2romanDic[String(c)] {
                 romanString += a
             } else {
                 romanString += c

@@ -115,7 +115,7 @@ public final class Feature: Model {
         let records   = try Record.makeQuery().filter(Filter(Record.self, .subset("id", .in, recordIds))).all()
         try Record.setParents(records: records)
         for feature in features {
-            let featureItems = items.filter { $0.featureId == feature.id }.sorted(by: { $0.0.number > $0.1.number })
+            let featureItems = items.filter{ $0.featureId == feature.id }.sorted(by: { $0.number > $1.number })
             feature.items = featureItems.map { (i: FeaturedItem) -> Item? in
                 switch i.itemType {
                 case Track.self.name:

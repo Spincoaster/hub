@@ -65,7 +65,7 @@ struct TrackInfo {
         let artistName = paths[1]
         let albumName  = paths[2]
         let trackPath  = paths[3]
-        guard trackPath.characters.count > 3 else {
+        guard trackPath.count > 3 else {
             return nil
         }
         guard let number = Int(trackPath.substring(to: trackPath.index(trackPath.startIndex, offsetBy: 2))) else {
@@ -176,9 +176,9 @@ func shell(launchPath: String, arguments: [String]) -> String {
     process.standardOutput = pipe
     process.launch()
     let output_from_command = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: String.Encoding.utf8)!
-    if output_from_command.characters.count > 0 {
+    if output_from_command.count > 0 {
         let lastIndex = output_from_command.index(before: output_from_command.endIndex)
-        return output_from_command[output_from_command.startIndex ..< lastIndex]
+        return String(output_from_command[output_from_command.startIndex ..< lastIndex])
     }
     return output_from_command
 }

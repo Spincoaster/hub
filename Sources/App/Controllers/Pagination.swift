@@ -71,7 +71,7 @@ extension Pagination {
         let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZあかさたなはまやらわ＃"
         let currentLetter = request.query?["has_prefix"]?.string ?? ""
         let href    = try indexPath(request: request)
-        let pages = try letters.characters.map { c in
+        let pages = try letters.map { c in
             return try [
                 "label": "\(c)",
                 "active": currentLetter.uppercased() == String(c) ? "active" : "",
