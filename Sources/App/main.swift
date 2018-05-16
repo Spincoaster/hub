@@ -18,6 +18,7 @@ config.preparations.append(Album.self)
 config.preparations.append(Track.self)
 config.preparations.append(Feature.self)
 config.preparations.append(FeaturedItem.self)
+config.preparations.append(NewsEntry.self)
 
 let console: ConsoleProtocol = Terminal(arguments: CommandLine.arguments)
 let commands: [Command] = [
