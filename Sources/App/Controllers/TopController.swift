@@ -30,11 +30,13 @@ final class TopController: HTMLController {
                                   .filter(Filter(Feature.self, .compare("number", .greaterThanOrEquals, 0)))
                                   .sort("number", Sort.Direction.descending).all()
         try Feature.setItems(features: features)
+        let newsEntries = try NewsEntry.makeQuery().limit(3).sort("date", Sort.Direction.descending).all()
         let parameters = Node.object([
             "title": getTitle().makeNode(in: nil),
             "google_analytics_id": getGoogleAnalyticsId().makeNode(in: nil),
             "home_icon_url": getHomeIconUrl().makeNode(in: nil),
             "features": try features.map { try $0.makeLeafNode() }.makeNode(in: nil),
+            "news_entries": try newsEntries.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "menus": try menus(request: request)
             ])
         return try drop.view.make("top", parameters)

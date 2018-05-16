@@ -168,11 +168,30 @@ th.cell, td.cell {
     color: white !important;
 }
 
+.top-section-label {
+    margin-top: 32px;
+    margin-left: 12px;
+    font-size: 40px;
+    text-align: left;
+}
+
+.top-info-label {
+    margin-left: 12px;
+}
+
+.top-card-grid {
+    padding-top: 20px;
+}
+
 .top-carousel {
-    height: 300px;
+    height: 460px;
     width: 100%;
     overflow-x: scroll;
     -webkit-overflow-scrolling: touch;
+}
+
+.top-carousel .card.large {
+    height: 400px;
 }
 
 .top-carousel-inner {
@@ -182,15 +201,33 @@ th.cell, td.cell {
 }
 
 .top-carousel-item {
-    vertical-align: top;
-    height: 200px;
     display: inline-block;
+    height: 200px;
+    width: 500px;
     margin: 8px;
+    vertical-align: top;
+    white-space: normal;
+}
+
+.top-carousel-item p {
+    font-size: 28px;
 }
 
 .top-carousel-item-icon {
     font-size: 40px;
 }
+
+.card-image img {
+    object-fit: cover;
+    -webkit-object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+a {
+    color: #000000 !important;
+}
+
 /* for ipad mini */
 nav .brand-logo.center {
     -webkit-transform: translateX(-50%);

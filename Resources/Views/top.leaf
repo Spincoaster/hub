@@ -1,69 +1,74 @@
 #extend("base")
 
 #export("body") {
-  <h4>特集</h4>
-  <br >
-  #loop(features, "feature") {
-    <a href="/features/#(feature.id)">
-      <h5>#(feature.name)</h5>
-      <div>#(feature.description)</div>
-    </a>
-    <div class="top-carousel">
-      <div class="top-carousel-inner">
-      #loop(feature.items, "item") {
-        #if(item.is_track) {
-          <div class="top-carousel-item track-item">
-            <div>
-              <i class="material-icons">high_quality</i>
-              #(item.item.name)
-            </div>
-            <div class="artist-name">
-              <i class="material-icons">assignment_ind</i>
-              <a href="/artists/#(item.item.artist.id)">#(item.item.artist.name)</a>
-            </div>
-            <div class="album-name">
-              <i class="material-icons">album</i>
-              #(item.item.album.name)
-            </div>
-            #if(item.comment) {
-              <div>
-                <i class="material-icons">comment</i>
-                #(item.comment)
-              </div>
-            }
+  <div class="top-section-label">Music</div>
+  <div class="row top-card-grid">
+    <div class="col s12 m6">
+      <a href="/features/#(feature.id)">
+        <div class="card medium waves-effect waves-block waves-light">
+          <div class="card-image">
+            <img src="/images/feature.png" height="200">
           </div>
-        }
-        #if(item.is_record) {
-          <div class="top-carousel-item record-item">
-            <div>
-              <i class="material-icons">album</i>
-              #(item.item.name)
-            </div>
-            <div class="artist-name">
-              <i class="material-icons">assignment_ind</i>
-              <a href="/artists/#(item.item.artist.id)">#(item.item.artist.name)</a>
-            </div>
-            <div class="owner-name" style="display: none;">
-              <i class="material-icons">perm_identity</i>
-              <a href="/owners/#(item.item.owner.id)">#(item.item.owner.name)</a>
-            </div>
-            <div class="location-name" style="display: none;">#(item.item.location)-#(item.item..number)</div>
-            <div>　</div>
-            #if(item.comment) {
-              <div>
-                <i class="material-icons">comment</i>
-                #(item.comment)
-              </div>
-            }
-          </div>
-        }
-      }
-      </div>
+          <div class="card-content">特集</div>
+        </div>
+      </a>
     </div>
-  }
-  <h4>索引</h4>
-  <div><a href="/artists?has_prefix=a">アーティスト一覧から探す</a></div>
-  <div><a href="/records?has_prefix=a">レコード一覧から探す</a></div>
-  <div><a href="/tracks?has_prefix=a">ハイレゾ一覧から探す</a></div>
-  <div>※検索は右上の<i class="material-icons">search</i>から</div>
+
+    <div class="col s12 m6">
+      <a href="/artists?has_prefix=a">
+        <div class="card medium waves-effect waves-block waves-light">
+          <div class="card-image">
+            <img src="/images/artist.jpg" height="200">
+          </div>
+          <div class="card-content">アーティスト一覧から探す</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col s12 m6">
+      <a href="/records?has_prefix=a">
+        <div class="card medium waves-effect waves-block waves-light">
+          <div class="card-image">
+            <img src="/images/record.jpg" height="200">
+          </div>
+          <div class="card-content">レコード一覧から探す</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col s12 m6">
+      <a href="/tracks?has_prefix=a">
+        <div class="card medium waves-effect waves-block waves-light">
+          <div class="card-image">
+            <img src="/images/track.jpg" height="200">
+          </div>
+          <div class="card-content">ハイレゾ一覧から探す</div>
+        </div>
+      </a>
+    </div>
+
+  </div>
+
+  <div class="top-info-label">※フリーワード検索は右上の<i class="material-icons">search</i>から</div>
+
+  <div class="top-section-label">News</div>
+  <div class="top-carousel">
+    <div class="top-carousel-inner">
+      #loop(news_entries, "item") {
+        <div class="top-carousel-item s8 m8">
+          <a href="#(item.url)" target="_blank">
+            <div class="card large waves-effect waves-block waves-light">
+              <div class="card-image">
+                <img src="#(item.thumbnail)" height="200">
+              </div>
+              <div class="card-content">
+                <p>#(item.title)</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      }
+    </div>
+  </div>
+
 }
