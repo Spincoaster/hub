@@ -23,6 +23,9 @@ gen_external_track_list:
 	cd /Volumes/HAP_External && \
 	find . > `ghq list kumabook/recordhub -p`/external.txt && \
 	cd `ghq list kumabook/recordhub -p`
+crawl:
+	swift build -Xlinker -L/usr/local/lib/
+	vapor run crawl_news
 
 run:
 	swift build -Xlinker -L/usr/local/lib/

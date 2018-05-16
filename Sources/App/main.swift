@@ -23,7 +23,8 @@ config.preparations.append(NewsEntry.self)
 let console: ConsoleProtocol = Terminal(arguments: CommandLine.arguments)
 let commands: [Command] = [
     ImportRecordsCommand(console: console),
-    ImportTracksCommand(console: console)
+    ImportTracksCommand(console: console),
+    CrawlNewsCommand(console: console),
 ]
 let drop = try Droplet(config: config, commands: commands)
 
