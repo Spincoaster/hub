@@ -2,7 +2,7 @@ import Vapor
 import HTTP
 import Fluent
 
-final class TrackController: ResourceRepresentable, Pagination {
+final class TrackController: ResourceRepresentable, Pagination, HTMLController {
     typealias E = Track
     func indexQuery(request: Request) throws -> Query<Track> {
         let query = try Track.makeQuery().join(Artist.self, baseKey: "artist_id", joinedKey: "id")
@@ -50,8 +50,9 @@ final class TrackController: ResourceRepresentable, Pagination {
         }
         let contains: String = request.query?["contains"]?.string ?? "";
         let parameters = try Node.object([
-            "title": getTitle()?.makeNode(in: nil) ?? "",
-            "home_icon_url": getHomeIconUrl()?.makeNode(in: nil) ?? "",
+            "title": getTitle().makeNode(in: nil),
+            "google_analytics_id": getGoogleAnalyticsId().makeNode(in: nil),
+            "home_icon_url": getHomeIconUrl().makeNode(in: nil),
             "resource_name": "Hi-Res Audio",
             "tracks": tracks.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),

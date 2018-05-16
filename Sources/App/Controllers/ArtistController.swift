@@ -12,7 +12,7 @@ import Vapor
 import HTTP
 import Fluent
 
-final class ArtistController: ResourceRepresentable, Pagination {
+final class ArtistController: ResourceRepresentable, Pagination, HTMLController {
     typealias E = Artist
     func indexQuery(request: Request) throws -> Query<Artist> {
         let query = try Artist.makeQuery().sort(Sort(Artist.self, "name", .ascending))
@@ -34,8 +34,9 @@ final class ArtistController: ResourceRepresentable, Pagination {
         let artists = try paginate(request: request)
         let contains: String = request.query?["contains"]?.string ?? "";
         let parameters = try Node.object([
-            "title": getTitle()?.makeNode(in: nil) ?? "",
-            "home_icon_url": getHomeIconUrl()?.makeNode(in: nil) ?? "",
+            "title": getTitle().makeNode(in: nil),
+            "google_analytics_id": getGoogleAnalyticsId().makeNode(in: nil),
+            "home_icon_url": getHomeIconUrl().makeNode(in: nil),
             "resource_name": "Artist",
             "artists": artists.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
@@ -90,7 +91,7 @@ final class ArtistController: ResourceRepresentable, Pagination {
                                           .all()
             try Track.setParents(tracks: tracks)
         }
-        let obj: [String: Node] = try [
+        var obj: [String: Node] = try [
             "has_records": (records.count > 0).makeNode(in: nil),
             "records": records.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "albums": albums.map { try $0.makeLeafNode() }.makeNode(in: nil),
@@ -98,10 +99,12 @@ final class ArtistController: ResourceRepresentable, Pagination {
             "tracks": tracks.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "has_tracks": (tracks.count > 0).makeNode(in: nil),
             "artist": artist.makeLeafNode(),
-            "title": getTitle()?.makeNode(in: nil) ?? "",
             "menus": menus(request: request),
             "debug": (request.query?["debug"]?.bool ?? false).makeNode(in: nil),
             ]
+        obj["title"] = getTitle().makeNode(in: nil)
+        obj["google_analytics_id"] = getGoogleAnalyticsId().makeNode(in: nil)
+        obj["home_icon_url"] = getHomeIconUrl().makeNode(in: nil)
         let parameters = Node.object(obj)
         return try drop.view.make("artist", parameters)
     }

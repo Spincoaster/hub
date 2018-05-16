@@ -11,7 +11,7 @@ import Vapor
 import HTTP
 import Fluent
 
-final class FeatureController: ResourceRepresentable, Pagination {
+final class FeatureController: ResourceRepresentable, Pagination, HTMLController {
     typealias E = Feature
     enum Mode {
         case admin
@@ -32,8 +32,9 @@ final class FeatureController: ResourceRepresentable, Pagination {
     func index(request: Request) throws -> ResponseRepresentable {
         let features = try paginate(request: request)
         let parameters = try Node.object([
-            "title": getTitle()?.makeNode(in: nil) ?? "",
-            "home_icon_url": getHomeIconUrl()?.makeNode(in: nil) ?? "",
+            "title": getTitle().makeNode(in: nil),
+            "google_analytics_id": getGoogleAnalyticsId().makeNode(in: nil),
+            "home_icon_url": getHomeIconUrl().makeNode(in: nil),
             "resource_name": "Feature",
             "features": features.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),
@@ -62,8 +63,10 @@ final class FeatureController: ResourceRepresentable, Pagination {
     func featureParameters(request: Request, feature: Feature) throws -> Node {
         try Feature.setItems(features: [feature])
         let obj: [String: Node] = try [
+            "title": getTitle().makeNode(in: nil),
+            "google_analytics_id": getGoogleAnalyticsId().makeNode(in: nil),
+            "home_icon_url": getHomeIconUrl().makeNode(in: nil),
             "feature": feature.makeLeafNode(),
-            "title": getTitle()?.makeNode(in: nil) ?? "",
             "menus": menus(request: request),
             "debug": (request.query?["debug"]?.bool ?? false).makeNode(in: nil),
         ]

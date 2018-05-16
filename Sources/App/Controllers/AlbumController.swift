@@ -2,7 +2,7 @@ import Vapor
 import HTTP
 import Fluent
 
-final class AlbumController: ResourceRepresentable, Pagination {
+final class AlbumController: ResourceRepresentable, Pagination, HTMLController {
     typealias E = Album
     func indexQuery(request: Request) throws -> Query<Album> {
         let query = try Album.makeQuery().join(Artist.self, baseKey: "artist_id", joinedKey: "id")
@@ -38,8 +38,9 @@ final class AlbumController: ResourceRepresentable, Pagination {
         }
         let contains: String = request.query?["contains"]?.string ?? "";
         let parameters = try Node.object([
-            "title": getTitle()?.makeNode(in: nil) ?? "",
-            "home_icon_url": getHomeIconUrl()?.makeNode(in: nil) ?? "",
+            "title": getTitle().makeNode(in: nil),
+            "google_analytics_id": getGoogleAnalyticsId().makeNode(in: nil),
+            "home_icon_url": getHomeIconUrl().makeNode(in: nil),
             "resource_name": "Album",
             "albums": albums.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "pages": pages(request: request),

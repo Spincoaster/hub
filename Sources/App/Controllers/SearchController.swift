@@ -10,12 +10,8 @@ import Vapor
 import HTTP
 import Fluent
 
-final class SearchController {
+final class SearchController: HTMLController {
     let limit = 100
-    func getHomeIconUrl() -> String? {
-        guard let rawValue = getenv("HOME_ICON_URL") else { return nil }
-        return String(utf8String: rawValue)
-    }
     func menus(request: Request) throws -> Node {
         var items: [[String:String]] = []
         for menu in Menu.items {
@@ -37,7 +33,8 @@ final class SearchController {
         }
         let obj: [String: Node] = [
             "title": "Search results",
-            "home_icon_url": getHomeIconUrl()?.makeNode(in: nil) ?? "",
+            "google_analytics_id": getGoogleAnalyticsId().makeNode(in: nil),
+            "home_icon_url": getHomeIconUrl().makeNode(in: nil),
             "query": q.makeNode(in: nil),
             "tracks": try tracks.items.map { try $0.makeLeafNode() }.makeNode(in: nil),
             "has_tracks": (tracks.count > 0).makeNode(in: nil),
