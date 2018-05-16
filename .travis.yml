@@ -5,8 +5,14 @@ language: generic
 sudo: required
 dist: trusty
 osx_image: xcode9.3
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install mecab; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -qq update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y mecab libmecab-dev; fi
 install:
   - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
 script:
-  - swift build
-  - swift build -c release
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CFLAGS="-Xcc -I/usr/local/opt/openssl/include $CFLAGS"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export LDFLAGS="-Xlinker -L/usr/local/opt/openssl/lib $LDFLAGS"; fi
+  - swift build $CFLAGS $LDFLAGS
+  - swift build $CFLAGS $LDFLAGS -c release
