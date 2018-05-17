@@ -13,10 +13,13 @@
       <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
     </ul>
   }
+  <p class="table-caption table-caption-features">
+    <i class="small material-icons">collections_bookmark</i>
+    <span>Features</span>
+  </p>
   <table class="highlight">
     <thead>
       <tr>
-        <th class="right-edge">Features</th>
         #if(is_admin) {
           <th class="feature-item-button">
             <a class="add-feature-button btn-floating btn-large waves-effect waves-light">

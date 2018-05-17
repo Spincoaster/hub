@@ -12,6 +12,10 @@
     margin-top: 7px;
 }
 
+.table-caption-features {
+    margin: 28px 0;
+}
+
 .pagination {
     width: 100%;
     white-space: nowrap;
