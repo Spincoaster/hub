@@ -1,5 +1,5 @@
 //
-//  TagController.swift
+//  FeatureController.swift
 //  App
 //
 //  Created by Hiroki Kumamoto on 2017/10/12.
@@ -48,7 +48,8 @@ final class FeatureController: ResourceRepresentable, Pagination, HTMLController
     }
     func menus(request: Request) throws -> Node {
         var items: [[String:String]] = []
-        for menu in Menu.adminItems {
+        let menuItems = mode == .admin ? Menu.adminItems : Menu.items
+        for menu in menuItems {
             if menu["label"] == "Features" {
                 items.append(["href": menu["href"]!,
                               "label":  menu["label"]!,
@@ -68,6 +69,7 @@ final class FeatureController: ResourceRepresentable, Pagination, HTMLController
             "home_icon_url": getHomeIconUrl().makeNode(in: nil),
             "feature": feature.makeLeafNode(),
             "menus": menus(request: request),
+            "is_admin": (mode == .admin).makeNode(in: nil),
             "debug": (request.query?["debug"]?.bool ?? false).makeNode(in: nil),
         ]
         return Node.object(obj)

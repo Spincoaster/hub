@@ -17,22 +17,28 @@
     <thead>
       <tr>
         <th class="right-edge">Features</th>
-        <th class="feature-item-button">
-          <a class="add-feature-button btn-floating btn-large waves-effect waves-light">
-            <i class="material-icons">add</i>
-          </a>
-        </th>
+        #if(is_admin) {
+          <th class="feature-item-button">
+            <a class="add-feature-button btn-floating btn-large waves-effect waves-light">
+              <i class="material-icons">add</i>
+            </a>
+          </th>
+        }
       </tr>
     </thead>
     <tbody>
       #loop(features, "feature") {
         <tr>
-          <td class="right-edge"><a href="/admin/features/#(feature.id)">#(feature.name)</a></td>
-          <td class="feature-item-button">
-            <a class="remove-feature-button btn-floating btn-large waves-effect waves-light">
-              <i class="material-icons" data-id="#(feature.id)">remove</i>
-            </a>
-          </td>
+          #if(is_admin) {
+            <td class="right-edge"><a href="/admin/features/#(feature.id)">#(feature.name)</a></td>
+            <td class="feature-item-button">
+              <a class="remove-feature-button btn-floating btn-large waves-effect waves-light">
+                <i class="material-icons" data-id="#(feature.id)">remove</i>
+              </a>
+            </td>
+          } ##else() {
+            <td class="right-edge"><a href="/features/#(feature.id)">#(feature.name)</a></td>
+          }
         </tr>
       }
     </tbody>
