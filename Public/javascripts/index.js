@@ -33,7 +33,7 @@ $(function() {
     var link;
     for (var i = 0; i < links.length; i++) {
       var link = links[i];
-      if (link.href.toLowerCase().indexOf('javascript') === -1) {
+      if (link.href.toLowerCase().indexOf('javascript') === -1 && link.target !== '_blank') {
         link.addEventListener('click', function(e) {
           top.location.href = this.href;
           e.returnValue = false;
