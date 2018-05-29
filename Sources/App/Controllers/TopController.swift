@@ -30,7 +30,7 @@ final class TopController: HTMLController {
                                   .filter(Filter(Feature.self, .compare("number", .greaterThanOrEquals, 0)))
                                   .sort("number", Sort.Direction.descending).all()
         try Feature.setItems(features: features)
-        let newsEntries = try NewsEntry.makeQuery().limit(3).sort("date", Sort.Direction.descending).all()
+        let newsEntries = try NewsEntry.makeQuery().limit(5).sort("date", Sort.Direction.descending).all()
         let parameters = Node.object([
             "title": getTitle().makeNode(in: nil),
             "google_analytics_id": getGoogleAnalyticsId().makeNode(in: nil),
