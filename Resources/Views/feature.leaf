@@ -5,6 +5,20 @@
   <div class="row">
     #(feature.description)
   </div>
+  #if(feature.external_link) {
+    <div >
+      <a href="#(feature.external_link)">
+        <div class="card waves-effect waves-block waves-light feature-external-card">
+          #if(feature.external_thumbnail) {
+            <div class="card-image">
+              <img src="#(feature.external_thumbnail)">
+            </div>
+          }
+          <div class="card-content">各レコードの解説はこちら</div>
+        </div>
+      </a>
+    </div>
+  }
   <table class="highlight">
     <caption class="feature-item-table-caption">
       <h5>items</h5>
