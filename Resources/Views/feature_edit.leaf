@@ -25,6 +25,18 @@
       </div>
     </div>
     <div class="row">
+      <div class="input-field col s6">
+        <input id="external_link" name="external_link" type="text" class="validate" placeholder="https://spincoaster.com/xxxx" value="#(feature.external_link)">
+        <label for="external_link">External link</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <input id="external_thumbnail" name="external_thumbnail" type="text" class="validate" placeholder="https://spincoaster.com/wp/wp-content/uploads/xxxx" value="#(feature.external_thumbnail)">
+        <label for="external_thumbnail">External  thumbnail</label>
+      </div>
+    </div>
+    <div class="row">
       <div class="col s6">
         <button class="col btn waves-effect waves-light feature-button" type="submit">
           Update

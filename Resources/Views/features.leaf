@@ -60,9 +60,17 @@
         <textarea id="description" name="description" class="materialize-textarea" placeholder="description"></textarea>
         <label for="description">Description</label>
       </div>
+      <div class="input-field">
+        <input id="external_link" name="external_link" type="text" class=validate" placeholder="https://spincoaster.com/xxxx">
+        <label for="external_link">External link</label>
+      </div>
+      <div class="input-field">
+        <input id="external_thumbnail" name="external_thumbnail" type="text" class="validate" placeholder="https://spincoaster.com/wp/wp-content/uploads/xxxx">
+        <label for="external_thumbnail">External thumbnail</label>
+      </div>
     </div>
     <div class="modal-footer">
-      <a id="add-feature-submit-button" class="modal-action modal-close waves-effect waves-green btn-flat">Add</a>
+      <button id="add-feature-submit-button" class="modal-action modal-close waves-effect waves-green btn">Add</button>
     </div>
   </div>
 
