@@ -172,6 +172,11 @@ th.cell, td.cell {
     color: white !important;
 }
 
+.feature-external-card {
+    max-width: 300px;
+    margin: auto;
+}
+
 .top-section-label {
     margin-top: 32px;
     margin-left: 12px;

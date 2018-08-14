@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/vapor/bcrypt.git",
         "state": {
           "branch": null,
-          "revision": "3ee4aca16ba6ebfb1ad48cc5fd4dfb163c6d6be8",
-          "version": "1.1.0"
+          "revision": "a36b6f0381f2edb9fb32b8882ebc801ba8db10ef",
+          "version": "1.1.1"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/vapor/bits.git",
         "state": {
           "branch": null,
-          "revision": "c32f5e6ae2007dccd21a92b7e33eba842dd80d2f",
-          "version": "1.1.0"
+          "revision": "03079476b04139a8b744ad96f975176df5ae12bc",
+          "version": "1.1.1"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/vapor/core.git",
         "state": {
           "branch": null,
-          "revision": "f9f3a585ab0ea5764b46d7a36d9c0d9d508b9c63",
-          "version": "2.2.0"
+          "revision": "aa15871311b497a24a7f0e96b1ae6865dd600818",
+          "version": "2.2.1"
         }
       },
       {
@@ -60,8 +60,8 @@
         "repositoryURL": "https://github.com/vapor/crypto.git",
         "state": {
           "branch": null,
-          "revision": "946edc6642d6825982a2f52a268a8ba9bd520a3d",
-          "version": "2.1.2"
+          "revision": "95e96b4d8e5c81da850db512a2fde167548f9094",
+          "version": "2.1.3"
         }
       },
       {
@@ -96,8 +96,8 @@
         "repositoryURL": "https://github.com/vapor/engine.git",
         "state": {
           "branch": null,
-          "revision": "0ecc50fa8c7bc03ec9af78ca37e3b57f192bd258",
-          "version": "2.2.4"
+          "revision": "e44822c7516676d8bcb0141a6e248a88847b110c",
+          "version": "2.2.5"
         }
       },
       {
@@ -168,8 +168,8 @@
         "repositoryURL": "https://github.com/vapor/node.git",
         "state": {
           "branch": null,
-          "revision": "c4ff32f07657aec849677e5aecb657bb6c85098d",
-          "version": "2.1.4"
+          "revision": "607aa595081da496f0f04a5c0cffd976e81d2e4e",
+          "version": "2.1.5"
         }
       },
       {
@@ -177,8 +177,8 @@
         "repositoryURL": "https://github.com/vapor-community/postgresql.git",
         "state": {
           "branch": null,
-          "revision": "d57aa99805da230704f924f7680195cfbf869642",
-          "version": "2.1.1"
+          "revision": "1d23662a0b1b6b4689319607bb8d22daa57e5fca",
+          "version": "2.1.2"
         }
       },
       {
@@ -258,8 +258,8 @@
         "repositoryURL": "https://github.com/vapor/tls.git",
         "state": {
           "branch": null,
-          "revision": "02a47309249e69358aa3c28b5853897585d7a750",
-          "version": "2.1.2"
+          "revision": "a5981b0a370f227521330beb92b7ce6d636a1eb2",
+          "version": "2.1.3"
         }
       },
       {

@@ -58,30 +58,38 @@ public final class Feature: Model {
     }
     public let storage = Storage()
 
-    public var id:           Identifier?
-    public var name:         String
-    public var number:       Int
-    public var description:  String
-
+    public var id:                Identifier?
+    public var name:              String
+    public var number:            Int
+    public var description:       String
+    public var externalLink:      String
+    public var externalThumbnail: String
+    
     public var items:        [Item]?
 
-    public init(name: String, number: Int, description: String) {
-        self.name         = name
-        self.number       = number
-        self.description  = description
+    public init(name: String, number: Int, description: String, externalLink: String, externalThumbnail: String) {
+        self.name              = name
+        self.number            = number
+        self.description       = description
+        self.externalLink      = externalLink
+        self.externalThumbnail = externalThumbnail
     }
     
     public init(row: Row) throws {
-        name         = try row.get("name")
-        number       = try row.get("number")
-        description  = try row.get("description")
+        name              = try row.get("name")
+        number            = try row.get("number")
+        description       = try row.get("description")
+        externalLink      = try row.get("external_link")
+        externalThumbnail = try row.get("external_thumbnail")
     }
     
     public func makeRow() throws -> Row {
         var row = Row()
-        try row.set("name"         , name)
-        try row.set("number"       , number)
-        try row.set("description"  , description)
+        try row.set("name"              , name)
+        try row.set("number"            , number)
+        try row.set("description"       , description)
+        try row.set("external_link"     , externalLink)
+        try row.set("external_thumbnail", externalThumbnail)
         return row
     }
     
@@ -97,7 +105,7 @@ public final class Feature: Model {
             if let feature = try Feature.makeQuery().filter("name", name).first() {
                 return feature
             } else {
-                let feature = Feature(name: name, number: -1, description: "")
+                let feature = Feature(name: name, number: -1, description: "", externalLink: "", externalThumbnail: "")
                 try feature.save()
                 return feature
             }
@@ -163,13 +171,30 @@ extension Feature: Preparation {
     }
 }
 
+class AddExternalLinkToFeature: Preparation {
+    public static func prepare(_ database: Database) throws {
+        try database.modify(Feature.self) { features in
+            features.string("external_link", length: nil, optional: false, unique: false, default: "")
+            features.string("external_thumbnail", length: nil, optional: false, unique: false, default: "")
+        }
+    }
+    public static func revert(_ database: Database) throws {
+        try database.modify(Feature.self) { features in
+            features.delete("external_link")
+            features.delete("external_thumbnail")
+        }
+    }
+}
+
 // MARK: JSON
 extension Feature: JSONConvertible {
     public convenience init(json: JSON) throws {
         try self.init(
-            name         : json.get("name"),
-            number       : json.get("number"),
-            description  : json.get("description")
+            name              : json.get("name"),
+            number            : json.get("number"),
+            description       : json.get("description"),
+            externalLink      : json.get("external_link"),
+            externalThumbnail : json.get("external_thumbnail")
         )
     }
     
@@ -179,6 +204,8 @@ extension Feature: JSONConvertible {
         try json.set("number", number)
         try json.set("name", name)
         try json.set("description", description)
+        try json.set("external_link", externalLink)
+        try json.set("external_thumbnail", externalThumbnail)
         if let items = items {
             try json.set("items", items.map { try $0.makeNode() }.makeNode(in: nil))
         }

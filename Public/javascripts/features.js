@@ -5,13 +5,17 @@ $(function() {
 
   $('#new-feature-modal').modal();
   $('#add-feature-submit-button').click(function() {
-    var name        = $('#name').val();
-    var number      = $('#number').val();
-    var description = $('#description').val();
+    var name              = $('#name').val();
+    var number            = $('#number').val();
+    var description       = $('#description').val();
+    var externalLink      = $('#external_link').val();
+    var externalThumbnail = $('#external_thumbnail').val();
     $.post('/admin/features', {
-      name:        name,
-      number:      number,
-      description: description,
+      name:               name,
+      number:             number,
+      description:        description,
+      external_link:      externalLink,
+      external_thumbnail: externalThumbnail
     }).done(function() {
       window.location.reload();
     }).fail(function(e) {

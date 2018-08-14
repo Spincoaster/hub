@@ -34,6 +34,7 @@ final class FeatureController: ResourceRepresentable, Pagination, HTMLController
         let parameters = try Node.object([
             "title": getTitle().makeNode(in: nil),
             "google_analytics_id": getGoogleAnalyticsId().makeNode(in: nil),
+            "is_admin": (mode == .admin).makeNode(in: nil),
             "home_icon_url": getHomeIconUrl().makeNode(in: nil),
             "resource_name": "Feature",
             "features": features.map { try $0.makeLeafNode() }.makeNode(in: nil),
@@ -103,10 +104,12 @@ final class FeatureController: ResourceRepresentable, Pagination, HTMLController
     func update(request: Request, feature: Feature) throws -> ResponseRepresentable {
         if mode != .admin { throw Abort.unauthorized }
         guard let _ = request.currentUser else { return try drop.view.make("error") }
-        let new             = try request.feature()
-        feature.name        = new.name
-        feature.number      = new.number
-        feature.description = new.description
+        let new                   = try request.feature()
+        feature.name              = new.name
+        feature.number            = new.number
+        feature.description       = new.description
+        feature.externalLink      = new.externalLink
+        feature.externalThumbnail = new.externalThumbnail
         try feature.save()
         return try drop.view.make("feature_edit", featureParameters(request: request, feature: feature))
     }
@@ -129,6 +132,8 @@ extension Request {
         guard let name = data["name"]?.string else { throw Abort.badRequest }
         guard let number = data["number"]?.int else { throw Abort.badRequest }
         let description = data["description"]?.string ?? ""
-        return Feature(name: name, number: number, description: description)
+        let externalLink = data["external_link"]?.string ?? ""
+        let externalThumbnail = data["external_thumbnail"]?.string ?? ""
+        return Feature(name: name, number: number, description: description, externalLink: externalLink, externalThumbnail: externalThumbnail)
     }
 }
