@@ -22,8 +22,11 @@ final class FeatureController: ResourceRepresentable, Pagination, HTMLController
         self.mode = mode
     }
     func indexQuery(request: Request) throws -> Query<Feature> {
-        let query = try Feature.makeQuery()
+        var query = try Feature.makeQuery()
                                .sort(Sort(Feature.self, "number", .descending))
+        if mode != .admin {
+            query = try query.filter("number", Filter.Comparison.greaterThanOrEquals, 0)
+        }
         return query
     }
     func indexPath(request: Request) throws -> String {
