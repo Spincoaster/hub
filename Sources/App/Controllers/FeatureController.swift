@@ -34,6 +34,7 @@ final class FeatureController: ResourceRepresentable, Pagination, HTMLController
         let parameters = try Node.object([
             "title": getTitle().makeNode(in: nil),
             "google_analytics_id": getGoogleAnalyticsId().makeNode(in: nil),
+            "is_admin": (mode == .admin).makeNode(in: nil),
             "home_icon_url": getHomeIconUrl().makeNode(in: nil),
             "resource_name": "Feature",
             "features": features.map { try $0.makeLeafNode() }.makeNode(in: nil),
