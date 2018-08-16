@@ -19,45 +19,48 @@
       </a>
     </div>
   }
-  <table class="highlight">
-    <caption class="feature-item-table-caption">
-      <h5>items</h5>
-    </caption>
-    <thead>
-      <tr>
-        <th>artist</th>
-        <th>name</th>
-        <th>album</th>
-        <th class="right-edge">comment</th>
-      </tr>
-    </thead>
-    <tbody>
-      #loop(feature.items, "item") {
-        #if(item.is_track) {
-          <tr class="track-item">
-            <td class="artist-name">
-              <a href="/tracks?artist_id=#(item.item.artist.id)">#(item.item.artist.name)</a>
-            </td>
-            <td class="track-name">#(item.item.name)</td>
-            <td class="album-name"><a href="/tracks?album_id=#(item.item.album.id)">#(item.item.album.name)</a></td>
-            <td class="right-edge">#(item.comment)</td>
-          </tr>
-        }
-        #if(item.is_record) {
-          <tr class="record-item">
-            <td class="artist-name">
-              <a href="/records?artist_id=#(item.item.artist.id)">#(item.item.artist.name)</a>
-            </td>
-            <td class="record-name">#(item.item.name)</td>
-            <td class="right-edge">#(item.item.comment)</td>
-            <td style="display: none;" class="owner-name"><a href="/records?owner_id=#(item.item.owner.id)">#(item.item.owner.name)</a></td>
-            <td style="display: none;" class="location-name" style="white-space: nowrap;">#(item.item.location)-#(item.item.number)</td>
-            <td>-</td>
-            <td>#(item.comment)</td>
-          </tr>
-        }
-        </tr>
+
+  <ul class="collection feature-item-collection">
+    #loop(feature.items, "item") {
+      #if(item.is_track) {
+        <li class="collection-item avatar track-item">
+          <i class="material-icons circle white">high_quality</i>
+          <span class="title track-name">#(item.item.name)</span>
+          <p class="artist-name">
+            <a href="/tracks?artist_id=#(item.item.artist.id)">#(item.item.artist.name)</a><br>
+            <span class="album-name">
+              <a href="/tracks?album_id=#(item.item.album.id)">#(item.item.album.name)</a>
+            </span>
+          </p>
+
+          #if(item.comment) {
+            <a class="secondary-content comment-item">
+              <i class="material-icons">comment</i>
+              <div class="comment" style="display: none;">#(item.comment)</div>
+            </a>
+          }
+        </li>
       }
-    </tbody>
-  </table>
+      #if(item.is_record) {
+        <li class="collection-item avatar record-item">
+          <i class="material-icons circle white">album</i>
+          <span class="title record-name">#(item.item.name)</span>
+          <p class="artist-name">
+            <a href="/records?artist_id=#(item.item.artist.id)">#(item.item.artist.name)</a>
+            <br>
+          </p>
+
+          #if(item.comment) {
+            <a class="secondary-content comment-item">
+              <i class="material-icons">comment</i>
+              <div class="comment" style="display: none;">#(item.comment)</div>
+            </a>
+          }
+
+          <div style="display: none;" class="owner-name"><a href="/records?owner_id=#(item.item.owner.id)">#(item.item.owner.name)</a></div>
+          <div style="display: none;" class="location-name">#(item.item.location)-#(item.item.number)</div>
+        </li>
+      }
+    }
+  </ul>
 }
