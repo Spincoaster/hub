@@ -34,21 +34,40 @@ final class FeatureController: ResourceRepresentable, Pagination, HTMLController
     }
     func index(request: Request) throws -> ResponseRepresentable {
         let features = try paginate(request: request)
+        var categories: Set<String> = []
+        var dic: [String:[Node]] = [:]
+        for feature in features {
+            categories.insert(feature.category)
+            if dic[feature.category] == nil {
+               dic[feature.category] = []
+            }
+            dic[feature.category]?.append(try feature.makeLeafNode().makeNode(in: nil))
+        }
+        var items: [[String:Node]] = []
+        for category in categories.sorted() {
+            items.append(["category": category.makeNode(in: nil), "items": try dic[category]!.makeNode(in: nil)])
+        }
         let parameters = try Node.object([
             "title": getTitle().makeNode(in: nil),
             "google_analytics_id": getGoogleAnalyticsId().makeNode(in: nil),
-            "is_admin": (mode == .admin).makeNode(in: nil),
             "home_icon_url": getHomeIconUrl().makeNode(in: nil),
             "resource_name": "Feature",
             "features": features.map { try $0.makeLeafNode() }.makeNode(in: nil),
+            "feature_dic": dic.makeNode(in: nil),
+            "categories": categories.makeNode(in: nil),
+            "items": items.makeNode(in: nil),
             "pages": pages(request: request),
             "has_pages": try (pagesCount(request: request) > 1).makeNode(in: nil),
             "menus": menus(request: request),
             "debug": (request.query?["debug"]?.bool ?? false).makeNode(in: nil),
             //            "current_user": request.currentUser?.makeNode(in: nil) ?? nil
             ])
-        return try drop.view.make("features", parameters)
-        
+        switch mode {
+        case .member:
+            return try drop.view.make("features", parameters)
+        case .admin:
+            return try drop.view.make("admin_features", parameters)
+        }
     }
     func menus(request: Request) throws -> Node {
         var items: [[String:String]] = []
