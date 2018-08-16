@@ -49,4 +49,6 @@ export:
 	heroku pg:backups:restore 'https://s3-ap-northeast-1.amazonaws.com/recordhub/recordhub.dump' DATABASE_URL --confirm ${APP}
 	aws s3 rm s3://recordhub/recordhub.dump --profile=recordhub
 update_records: import records export
+	curl -X POST --data-urlencode "payload={\"text\": \"[update_records] is done \" }" $SLACK_URL
 add_new_tracks: import gen_external_track_list external export
+	curl -X POST --data-urlencode "payload={\"text\": \"[add_new_tracks] is done\" }" $SLACK_URL
