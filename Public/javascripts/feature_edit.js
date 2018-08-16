@@ -12,12 +12,14 @@ $(function() {
       var data = {};
       result.tracks.forEach(function(track) {
         var id         = track.name + '|' + track.album.name + '|' + track.artist.name;
+        id             = id.trim();
         items[id]      = track;
         items[id].type = 'track';
         data[id]       = null;
       });
       result.records.forEach(function(record) {
         var id         = record.name + '|' + record.artist.name;
+        id             = id.trim();
         items[id]      = record;
         items[id].type = 'record';
         data[id]       = null;
