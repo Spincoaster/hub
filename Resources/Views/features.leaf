@@ -10,14 +10,14 @@
             <div class="collapsible-header"><i class="material-icons">folder</i>#(item.category)</div>
             <div class="collapsible-body">
               #loop(item.items, "feature") {
-              <div class="collapsible-header"><a href="/features/#(feature.id)">#(feature.name)</a></div>
-              }
+              <a href="/features/#(feature.id)"><div class="collapsible-header">#(feature.name)</div></a>
+            }
             </div>
           } ##else() {
             #loop(item.items, "feature") {
-              <div class="collapsible-header">
-                <a href="/features/#(feature.id)">#(feature.name)</a>
-              </div>
+              <a href="/features/#(feature.id)">
+                <div class="collapsible-header">#(feature.name)</div>
+              </a>
             }
           }
         </li>
