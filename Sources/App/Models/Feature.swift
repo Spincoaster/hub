@@ -64,15 +64,17 @@ public final class Feature: Model {
     public var description:       String
     public var externalLink:      String
     public var externalThumbnail: String
+    public var category:          String
     
     public var items:        [Item]?
 
-    public init(name: String, number: Int, description: String, externalLink: String, externalThumbnail: String) {
+    public init(name: String, number: Int, description: String, externalLink: String, externalThumbnail: String, category: String) {
         self.name              = name
         self.number            = number
         self.description       = description
         self.externalLink      = externalLink
         self.externalThumbnail = externalThumbnail
+        self.category          = category
     }
     
     public init(row: Row) throws {
@@ -81,6 +83,7 @@ public final class Feature: Model {
         description       = try row.get("description")
         externalLink      = try row.get("external_link")
         externalThumbnail = try row.get("external_thumbnail")
+        category          = try row.get("category")
     }
     
     public func makeRow() throws -> Row {
@@ -90,6 +93,7 @@ public final class Feature: Model {
         try row.set("description"       , description)
         try row.set("external_link"     , externalLink)
         try row.set("external_thumbnail", externalThumbnail)
+        try row.set("category"          , category)
         return row
     }
     
@@ -105,7 +109,7 @@ public final class Feature: Model {
             if let feature = try Feature.makeQuery().filter("name", name).first() {
                 return feature
             } else {
-                let feature = Feature(name: name, number: -1, description: "", externalLink: "", externalThumbnail: "")
+                let feature = Feature(name: name, number: -1, description: "", externalLink: "", externalThumbnail: "", category: "")
                 try feature.save()
                 return feature
             }
@@ -186,6 +190,19 @@ class AddExternalLinkToFeature: Preparation {
     }
 }
 
+class AddCategoryToFeature: Preparation {
+    public static func prepare(_ database: Database) throws {
+        try database.modify(Feature.self) { features in
+            features.string("category", length: nil, optional: false, unique: false, default: "")
+        }
+    }
+    public static func revert(_ database: Database) throws {
+        try database.modify(Feature.self) { features in
+            features.delete("category")
+        }
+    }
+}
+
 // MARK: JSON
 extension Feature: JSONConvertible {
     public convenience init(json: JSON) throws {
@@ -194,7 +211,8 @@ extension Feature: JSONConvertible {
             number            : json.get("number"),
             description       : json.get("description"),
             externalLink      : json.get("external_link"),
-            externalThumbnail : json.get("external_thumbnail")
+            externalThumbnail : json.get("external_thumbnail"),
+            category          : json.get("category")
         )
     }
     
@@ -206,6 +224,7 @@ extension Feature: JSONConvertible {
         try json.set("description", description)
         try json.set("external_link", externalLink)
         try json.set("external_thumbnail", externalThumbnail)
+        try json.set("category", category)
         if let items = items {
             try json.set("items", items.map { try $0.makeNode() }.makeNode(in: nil))
         }

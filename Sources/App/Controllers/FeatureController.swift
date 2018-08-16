@@ -113,6 +113,7 @@ final class FeatureController: ResourceRepresentable, Pagination, HTMLController
         feature.description       = new.description
         feature.externalLink      = new.externalLink
         feature.externalThumbnail = new.externalThumbnail
+        feature.category          = new.category
         try feature.save()
         return try drop.view.make("feature_edit", featureParameters(request: request, feature: feature))
     }
@@ -134,9 +135,10 @@ extension Request {
         guard let data = formURLEncoded else { throw Abort.badRequest }
         guard let name = data["name"]?.string else { throw Abort.badRequest }
         guard let number = data["number"]?.int else { throw Abort.badRequest }
-        let description = data["description"]?.string ?? ""
-        let externalLink = data["external_link"]?.string ?? ""
+        let description       = data["description"]?.string ?? ""
+        let externalLink      = data["external_link"]?.string ?? ""
         let externalThumbnail = data["external_thumbnail"]?.string ?? ""
-        return Feature(name: name, number: number, description: description, externalLink: externalLink, externalThumbnail: externalThumbnail)
+        let category          = data["category"]?.string ?? ""
+        return Feature(name: name, number: number, description: description, externalLink: externalLink, externalThumbnail: externalThumbnail, category: category)
     }
 }
