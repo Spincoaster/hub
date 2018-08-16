@@ -7,7 +7,7 @@
   </div>
   #if(feature.external_link) {
     <div >
-      <a href="#(feature.external_link)">
+      <a href="#(feature.external_link)" target="_blank">
         <div class="card waves-effect waves-block waves-light feature-external-card">
           #if(feature.external_thumbnail) {
             <div class="card-image">
