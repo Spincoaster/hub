@@ -177,6 +177,29 @@ th.cell, td.cell {
     margin: auto;
 }
 
+.feature-collection .collapsible-header {
+    line-height: 1rem;
+    min-height: 1rem;
+    font-size: 20px;
+    padding: 12px;
+}
+
+.feature-collection .collapsible-header i {
+    line-height: 1rem;
+    min-height: 1rem;
+    margin-right: 0;
+    font-size: 1rem;
+    width: 1rem;
+}
+
+.feature-collection.collapsible > li {
+    margin: 0;
+}
+
+.feature-collection .collapsible-body {
+    padding: 0.5rem;
+}
+
 .top-section-label {
     margin-top: 32px;
     margin-left: 12px;

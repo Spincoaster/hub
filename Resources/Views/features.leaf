@@ -2,84 +2,26 @@
 
 #export("body") {
   <script src="/javascripts/features.js"></script>
-  #if(has_pages) {
-    <ul class="pagination" style="display: inline-block; ">
-      <li class="disabled"><a href=""><i class="material-icons">chevron_left</i></a></li>
-      #loop(pages, "page") {
-        <li class="#(page.active) waves-effect">
-          <a href="#(page.href)">#(page.label)</a>
+  <div>
+    <ul class="feature-collection collapsible popout">
+      #loop(items, "item") {
+        <li>
+          #if(item.category) {
+            <div class="collapsible-header"><i class="material-icons">folder</i>#(item.category)</div>
+            <div class="collapsible-body">
+              #loop(item.items, "feature") {
+              <div class="collapsible-header"><a href="/features/#(feature.id)">#(feature.name)</a></div>
+              }
+            </div>
+          } ##else() {
+            #loop(item.items, "feature") {
+              <div class="collapsible-header">
+                <a href="/features/#(feature.id)">#(feature.name)</a>
+              </div>
+            }
+          }
         </li>
       }
-      <li class="disabled"><a href=""><i class="material-icons">chevron_right</i></a></li>
     </ul>
-  }
-  <p class="table-caption table-caption-features">
-    <i class="small material-icons">collections_bookmark</i>
-    <span>Features</span>
-  </p>
-  <table class="highlight">
-    <thead>
-      <tr>
-        #if(is_admin) {
-          <th class="feature-item-button">
-            <a class="add-feature-button btn-floating btn-large waves-effect waves-light">
-              <i class="material-icons">add</i>
-            </a>
-          </th>
-        }
-      </tr>
-    </thead>
-    <tbody>
-      #loop(features, "feature") {
-        <tr>
-          #if(is_admin) {
-            <td class="right-edge"><a href="/admin/features/#(feature.id)">#(feature.name)</a></td>
-            <td class="feature-item-button">
-              <a class="remove-feature-button btn-floating btn-large waves-effect waves-light">
-                <i class="material-icons" data-id="#(feature.id)">remove</i>
-              </a>
-            </td>
-          } ##else() {
-            <td class="right-edge"><a href="/features/#(feature.id)">#(feature.name)</a></td>
-          }
-        </tr>
-      }
-    </tbody>
-  </table>
-  <div id="new-feature-modal" class="modal">
-    <div class="modal-content">
-      <div class="input-field">
-        <input id="name" name="name" type="text" class="validate" placeholder="title" >
-        <label for="name">Name</label>
-      </div>
-      <div class="input-field">
-        <input value="0" id="number" name="number" type="number" class="validate">
-        <label for="number">Number</label>
-      </div>
-      <div class="input-field">
-        <textarea id="description" name="description" class="materialize-textarea" placeholder="description"></textarea>
-        <label for="description">Description</label>
-      </div>
-      <div class="input-field">
-        <input id="external_link" name="external_link" type="text" class=validate" placeholder="https://spincoaster.com/xxxx">
-        <label for="external_link">External link</label>
-      </div>
-      <div class="input-field">
-        <input id="external_thumbnail" name="external_thumbnail" type="text" class="validate" placeholder="https://spincoaster.com/wp/wp-content/uploads/xxxx">
-        <label for="external_thumbnail">External thumbnail</label>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button id="add-feature-submit-button" class="modal-action modal-close waves-effect waves-green btn">Add</button>
-    </div>
-  </div>
-
-  <div id="remove-feature-modal" class="modal admin-modal">
-    <div class="modal-content">
-      Are you sure to delete the feature?
-    </div>
-    <div class="modal-footer">
-      <a id="remove-feature-submit-button" class="modal-action modal-close waves-effect waves-green btn-flat">Delete</a>
-    </div>
   </div>
 }

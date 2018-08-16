@@ -10,12 +10,14 @@ $(function() {
     var description       = $('#description').val();
     var externalLink      = $('#external_link').val();
     var externalThumbnail = $('#external_thumbnail').val();
+    var category          = $('#category').val();
     $.post('/admin/features', {
       name:               name,
       number:             number,
       description:        description,
       external_link:      externalLink,
-      external_thumbnail: externalThumbnail
+      external_thumbnail: externalThumbnail,
+      category:           category
     }).done(function() {
       window.location.reload();
     }).fail(function(e) {
