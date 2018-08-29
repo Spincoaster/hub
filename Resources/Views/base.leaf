@@ -38,9 +38,11 @@
               <i class="material-icons">menu</i>
             </a>
           }
-          <span id="title" class="brand-logo center">
-            <img class="logo" src="/images/spin-logo.png">
-          </span>
+          <a href="/">
+            <span id="title" class="brand-logo center">
+              <img class="logo" src="/images/spin-logo.png">
+            </span>
+          </a>
           #raw() {
             <ul class="right">
               <li>
