@@ -1,0 +1,19 @@
+= render :partial => "shared/initial_letter_paginations"
+
+%p.table-caption
+  %i.small.material-icons perm_identity
+  %span Owners
+%table.highlight
+  %thead
+    %tr
+      %th Owners
+      %th.right-edge Records
+  %tbody
+    - @owners.each do |owner|
+      %tr.owner-item
+        %td #{owner.name}
+        %td.right-edge
+          %a{:href => "/records?owner_id=#{owner.id}"}
+            %i.small.material-icons album
+
+= render :partial => "shared/initial_letter_paginations"
