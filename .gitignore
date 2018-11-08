@@ -33,3 +33,5 @@ yarn-debug.log*
 
 .DS_Store
 *~
+
+.envrc
