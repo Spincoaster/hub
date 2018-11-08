@@ -5,7 +5,63 @@
     %title Hub
     = csrf_meta_tags
     = csp_meta_tag
-    = stylesheet_pack_tag 'application'
-    = javascript_pack_tag 'application'
+
+    = stylesheet_link_tag "//fonts.googleapis.com/icon?family=Material+Icons"
+    = javascript_include_tag "//code.jquery.com/jquery-2.1.1.min.js"
+    = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.js"
+    = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"
+
+    = javascript_pack_tag "application"
+    = stylesheet_pack_tag "application"
+
+    = stylesheet_link_tag "/css/index.css"
+
+    %meta{ :name => "viewport", :content => "initial-scale=0.75, width=device-width" }
+    %meta{ :name => "apple-mobile-web-app-capable", :content => "yes" }
+    %meta{ :name => "apple-mobile-web-app-status-bar-style", :content => "black" }
+    %link{ :rel => "apple-touch-icon", :href => "" }
+    = javascript_include_tag "https://www.googletagmanager.com/gtag/js?id=#{ENV['GOOGLE_ANALYTICS_ID']}"
+    :javascript
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag("js", new Date());
+
+      gtag("config", "#{ENV['GOOGLE_ANALYTICS_ID']}");
+
   %body
-    = yield
+    :javascript
+      $(document).ready(function() {
+        $('.button-collapse').sideNav();
+        $('.carousel').carousel({fullWidth: true});
+      })
+    .navbar-fixed
+      %nav#nav-normal
+        .nav-wrapper
+          %a.button-collapse.show-on-large{"data-activates" => "sidebar-menu", :href => "#"}
+            %i.material-icons menu
+          %a{:href => "/"}
+            %span#title.brand-logo.center
+              %img.logo{:src => "/images/spin-logo.png"}
+          %ul.right
+            %li
+              %a#search.show-on-large{"data-activates" => "search"}
+                %i.material-icons search
+      %nav#nav-search{:style => "display: none;"}
+        .nav-wrapper
+          %form#search-form{:action => "/search", :method => "get"}
+            .input-field
+              %input#search-field{:name => "query", :placeholder => "", :type => "search", :value => "#{params["query"]}"}/
+              %label#search-icon.label-icon{:for => "search"}
+                %i.material-icons.search-bar-icons search
+              %i#search-close.material-icons.search-bar-icons close
+    %ul#sidebar-menu.side-nav
+      - @navigation_menus.each do |menu|
+        %li.menu-item
+          %a{:href => menu[:href]}
+            %i.small.material-icons #{menu[:icon]}
+            ="　#{menu[:label]}"
+    .row
+      .col.s12.offset-s0
+        = yield
+    %a.back.btn-floating.btn-large.waves-effect.waves-light.black{:href => "javascript:history.back(0)", :style => "display: none;"}
+      %i.material-icons arrow_back
