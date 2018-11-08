@@ -1,0 +1,19 @@
+= render :partial => "shared/initial_letter_paginations"
+
+%p.table-caption
+  %i.small.material-icons assignment_ind
+  %span Artists
+%table.highlight
+  %thead
+    %tr
+      %th.cell
+      %th.right-edge{:style => "white-space: nowrap;"}
+  %tbody
+    - @artists.each do |artist|
+      %tr.artist-item
+        %td.cell #{artist.name}
+        %td.right-edge{:style => "width: 60px;"}
+          %a{:href => "/artists/#{artist.id}"}
+            %i.small.material-icons keyboard_arrow_right
+
+= render :partial => "shared/initial_letter_paginations"
