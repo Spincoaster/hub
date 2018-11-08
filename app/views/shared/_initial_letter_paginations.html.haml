@@ -1,0 +1,10 @@
+%ul.pagination{:style => "display: inline-block; "}
+  %li.disabled
+    %a{:href => ""}
+      %i.material-icons chevron_left
+  - @initial_letter_pages.each do |page|
+    %li.waves-effect{:class => "#{page.active? ? 'active' : ''}"}
+      %a{:href => "?has_prefix=#{page.label}" } #{page.label}
+  %li.disabled
+    %a{:href => ""}
+      %i.material-icons chevron_right
