@@ -1,0 +1,25 @@
+= render :partial => "shared/initial_letter_paginations"
+
+.table-caption
+  %i.small.material-icons album
+  %span Records
+%table.highlight
+  %thead
+    %tr
+      %th Artists
+      %th Albums
+      %th.right-edge Comments
+      %th{:style => "display: none;"} Owners
+      %th{:style => "display: none;"} Locations
+  %tbody
+    - @records.each do |record|
+      %tr.record-item
+        %td.artist-name
+          %a{:href => "/records?artist_id=#{record.artist.id}"} #{record.artist.name}
+        %td.record-name #{record.name}
+        %td.right-edge #{record.comment}
+        %td.owner-name{:style => "display: none;"}
+          %a{:href => "/records?owner_id=#{record.owner.id}"} #{record.owner.name}
+        %td.location-name{:style => "display: none;"} #{record.location}-#{record.number}
+
+= render :partial => "shared/initial_letter_paginations"

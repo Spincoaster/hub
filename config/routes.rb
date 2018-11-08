@@ -5,4 +5,5 @@ Rails.application.routes.draw do
   resources :artists, only: [:index]
   resources :tracks, only: [:index]
   resources :owners, only: [:index]
+  resources :records, only: [:index]
 end
