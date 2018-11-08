@@ -3,4 +3,5 @@ Rails.application.routes.draw do
   root 'top#index'
 
   resources :artists, only: [:index]
+  resources :tracks, only: [:index]
 end
