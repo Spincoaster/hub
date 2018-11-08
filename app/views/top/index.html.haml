@@ -1,2 +1,41 @@
-%h1 Top#index
-%p Find me in app/views/top/index.html.haml
+.top-section-label Music
+.row.top-card-grid
+  .col.s12.m6
+    %a{:href => "/features"}
+      .card.medium.waves-effect.waves-block.waves-light
+        .card-image
+          %img{:height => "200", :src => "/images/feature.png"}/
+        .card-content 特集
+  .col.s12.m6
+    %a{:href => "/artists?has_prefix=a"}
+      .card.medium.waves-effect.waves-block.waves-light
+        .card-image
+          %img{:height => "200", :src => "/images/artist.jpg"}/
+        .card-content アーティスト一覧から探す
+  .col.s12.m6
+    %a{:href => "/records?has_prefix=a"}
+      .card.medium.waves-effect.waves-block.waves-light
+        .card-image
+          %img{:height => "200", :src => "/images/record.jpg"}/
+        .card-content レコード一覧から探す
+  .col.s12.m6
+    %a{:href => "/tracks?has_prefix=a"}
+      .card.medium.waves-effect.waves-block.waves-light
+        .card-image
+          %img{:height => "200", :src => "/images/track.jpg"}/
+        .card-content ハイレゾ一覧から探す
+.top-info-label
+  ※フリーワード検索は右上の
+  %i.material-icons> search
+  から
+.top-section-label News
+.top-carousel
+  .top-carousel-inner
+    - @news_entries.each do |entry|
+      .top-carousel-item.s8.m8
+        %a{:href => "#{entry.url}", :target => "_blank"}
+          .card.large.waves-effect.waves-block.waves-light
+            .card-image
+              %img{:height => "200", :src => "#{entry.thumbnail}"}/
+            .card-content
+              %p #{entry.title}
