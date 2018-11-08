@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  phonetic_name: MyString
+  furigana: MyString
+  number: 1
+  artist: one
+  album: one
+
+two:
+  name: MyString
+  phonetic_name: MyString
+  furigana: MyString
+  number: 1
+  artist: two
+  album: two
