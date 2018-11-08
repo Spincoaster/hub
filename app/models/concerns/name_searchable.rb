@@ -17,7 +17,7 @@ module NameSearchable
   }
 
   included do
-    scope :has_prefix , ->(v) {
+    scope :search_with_prefix , ->(v) {
       query = nil
       letters = NameSearchable::prefix_letters(v)
       letters.chars do |c|
