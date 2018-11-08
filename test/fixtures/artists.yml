@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  phonetic_name: MyString
+  furigana: MyString
+
+two:
+  name: MyString
+  phonetic_name: MyString
+  furigana: MyString
