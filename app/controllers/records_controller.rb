@@ -4,7 +4,7 @@ class RecordsController < ApplicationController
   before_action :set_initial_letter_pages
 
   def index
-    @records = Record.all.includes(:owner)
+    @records = Record.all.includes([:owner, :artist])
     if params["has_prefix"].present?
       @records = @records.search_with_prefix(params["has_prefix"])
     end
