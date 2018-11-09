@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
 
   def set_menus
     @navigation_menus = [
-      { href: "/top", icon: "home", label:"Top" },
+      { href: "/", icon: "home", label:"Top" },
       { href: "/features", icon: "collections_bookmark", label: "Feature" },
       { href: "/artists?has_prefix=a", icon: "assignment_ind", label:"Artists" },
       { href: "/records?has_prefix=a", icon: "album", label:"Records" },
