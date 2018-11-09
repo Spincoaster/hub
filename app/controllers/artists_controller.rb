@@ -10,6 +10,10 @@ class ArtistsController < ApplicationController
     end
   end
 
+  def show
+    @artist = Artist.includes([:records, :albums, :tracks]).find(params[:id])
+  end
+
   def set_initial_letter_pages
     @initial_letter_pages = initial_letter_pages
   end

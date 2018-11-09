@@ -1,0 +1,64 @@
+%h3 #{@artist.name}
+
+- if @artist.records.present?
+  .table-caption
+    %i.small.material-icons album
+    %span Records
+  %table.highlight
+    %thead
+      %tr
+        %th Albums
+        %th.right-edge Comments
+        %th{:style => "display: none;"} Artists
+        %th{:style => "display: none;"} Owners
+        %th{:style => "display: none;"} Locations
+    %tbody
+      - @artist.records.each do |record|
+        %tr.record-item
+          %td.record-name #{record.name}
+          %td.right-edge #{record.comment}
+          %td.artist-name{:style => "display: none;"}
+            %a{:href => "/records?artist_id=#{record.artist.id}"} #{record.artist.name}
+          %td.owner-name{:style => "display: none;"}
+            %a{:href => "/records?owner_id=#{record.owner.id}"} #{record.owner.name}
+          %td.location-name{:style => "display: none;"} #{record.location}-#{record.number}
+
+- if @artist.albums.present?
+  .table-caption
+    %i.small.material-icons library_music
+    %span Albums
+  %table.highlight
+    %thead
+      %tr
+        %th{:style => "display: none;"} Artists
+        %th.cell Albums
+        %th.right-edge{:style => "white-space: nowrap;"}
+    %tbody
+      - @artist.albums.each do |album|
+        %tr.album-item
+          %td.cell #{album.name}
+          %td.right-edge{:style => "width: 60px;"}
+            %a{:href => "/tracks?album_id=#{album.id}"}
+              %i.small.material-icons keyboard_arrow_right
+
+- if @artist.tracks.present?
+  .table-caption
+    %i.small.material-icons library_music
+    %span Tracks
+  %table.highlight
+    %thead
+      %tr
+        %th{:style => "display: none;"} Artists
+        %th.cell Albums
+        %th.right-edge{:style => "white-space: nowrap;"}
+    %tbody
+      - @artist.tracks.each do |track|
+        %tr.track-item
+          %td.artist-name
+            %a{:href => "/tracks?artist_id=#{track.artist.id}"} #{track.artist.name}
+          %td.track-name #{track.name}
+          %td.album-name.right-edge
+            %a{:href => "/tracks?album_id=#{track.album.id}"} #{track.album.name}
+
+= render :partial => "shared/record_modal"
+= render :partial => "shared/track_modal"
