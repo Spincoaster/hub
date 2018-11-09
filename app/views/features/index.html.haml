@@ -1,0 +1,16 @@
+%div
+  %ul.feature-collection.collapsible.popout
+    - @groups.each do |group|
+      %li
+        - if group[:category].present?
+          .collapsible-header
+            %i.material-icons> folder
+            \#{group[:category]}
+          .collapsible-body
+            - group[:features].each do |feature|
+              %a{:href => "/features/#{feature.id}"}
+                .collapsible-header #{feature.name}
+        - else
+          - group[:features].each do |feature|
+            %a{:href => "/features/#{feature.id}"}
+              .collapsible-header #{feature.name}

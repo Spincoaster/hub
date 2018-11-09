@@ -7,10 +7,12 @@ import { scrollToActive } from './scroll_manager';
 import recordModal from './record_modal';
 import trackModal from './track_modal';
 import commentModal from './comment_modal';
+import features from './features';
 
 $(function() {
   navbar();
   scrollToActive();
+  features();
   if (('standalone' in window.navigator) && window.navigator.standalone) {
     top.onload = restoreHistory;
     setupHistory();

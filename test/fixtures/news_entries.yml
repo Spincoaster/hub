@@ -9,7 +9,7 @@ one:
   thumbnail: MyString
 
 two:
-  news_id: 1
+  news_id: 2
   title: MyString
   url: MyString
   published_at: 2018-11-09 13:35:14

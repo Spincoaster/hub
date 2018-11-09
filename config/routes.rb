@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :tracks, only: [:index]
   resources :owners, only: [:index]
   resources :records, only: [:index]
+  resources :features, only: [:index]
 
   get '/search', to: 'search#index'
 end
