@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_08_043959) do
+ActiveRecord::Schema.define(version: 2018_11_09_043514) do
 
   create_table "albums", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -28,6 +28,19 @@ ActiveRecord::Schema.define(version: 2018_11_08_043959) do
     t.string "furigana"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "news_entries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "news_id"
+    t.string "title"
+    t.string "url"
+    t.timestamp "published_at"
+    t.text "content"
+    t.string "thumbnail"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["news_id"], name: "index_news_entries_on_news_id", unique: true
+    t.index ["published_at"], name: "index_news_entries_on_published_at"
   end
 
   create_table "owners", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
