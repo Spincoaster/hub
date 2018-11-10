@@ -1,3 +1,6 @@
+.feature-item-button
+  %a.add-feature-button.btn-floating.btn-large.waves-effect.waves-light
+    %i.material-icons add
 %div
   %ul.feature-collection.collapsible.popout
     - @groups.each do |group|
@@ -6,11 +9,24 @@
           .collapsible-header
             %i.material-icons> folder
             \#{group[:category]}
-          .collapsible-body
+          .collapsible-body.feature-item
             - group[:features].each do |feature|
               %a{:href => "/features/#{feature.id}"}
-                .collapsible-header #{feature.name}
+                .collapsible-header
+                  #{feature.name}
+                  %a.edit-feature-button.btn-floating.btn-small.waves-effect.waves-light{:href => "/features/#{feature.id}/edit"}
+                    %i.material-icons{"data-id" => "#{feature.id}"} edit
+                  %a.remove-feature-button.btn-floating.btn-small.waves-effect.waves-light
+                    %i.material-icons{"data-id" => "#{feature.id}"} remove
+
         - else
           - group[:features].each do |feature|
             %a{:href => "/features/#{feature.id}"}
-              .collapsible-header #{feature.name}
+              .collapsible-header.feature-item
+                #{feature.name}
+                %a.edit-feature-button.btn-floating.btn-small.waves-effect.waves-light{:href => "/features/#{feature.id}/edit"}
+                  %i.material-icons{"data-id" => "#{feature.id}"} edit
+                %a.remove-feature-button.btn-floating.btn-small.waves-effect.waves-light
+                  %i.material-icons{"data-id" => "#{feature.id}"} remove
+= render :partial => "new_modal"
+= render :partial => "remove_modal"

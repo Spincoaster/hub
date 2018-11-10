@@ -1,0 +1,44 @@
+%h5 #{@feature.name}
+.row
+  #{@feature.description}
+- if @feature.external_link.present?
+  %div
+    %a{:href => "#{@feature.external_link}", :target => "_blank"}
+      .card.waves-effect.waves-block.waves-light.feature-external-card
+        - if @feature.external_thumbnail.present?
+          .card-image
+            %img{:src => "#{@feature.external_thumbnail}"}
+          .card-content 各レコードの解説はこちら
+
+%ul.collection.feature-item-collection
+  - @feature.feature_items.each_with_index do |item, i|
+    - if item.track?
+      %li.collection-item.avatar.track-item
+        %i.material-icons.circle.white high_quality
+        %span.title.track-name #{@items[i].name}
+        %p.artist-name
+          %a{:href => "/tracks?artist_id=#{item.item.artist.id}"} #{item.item.artist.name}
+          %br
+          %span.album-name
+            %a{:href => "/tracks?album_id=#{item.item.album.id}"} #{item.item.album.name}
+          - if item.comment.present?
+            %a.secondary-content.comment-item
+              %i.material-icons comment
+            .comment{:style => "display: none;"} #{item.comment}
+    - if item.record?
+      %li.collection-item.avatar.record-item
+        %i.material-icons.circle.white album
+        %span.title.record-name #{@items[i].name}
+        %p.artist-name
+          %a{:href => "/records?artist_id=#{item.item.artist.id}"} #{item.item.artist.name}
+          %br
+        - if item.comment.present?
+          %a.secondary-content.comment-item
+            %i.material-icons comment
+            .comment{:style => "display: none;"} #{item.comment}
+        .owner-name{:style => "display: none;"}
+          %a{:href => "/records?owner_id=#{item.item.owner.id}"} #{item.item.owner.name}
+          .location-name{:style => "display: none;"} #{item.item.location}-#{item.item.number}
+= render :partial => "shared/comment_modal"
+= render :partial => "shared/record_modal"
+= render :partial => "shared/track_modal"

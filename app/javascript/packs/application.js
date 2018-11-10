@@ -8,11 +8,13 @@ import recordModal from './record_modal';
 import trackModal from './track_modal';
 import commentModal from './comment_modal';
 import features from './features';
+import featureEdit from './feature_edit';
 
 $(function() {
   navbar();
   scrollToActive();
   features();
+  featureEdit();
   if (('standalone' in window.navigator) && window.navigator.standalone) {
     top.onload = restoreHistory;
     setupHistory();
@@ -28,6 +30,9 @@ $(function() {
     var $parent = $(e.target).parent();
     var $a = $parent.find('a');
     window.location = $a.attr('href');
+  });
+  $('.feature-item').click(function(e) {
+    window.location = $(e.target).parent().find('a').attr('href');
   });
   recordModal();
   trackModal();

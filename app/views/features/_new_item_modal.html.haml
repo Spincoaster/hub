@@ -1,0 +1,21 @@
+#new-featured-item-modal.modal
+  .modal-content
+    %h4 New item
+    %input#csrf_token{ :type => "hidden", :value => form_authenticity_token }
+    .input-field
+      %input#item-input.autocomplete{:placeholder => "enter track of record name", :type => "text"}/
+      %label{:for => "autocomplete-input"} track or record
+    %br/
+    .input-field
+      %input#item-number.validate{:name => "number", :type => "number", :value => "0"}/
+      %label{:for => "number"} Number
+    .input-field
+      %input#item-comment.validate{:name => "comment", :placeholder => "comment", :type => "text", :value => ""}/
+      %label{:for => "comment"} Comment
+  .modal-footer
+    %a#add-featured-item-submit-button.modal-action.modal-close.waves-effect.waves-green.btn-flat Add
+#remove-featured-item-modal.modal
+  .modal-content
+    Are you sure to delete the item from this feature?
+  .modal-footer
+    %a#remove-featured-item-submit-button.modal-action.modal-close.waves-effect.waves-green.btn-flat Delete

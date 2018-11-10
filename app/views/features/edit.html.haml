@@ -1,0 +1,61 @@
+%h5 Properties
+%form.col.s12{:method => "post"}
+  %input#feature-id{:name => "id", :type => "hidden", :value => "#{@feature.id}"}/
+  %input{:name => "_method", :type => "hidden", :value => "patch"}/
+  %input#csrf_token{ :type => "hidden", :value => form_authenticity_token }
+  .row
+    .input-field.col.s6
+      %input#name.validate{:name => "name", :placeholder => "Placeholder", :type => "text", :value => "#{@feature.name}"}/
+      %label{:for => "name"} Name
+  .row
+    .input-field.col.s6
+      %input#number.validate{:name => "number", :type => "number", :value => "#{@feature.number}"}/
+      %label{:for => "number"} Number
+  .row
+    .input-field.col.s6
+      %textarea#description.materialize-textarea{:name => "description", :placeholder => "description"} #{@feature.description}
+      %label{:for => "description"} Description
+  .row
+    .input-field.col.s6
+      %input#external_link.validate{:name => "external_link", :placeholder => "https://spincoaster.com/xxxx", :type => "text", :value => "#{@feature.external_link}"}/
+      %label{:for => "external_link"} External link
+  .row
+    .input-field.col.s6
+      %input#external_thumbnail.validate{:name => "external_thumbnail", :placeholder => "https://spincoaster.com/wp/wp-content/uploads/xxxx", :type => "text", :value => "#{@feature.external_thumbnail}"}/
+      %label{:for => "external_thumbnail"} External  thumbnail
+  .row
+    .input-field.col.s6
+      %input#category.validate{:name => "category", :placeholder => "Placeholder", :type => "text", :value => "#{@feature.category}"}/
+      %label{:for => "name"} Category
+  .row
+    .col.s6
+      %button.col.btn.waves-effect.waves-light.feature-button{:type => "submit"}
+        Update
+%table.highlight
+  %caption.feature-item-table-caption
+    %h5 items
+  %thead
+    %tr
+      %th number
+      %th type
+      %th name
+      %th comment
+      %th.feature-item-button
+        %a.add-featured-item-button.btn-floating.btn-large.waves-effect.waves-light
+          %i.material-icons add
+  %tbody
+    - @feature.feature_items.each_with_index do |item, i|
+      %tr
+        %td #{item.number}
+        %td #{item.item_type}
+        - if item.track?
+          %td
+            %a{:href => "/tracks/#{item.item_id}"} #{@items[i].name}
+        - if item.record?
+          %td
+            %a{:href => "/records/#{item.item_id}"} #{@items[i].name}
+        %td #{item.comment}
+        %td.feature-item-button
+          %a.remove-featured-item-button.btn-floating.btn-large.waves-effect.waves-light
+            %i.material-icons{"data-id" => "#{item.id}"} remove
+= render :partial => "new_item_modal"

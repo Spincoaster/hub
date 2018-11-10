@@ -1,0 +1,24 @@
+#new-feature-modal.modal
+  .modal-content
+    .input-field
+      %input#csrf_token{ :type => "hidden", :value => form_authenticity_token }
+    .input-field
+      %input#name.validate{:name => "name", :placeholder => "title", :type => "text"}/
+      %label{:for => "name"} Name
+    .input-field
+      %input#number.validate{:name => "number", :type => "number", :value => "0"}/
+      %label{:for => "number"} Number
+    .input-field
+      %textarea#description.materialize-textarea{:name => "description", :placeholder => "description"}
+      %label{:for => "description"} Description
+    .input-field
+      %input#external_link{:class => "validate\"", :name => "external_link", :placeholder => "https://spincoaster.com/xxxx", :type => "text"}/
+      %label{:for => "external_link"} External link
+    .input-field
+      %input#external_thumbnail.validate{:name => "external_thumbnail", :placeholder => "https://spincoaster.com/wp/wp-content/uploads/xxxx", :type => "text"}/
+      %label{:for => "external_thumbnail"} External thumbnail
+    .input-field
+      %input#category.validate{:name => "category", :placeholder => "category", :type => "text"}/
+      %label{:for => "category"} Category
+  .modal-footer
+    %button#add-feature-submit-button.modal-action.modal-close.waves-effect.waves-green.btn Add

@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  feature: one
+  item: one
+  item_type: MyString
+  number: 1
+  comment: MyString
+
+two:
+  feature: two
+  item: two
+  item_type: MyString
+  number: 1
+  comment: MyString

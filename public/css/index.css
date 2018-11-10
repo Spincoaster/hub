@@ -162,6 +162,18 @@ th.cell, td.cell {
 }
 
 .feature-item-button {
+    margin-top: 12px;
+}
+.edit-feature-button,
+.remove-feature-button {
+    float: right;
+    height: 30px;
+    width: 30px;
+}
+.edit-feature-button.btn-floating.btn-small > i,
+.remove-feature-button.btn-floating.btn-small > i {
+    color: white !important;
+    font-size: 0.75rem;
 }
 
 .feature-item-table-caption {
