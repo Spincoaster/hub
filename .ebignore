@@ -1,0 +1,11 @@
+.env
+.envrc
+.env.dist
+.envrc.dist
+*~
+.DS_Store
+.git
+.gitignore
+.txt
+.csv
+config/database.yml
