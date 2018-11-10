@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_09_055022) do
+ActiveRecord::Schema.define(version: 2018_11_09_074858) do
 
   create_table "albums", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -28,6 +28,17 @@ ActiveRecord::Schema.define(version: 2018_11_09_055022) do
     t.string "furigana"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "feature_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "feature_id"
+    t.integer "item_id"
+    t.string "item_type"
+    t.integer "number"
+    t.string "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["feature_id"], name: "index_feature_items_on_feature_id"
   end
 
   create_table "features", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -89,6 +100,7 @@ ActiveRecord::Schema.define(version: 2018_11_09_055022) do
   end
 
   add_foreign_key "albums", "artists"
+  add_foreign_key "feature_items", "features"
   add_foreign_key "records", "artists"
   add_foreign_key "records", "owners"
   add_foreign_key "tracks", "albums"
