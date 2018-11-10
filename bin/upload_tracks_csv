@@ -1,0 +1,221 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const readline = require('readline');
+const csvWriter = require('csv-write-stream')
+const path = require('path');
+const execSync = require('child_process').execSync;
+const { google } = require('googleapis');
+
+const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
+const TOKEN_PATH = 'token.json';
+
+const useMetaFlac = false;
+const internalRootDir = '/Volumes/HAP_Internal/'
+const externalRootDir = '/Volumes/HAP_External/'
+const externalFileListFile = './external.txt';
+const internalFileListFile = './internal.txt';
+const tracksFile = 'tracks.csv';
+
+const TAGS = [
+  'TRACKNUMBER',
+  'TITLE',
+  'ALBUM',
+  'ARTIST',
+  'COMMENT',
+  'GENRE',
+  'DATE',
+  'COPYRIGHT'
+];
+
+const opts = TAGS.map(function(t) {
+  return '--show-tag=' + t;
+});
+
+function isTrackFile(ext) {
+  return ext.length > 3 && ext.match(/[^\.a-zA-Z0-9]/) === null;
+}
+
+function handlePathListFile(file, rootDir, writer) {
+  return new Promise((resolve, reject) => {
+    const stream = fs.createReadStream(file, "utf8");
+    const reader = readline.createInterface({ input: stream });
+
+    reader.on("line", (p) => {
+      const ext = path.extname(p);
+      let track = null;
+      if (useMetaFlac && ext === '.flac') {
+        track = buildTrackFromFlacMeta(p, rootDir);
+      } else if (isTrackFile(ext)) {
+        track = buildTrackFromPath(p);
+      }
+      if (track) {
+        writer.write([
+          track.trackNumber,
+          track.title,
+          track.album,
+          track.artist,
+          track.comment,
+          track.genre,
+          track.date,
+          track.copyrigh
+        ]);
+        console.log('Append ' + JSON.stringify(track));
+      }
+    });
+    reader.on('close', resolve);
+  });
+}
+
+function buildTrackFromFlacMeta(path, rootDir) {
+  const result = execSync('metaflac ' + opts + ' ' + rootDir + path);
+  let tags = {};
+  result.split("\n").map((keyVal) => keyVal.split("=")).forEach((pair) => {
+    if (pair.count >= 2) {
+      tags[pair[0]] = pair[1];
+    }
+  });
+  return {
+    trackNumber: tags.TRACKNUMBER,
+    title: tags.TITLE,
+    album: tags.ALBUM,
+    artist: tags.ARTIST,
+    comment: tags.COMMENT,
+    genre: tags.GENRE,
+    date: tags.DATE,
+    copyright: tags.COPYRIGHT
+  };
+  return null;
+}
+
+function buildTrackFromPath(pathString) {
+  const paths = pathString.split('/');
+  if (paths.length < 4) {
+    return null;
+  }
+  const pathsLength = paths.length;
+  const artist = paths[pathsLength - 3];
+  const album = paths[pathsLength - 2];
+  const trackPath = paths[pathsLength - 1];
+  if (trackPath.length <= 3) {
+    return null;
+  }
+  const trackInfo = parseTrackPath(trackPath);
+  return {
+    trackNumber: trackInfo.trackNumber,
+    title: trackInfo.title,
+    album: album,
+    artist: artist,
+    comment: null,
+    genre: null,
+    date: null,
+    copyright: null
+  };
+}
+
+function parseTrackPath(path) {
+  const trackNumber = parseInt(path.substring(0, 2));
+  if (isNaN(trackNumber)) {
+    return {
+      trackNumber: null,
+      title: path.split('.')[0]
+    };
+  }
+  return {
+    trackNumber: trackNumber,
+    title: path.substring(3, path.length - 1).split('.')[0]
+  };
+}
+
+function uploadFile(auth) {
+  const drive = google.drive({version: 'v3', auth});
+  const fileMetadata = {
+    name: tracksFile
+  };
+  var media = {
+    mimeType: 'text/csv',
+    body: fs.createReadStream(tracksFile)
+  };
+  drive.files.update({
+    fileId: process.env.TRACKS_FILE_ID,
+    resource: fileMetadata,
+    media: media,
+    fields: 'id'
+  }, function (err, result) {
+    if (err) {
+      // Handle error
+      console.error(err);
+    } else {
+      console.log(result);
+    }
+  });
+}
+
+const writer = csvWriter({ headers: TAGS });
+writer.pipe(fs.createWriteStream(tracksFile))
+
+handlePathListFile(externalFileListFile, externalRootDir, writer)
+  .then(() => handlePathList(internalFileListFile, internalRootDir, writer))
+  .then(() => {
+    writer.end()
+    fs.readFile('credentials.json', (err, content) => {
+      if (err) {
+        return console.log('Error loading client secret file:', err);
+      }
+      authorize(JSON.parse(content), uploadFile);
+    });
+  });
+});
+
+
+// From google drive quick start
+
+/**
+ * Create an OAuth2 client with the given credentials, and then execute the
+ * given callback function.
+ * @param {Object} credentials The authorization client credentials.
+ * @param {function} callback The callback to call with the authorized client.
+ */
+function authorize(credentials, callback) {
+  const {client_secret, client_id, redirect_uris} = credentials.installed;
+  const oAuth2Client = new google.auth.OAuth2(
+      client_id, client_secret, redirect_uris[0]);
+
+  // Check if we have previously stored a token.
+  fs.readFile(TOKEN_PATH, (err, token) => {
+    if (err) return getAccessToken(oAuth2Client, callback);
+    oAuth2Client.setCredentials(JSON.parse(token));
+    callback(oAuth2Client);
+  });
+}
+
+/**
+ * Get and store new token after prompting for user authorization, and then
+ * execute the given callback with the authorized OAuth2 client.
+ * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
+ * @param {getEventsCallback} callback The callback for the authorized client.
+ */
+function getAccessToken(oAuth2Client, callback) {
+  const authUrl = oAuth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: SCOPES,
+  });
+  console.log('Authorize this app by visiting this url:', authUrl);
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  rl.question('Enter the code from that page here: ', (code) => {
+    rl.close();
+    oAuth2Client.getToken(code, (err, token) => {
+      if (err) return console.error('Error retrieving access token', err);
+      oAuth2Client.setCredentials(token);
+      // Store the token to disk for later program executions
+      fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+        if (err) console.error(err);
+        console.log('Token stored to', TOKEN_PATH);
+      });
+      callback(oAuth2Client);
+    });
+  });
+}
