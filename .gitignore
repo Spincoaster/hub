@@ -38,8 +38,7 @@ yarn-debug.log*
 token.json
 credentials.json
 tracks.csv
-external.txt
-internal.txt
+*.txt
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
