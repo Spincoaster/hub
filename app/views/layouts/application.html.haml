@@ -13,7 +13,6 @@
 
     = javascript_pack_tag "application"
     = stylesheet_pack_tag "application"
-
     = stylesheet_link_tag "/css/index.css"
 
     %meta{ :name => "viewport", :content => "initial-scale=0.75, width=device-width" }
@@ -65,3 +64,4 @@
         = yield
     %a.back.btn-floating.btn-large.waves-effect.waves-light.black{:href => "javascript:history.back(0)", :style => "display: none;"}
       %i.material-icons arrow_back
+= render :partial => "shared/message"

@@ -1,0 +1,4 @@
+- if flash.present?
+  = javascript_tag do
+    - flash.each do |key, value|
+      Materialize.toast(#{raw value.to_json}, 3000);

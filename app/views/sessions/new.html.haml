@@ -1,0 +1,15 @@
+%form.col.s12{:method => "post"}
+  %input{ :name => "authenticity_token", :type => "hidden", :value => form_authenticity_token }
+  .row
+    .input-field.col.s6
+      %input.validate{:name => "name", :type => "text"}
+      %label{:for => "name"} Name
+  .row
+    .input-field.col.s6
+      %input.validate{:name => "password", :type => "password"}
+      %label{:for => "number"} Password
+  .row
+    .input-field.col.s6
+      %button.btn.btn-large.waves-effect.waves-light{ :type => "submit", :name => "action"}
+        Submit
+        %i.material-icons.right send
