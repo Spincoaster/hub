@@ -14,8 +14,6 @@ class FeaturesController < ApplicationController
   end
 
   def show
-    p @feature.feature_items
-    p @items
   end
 
   def edit
