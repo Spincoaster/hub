@@ -1,8 +1,9 @@
 # coding: utf-8
 # frozen_string_literal: true
+require "slack"
 
 task crawl_news: :environment do
-  puts "Start crawling"
+  notify_slack "Start crawling news entries..."
   entries = NewsEntry.crawl_latest
-  puts "Crawled #{entries.count} entries"
+  notify_slack "Crawled #{entries.count} entries"
 end
