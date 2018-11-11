@@ -1,4 +1,5 @@
 class FeatureItemsController < ApplicationController
+  before_action :require_admin
   def create
     @feature = Feature.find(feature_item_params[:feature_id])
     respond_to do |format|

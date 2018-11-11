@@ -1,6 +1,7 @@
-.feature-item-button
-  %a.add-feature-button.btn-floating.btn-large.waves-effect.waves-light
-    %i.material-icons add
+- if @current_admin.present?
+  .feature-item-button
+    %a.add-feature-button.btn-floating.btn-large.waves-effect.waves-light
+      %i.material-icons add
 %div
   %ul.feature-collection.collapsible.popout
     - @groups.each do |group|
@@ -14,19 +15,21 @@
               %a{:href => "/features/#{feature.id}"}
                 .collapsible-header
                   #{feature.name}
-                  %a.edit-feature-button.btn-floating.btn-small.waves-effect.waves-light{:href => "/features/#{feature.id}/edit"}
-                    %i.material-icons{"data-id" => "#{feature.id}"} edit
-                  %a.remove-feature-button.btn-floating.btn-small.waves-effect.waves-light
-                    %i.material-icons{"data-id" => "#{feature.id}"} remove
+                  - if @current_admin.present?
+                    %a.edit-feature-button.btn-floating.btn-small.waves-effect.waves-light{:href => "/features/#{feature.id}/edit"}
+                      %i.material-icons{"data-id" => "#{feature.id}"} edit
+                    %a.remove-feature-button.btn-floating.btn-small.waves-effect.waves-light
+                      %i.material-icons{"data-id" => "#{feature.id}"} remove
 
         - else
           - group[:features].each do |feature|
             %a{:href => "/features/#{feature.id}"}
               .collapsible-header.feature-item
                 #{feature.name}
-                %a.edit-feature-button.btn-floating.btn-small.waves-effect.waves-light{:href => "/features/#{feature.id}/edit"}
-                  %i.material-icons{"data-id" => "#{feature.id}"} edit
-                %a.remove-feature-button.btn-floating.btn-small.waves-effect.waves-light
-                  %i.material-icons{"data-id" => "#{feature.id}"} remove
+                - if @current_admin.present?
+                  %a.edit-feature-button.btn-floating.btn-small.waves-effect.waves-light{:href => "/features/#{feature.id}/edit"}
+                    %i.material-icons{"data-id" => "#{feature.id}"} edit
+                  %a.remove-feature-button.btn-floating.btn-small.waves-effect.waves-light
+                    %i.material-icons{"data-id" => "#{feature.id}"} remove
 = render :partial => "new_modal"
 = render :partial => "remove_modal"

@@ -1,4 +1,5 @@
 class FeaturesController < ApplicationController
+  before_action :require_admin, except: [:index, :show]
   before_action :set_feature, except: [:index, :create]
   before_action :set_items, only: [:show, :edit]
 

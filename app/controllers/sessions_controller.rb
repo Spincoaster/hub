@@ -5,6 +5,7 @@ class SessionsController < ApplicationController
   def create
     admin = Admin.find_by(name: params[:name].downcase)
     if admin && admin.authenticate(params[:password])
+      login(admin)
       redirect_to features_path
     else
       flash.now[:danger] = 'Invalid name/password combination'
@@ -13,5 +14,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    logout
+    redirect_to login_path
   end
 end
