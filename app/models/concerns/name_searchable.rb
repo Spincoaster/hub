@@ -19,15 +19,16 @@ module NameSearchable
   included do
     scope :search_with_prefix , ->(v) {
       query = nil
+      j = model == Artist ? all : joins(:artist)
       letters = NameSearchable::prefix_letters(v)
       letters.chars do |c|
         if query.nil?
-          query = where("name LIKE ?", "#{c}%")
-                    .or(where("furigana LIKE ?", "#{c}%"))
+          query = j.where("artists.name LIKE ?", "#{c}%")
+                    .or(j.where("artists.furigana LIKE ?", "#{c}%"))
         else
           query = query
-                    .or(where("name LIKE ?", "#{c}%"))
-                    .or(where("furigana LIKE ?", "#{c}%"))
+                    .or(j.where("artists.name LIKE ?", "#{c}%"))
+                    .or(j.where("artists.furigana LIKE ?", "#{c}%"))
         end
       end
       query
