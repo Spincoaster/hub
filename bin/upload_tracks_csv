@@ -5,18 +5,34 @@ const readline = require('readline');
 const csvWriter = require('csv-write-stream')
 const path = require('path');
 const execSync = require('child_process').execSync;
+const https = require('https');
 const { google } = require('googleapis');
 
 const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
 const TOKEN_PATH = 'token.json';
 
-const useMetaFlac = false;
-const internalRootDir = '/Volumes/HAP_Internal/'
-const externalRootDir = '/Volumes/HAP_External/'
-const externalFileListFile = './external.txt';
-const internalFileListFile = './internal.txt';
-const tracksFile = 'tracks.csv';
+const isWindows = process.platform === 'win32';
 
+const useMetaFlac = true;
+let internalRootDir;
+let externalRootDir;
+let externalFileListFile = 'external.txt';
+let internalFileListFile = 'internal.txt';
+
+if (isWindows) {
+  internalRootDir = 'z:';
+  externalRootDir = 'y:';
+} else {
+  internalRootDir = '/Volumes/HAP_Internal/';
+  externalRootDir = '/Volumes/HAP_External/';
+}
+
+const pref = loadPref();
+const lastSynced = pref.lastSynced;
+const now = new Date();
+const tracksFile = 'tracks_' + now.getFullYear() + (now.getMonth() + 1) + now.getDate() + '.csv';
+
+console.log('last synced: ' + new Date(lastSynced));
 const TAGS = [
   'TRACKNUMBER',
   'TITLE',
@@ -27,6 +43,32 @@ const TAGS = [
   'DATE',
   'COPYRIGHT'
 ];
+
+function notifySlack(text) {
+  return new Promise((resolve, reject) => {
+    const req = https.request(process.env.SLACK_URL, { method: 'POST' }, resolve);
+    req.on('error', reject);
+    req.write(JSON.stringify({ text: text}));
+    req.end();
+  });
+}
+
+function loadPref() {
+  try {
+    const json = fs.readFileSync("uploader.json");
+    return JSON.parse(json);
+  } catch (e) {
+    return {
+      lastSynced: 0,
+    };
+  }
+}
+
+function savePref() {
+  fs.writeFileSync("uploader.json" , JSON.stringify({
+    lastSynced: Date.now()
+  }));
+}
 
 const opts = TAGS.map(function(t) {
   return '--show-tag=' + t;
@@ -40,43 +82,70 @@ function handlePathListFile(file, rootDir, writer) {
   return new Promise((resolve, reject) => {
     const stream = fs.createReadStream(file, "utf8");
     const reader = readline.createInterface({ input: stream });
+    let count = 0;
 
     reader.on("line", (p) => {
+      const stats = fs.statSync(rootDir + p);
+      if (lastSynced > stats.mtime.getTime()) {
+        console.log('Skip old file: ' + p);
+        return;
+      }
       const ext = path.extname(p);
       let track = null;
+      let type = null;
       if (useMetaFlac && ext === '.flac') {
-        track = buildTrackFromFlacMeta(p, rootDir);
+        try {
+          track = buildTrackFromFlacMeta(p, rootDir);
+          type = 'flac';
+        } catch (e) {
+          console.log('Invalid file ' + p);
+        }
       } else if (isTrackFile(ext)) {
         track = buildTrackFromPath(p);
+        type = 'path';
       }
       if (track) {
-        writer.write([
-          track.trackNumber,
-          track.title,
-          track.album,
-          track.artist,
-          track.comment,
-          track.genre,
-          track.date,
-          track.copyrigh
-        ]);
-        console.log('Append ' + JSON.stringify(track));
+        appendTrack(writer, track, type, count);
+        count++;
       }
     });
     reader.on('close', resolve);
   });
 }
 
+function appendTrack(writer, track, type, count) {
+  if (!track) {
+    return;
+  }
+  writer.write([
+    track.trackNumber,
+    track.title,
+    track.album,
+    track.artist,
+    track.comment,
+    track.genre,
+    track.date,
+    track.copyright
+  ]);
+  console.log(count + ' ' + type + ' ' +
+              track.trackNumber + '|' +
+              track.artist + '|' +
+              track.album + '|' +
+              track.title);
+}
+
 function buildTrackFromFlacMeta(path, rootDir) {
-  const result = execSync('metaflac ' + opts + ' ' + rootDir + path);
+  const result = execSync('metaflac ' +
+                          opts.join(' ') + ' ' +
+                          '"' + rootDir  + path + '"').toString();
   let tags = {};
   result.split("\n").map((keyVal) => keyVal.split("=")).forEach((pair) => {
-    if (pair.count >= 2) {
+    if (pair.length >= 2) {
       tags[pair[0]] = pair[1];
     }
   });
   return {
-    trackNumber: tags.TRACKNUMBER,
+    trackNumber: parseInt(tags.TRACKNUMBER),
     title: tags.TITLE,
     album: tags.ALBUM,
     artist: tags.ARTIST,
@@ -101,6 +170,9 @@ function buildTrackFromPath(pathString) {
     return null;
   }
   const trackInfo = parseTrackPath(trackPath);
+  if (trackInfo.title === null || trackInfo.title === "") {
+    return null;
+  }
   return {
     trackNumber: trackInfo.trackNumber,
     title: trackInfo.title,
@@ -128,45 +200,51 @@ function parseTrackPath(path) {
 }
 
 function uploadFile(auth) {
-  const drive = google.drive({version: 'v3', auth});
-  const fileMetadata = {
-    name: tracksFile
-  };
-  var media = {
-    mimeType: 'text/csv',
-    body: fs.createReadStream(tracksFile)
-  };
-  drive.files.update({
-    fileId: process.env.TRACKS_FILE_ID,
-    resource: fileMetadata,
-    media: media,
-    fields: 'id'
-  }, function (err, result) {
-    if (err) {
-      // Handle error
-      console.error(err);
-    } else {
-      console.log(result);
-    }
+  return new Promise((resolve, reject) => {
+    const drive = google.drive({version: 'v3', auth});
+    var media = {
+      mimeType: 'text/csv',
+      body: fs.createReadStream(tracksFile)
+    };
+    drive.files.update({
+      fileId: process.env.TRACKS_FILE_ID,
+      media: media,
+      fields: 'id'
+    }, function (err, result) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
   });
 }
 
-const writer = csvWriter({ headers: TAGS });
-writer.pipe(fs.createWriteStream(tracksFile))
-
-handlePathListFile(externalFileListFile, externalRootDir, writer)
-  .then(() => handlePathList(internalFileListFile, internalRootDir, writer))
-  .then(() => {
-    writer.end()
+function authroizeGoogleDrive() {
+  return new Promise((resolve, reject) => {
     fs.readFile('credentials.json', (err, content) => {
       if (err) {
-        return console.log('Error loading client secret file:', err);
+        return reject(err);;
       }
-      authorize(JSON.parse(content), uploadFile);
+      authorize(JSON.parse(content), resolve);
     });
-  });
-});
+  })
+}
 
+authroizeGoogleDrive().then((auth) => {
+  const writer = csvWriter({ headers: TAGS });
+  writer.pipe(fs.createWriteStream(tracksFile))
+  return notifySlack('Start import internal tracks')
+    .then(() => handlePathListFile(externalFileListFile, externalRootDir, writer))
+    .then(() => notifySlack('Start import external tracks'))
+    .then(() => handlePathListFile(internalFileListFile, internalRootDir, writer))
+    .then(() => notifySlack('uploading tracks.csv'))
+    .then(() => {
+      writer.end()
+      return uploadFile(auth);
+    });
+}).then(() => notifySlack('uploaded tracks.csv'))
+  .then(() => savePref());
 
 // From google drive quick start
 
