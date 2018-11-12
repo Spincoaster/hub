@@ -14,7 +14,7 @@ class String
       features = node.feature.split ","
       result += features.count < 9 ? node.surface : features[7]
     end
-    result
+    result.to_hiragana
   end
 
   def to_hiragana

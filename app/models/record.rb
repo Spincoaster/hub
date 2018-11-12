@@ -6,7 +6,8 @@ class Record < ApplicationRecord
   belongs_to :artist
   belongs_to :owner
 
-  scope :search, ->(q) {
+  scope :search, ->(query) {
+    q = query.to_hiragana
     t = joins(:artist, :owner)
     t.where("records.name LIKE ?", "%#{q}%")
       .or(t.where("records.furigana LIKE ?", "%#{q}%"))
