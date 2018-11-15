@@ -20,19 +20,17 @@ $(function() {
     setupHistory();
   }
   $('.artist-item').click(function(e) {
-    window.location = $(e.target).parent().find('a').attr('href');
+    window.location = $(this).find('a').attr('href');
   });
   $('.album-item').click(function(e) {
-    window.location = $(e.target).parent().find('a').attr('href');
+    window.location = $(this).find('a').attr('href');
   });
   $('tr.owner-item').click(function(e) {
     if (e.target.tagName === 'A') { return; }
-    var $parent = $(e.target).parent();
-    var $a = $parent.find('a');
-    window.location = $a.attr('href');
+    window.location = $(this).find('a').attr('href');
   });
   $('.feature-item').click(function(e) {
-    window.location = $(e.target).parent().find('a').attr('href');
+    window.location = $(this).find('a').attr('href');
   });
   recordModal();
   trackModal();
