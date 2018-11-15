@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_11_050221) do
+ActiveRecord::Schema.define(version: 2018_11_15_091020) do
 
   create_table "admins", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -28,6 +28,9 @@ ActiveRecord::Schema.define(version: 2018_11_11_050221) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["artist_id"], name: "index_albums_on_artist_id"
+    t.index ["furigana"], name: "index_albums_on_furigana"
+    t.index ["name"], name: "index_albums_on_name"
+    t.index ["phonetic_name"], name: "index_albums_on_phonetic_name"
   end
 
   create_table "artists", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -36,6 +39,9 @@ ActiveRecord::Schema.define(version: 2018_11_11_050221) do
     t.string "furigana"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["furigana"], name: "index_artists_on_furigana"
+    t.index ["name"], name: "index_artists_on_name"
+    t.index ["phonetic_name"], name: "index_artists_on_phonetic_name"
   end
 
   create_table "feature_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -91,7 +97,10 @@ ActiveRecord::Schema.define(version: 2018_11_11_050221) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["artist_id"], name: "index_records_on_artist_id"
+    t.index ["furigana"], name: "index_records_on_furigana"
+    t.index ["name"], name: "index_records_on_name"
     t.index ["owner_id"], name: "index_records_on_owner_id"
+    t.index ["phonetic_name"], name: "index_records_on_phonetic_name"
   end
 
   create_table "tracks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -105,6 +114,9 @@ ActiveRecord::Schema.define(version: 2018_11_11_050221) do
     t.datetime "updated_at", null: false
     t.index ["album_id"], name: "index_tracks_on_album_id"
     t.index ["artist_id"], name: "index_tracks_on_artist_id"
+    t.index ["furigana"], name: "index_tracks_on_furigana"
+    t.index ["name"], name: "index_tracks_on_name"
+    t.index ["phonetic_name"], name: "index_tracks_on_phonetic_name"
   end
 
   add_foreign_key "albums", "artists"
