@@ -16,14 +16,12 @@ export default function() {
       url: '/features',
       type: 'POST',
       data: {
-        feature: {
-          name:               name,
-          number:             number,
-          description:        description,
-          external_link:      externalLink,
-          external_thumbnail: externalThumbnail,
-          category:           category
-        }
+        name:               name,
+        number:             number,
+        description:        description,
+        external_link:      externalLink,
+        external_thumbnail: externalThumbnail,
+        category:           category
       },
       dataType: 'json',
       headers: {

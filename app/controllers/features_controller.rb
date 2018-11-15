@@ -36,7 +36,7 @@ class FeaturesController < ApplicationController
   def update
     respond_to do |format|
       if @feature.update(feature_params)
-        format.html { redirect_to feature_edit_path(@feature), notice: "Feature was updated" }
+        format.html { redirect_to edit_feature_path(@feature), notice: "Feature was updated" }
         format.json { render json: @feature.as_json }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -60,12 +60,12 @@ class FeaturesController < ApplicationController
   private
 
   def feature_params
-    params.require(:feature).permit(:name,
-                                    :number,
-                                    :description,
-                                    :external_link,
-                                    :external_thumbnail,
-                                    :category)
+    params.permit(:name,
+                  :number,
+                  :description,
+                  :external_link,
+                  :external_thumbnail,
+                  :category)
   end
 
   def set_feature
