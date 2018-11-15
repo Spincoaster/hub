@@ -234,9 +234,9 @@ function authroizeGoogleDrive() {
 authroizeGoogleDrive().then((auth) => {
   const writer = csvWriter({ headers: TAGS });
   writer.pipe(fs.createWriteStream(tracksFile))
-  return notifySlack('Start import internal tracks')
+  return notifySlack('Start importing external tracks')
     .then(() => handlePathListFile(externalFileListFile, externalRootDir, writer))
-    .then(() => notifySlack('Start import external tracks'))
+    .then(() => notifySlack('Start importing internal tracks'))
     .then(() => handlePathListFile(internalFileListFile, internalRootDir, writer))
     .then(() => notifySlack('uploading tracks.csv'))
     .then(() => {
