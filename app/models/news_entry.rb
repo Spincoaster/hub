@@ -13,8 +13,11 @@ class NewsEntry < ApplicationRecord
     url = "#{ENV.fetch('NEWS_URL')}/wp-json/wp/v2/news"
     json = Net::HTTP.get(URI.parse(url))
     results = JSON.parse(json)
-    entries = results.map do |h|
-      entry = NewsEntry.where(news_id: h["id"]).first_or_create
+    count = 0
+    results.each do |h|
+      entry = NewsEntry.where(news_id: h["id"]).first_or_create do
+        count += 1
+      end
       entry.title = h.dig("title", "rendered")
       entry.url = h["link"]
       entry.published_at = Time.zone.parse(h["date"])
@@ -22,6 +25,8 @@ class NewsEntry < ApplicationRecord
       entry.thumbnail = fetch_thumbnail(h["id"])
       entry.save!
     end
-    entries
+    {
+      count: count
+    }
   end
 end
