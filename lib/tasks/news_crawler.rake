@@ -3,7 +3,9 @@
 require "slack"
 
 task crawl_news: :environment do
-  notify_slack "Start crawling news entries..."
-  entries = NewsEntry.crawl_latest
-  notify_slack "Crawled #{entries.count} entries"
+#  notify_slack "Start crawling news entries..."
+  result = NewsEntry.crawl_latest
+  if result[:count] > 0
+    notify_slack "Crawled #{entries.count} entries"
+  end
 end
