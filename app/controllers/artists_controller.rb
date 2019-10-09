@@ -6,7 +6,7 @@ class ArtistsController < ApplicationController
   def index
     @artists = Artist.all
     if params["has_prefix"].present?
-      @artists = Artist.search_with_prefix(params["has_prefix"]).order(phonetic_name: :asc)
+      @artists = Artist.search_with_prefix(params["has_prefix"]).order(name: :asc)
     end
   end
 
