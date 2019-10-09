@@ -6,10 +6,10 @@ class RecordsController < ApplicationController
   def index
     @records = Record.all.includes([:owner, :artist])
     if params["has_prefix"].present?
-      @records = @records.search_with_prefix(params["has_prefix"])
+      @records = @records.search_with_prefix(params["has_prefix"]).order(phonetic_name: :asc)
     end
     if params["owner_id"].present?
-      @records = @records.where(owner_id: params["owner_id"])
+      @records = @records.where(owner_id: params["owner_id"]).order(phonetic_name: :asc)
     end
   end
 

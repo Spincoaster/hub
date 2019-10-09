@@ -6,10 +6,10 @@ class TracksController < ApplicationController
   def index
     @tracks = Track.all.includes([:album, :artist])
     if params["has_prefix"].present?
-      @tracks = @tracks.search_with_prefix(params["has_prefix"])
+      @tracks = @tracks.search_with_prefix(params["has_prefix"]).order(phonetic_name: :asc)
     end
     if params["album_id"].present?
-      @tracks = @tracks.where(album_id: params["album_id"])
+      @tracks = @tracks.where(album_id: params["album_id"]).order(phonetic_name: :asc)
     end
   end
 
