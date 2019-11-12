@@ -7,7 +7,7 @@ task crawl_news: :environment do
     #  notify_slack "Start crawling news entries..."
     result = NewsEntry.crawl_latest
     if result[:count] > 0
-      notify_slack "Crawled #{entries.count} entries"
+      notify_slack "Crawled #{result[:count]} entries"
     end
   rescue => error
     notify_slack error.message
