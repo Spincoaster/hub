@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   get 'sessions/new'
   root 'top#index'
 
+  get    '/top',     to: 'top#index'
   get    '/login',   to: 'sessions#new'
   post   '/login',   to: 'sessions#create'
   get    '/logout',  to: 'sessions#destroy'
