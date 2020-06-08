@@ -8,4 +8,3 @@
 .gitignore
 .txt
 .csv
-config/database.yml

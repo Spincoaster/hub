@@ -51,6 +51,4 @@ test:
 #
 production:
   <<: *default
-  database: hub_production
-  username: hub
-  password: <%= ENV['HUB_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
