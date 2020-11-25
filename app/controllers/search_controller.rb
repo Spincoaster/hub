@@ -13,4 +13,26 @@ class SearchController < ApplicationController
       }
     end
   end
+
+  def artists
+    q = params["query"]
+    @artists = Artist.search(q).limit(20)
+    respond_to do |format|
+      format.html
+      format.json {
+        render json: @artists.as_json
+      }
+    end
+  end
+
+  def albums
+    q = params["query"]
+    @albums = Album.includes([:artist]).search(q).limit(20)
+    respond_to do |format|
+      format.html
+      format.json {
+        render json: @albums.as_json(include: [:artist])
+      }
+    end
+  end
 end

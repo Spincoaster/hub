@@ -1,13 +1,31 @@
+- if @current_admin.present?
+  .admin.control
+    = link_to(new_artist_path, class: "btn btn-large waves-effect waves-light") do
+      New Artist
+      %i.small.material-icons.right add
+    &nbsp;
+    = link_to(new_album_path, class: "btn btn-large waves-effect waves-light") do
+      New Album
+      %i.small.material-icons.right add
+    &nbsp;
+    = link_to(new_track_path, class: "btn btn-large waves-effect waves-light") do
+      New Track
+      %i.small.material-icons.right add
+
 = render :partial => "shared/initial_letter_paginations"
 
 %p.table-caption
   %i.small.material-icons assignment_ind
   %span Artists
+
 %table.highlight
   %thead
     %tr
       %th.cell
       %th.right-edge{:style => "white-space: nowrap;"}
+      - if @current_admin.present?
+        %th.right-edge
+        %th.right-edge
   %tbody
     - @artists.each do |artist|
       %tr.artist-item
@@ -15,5 +33,12 @@
         %td.right-edge{:style => "width: 60px;"}
           %a{:href => "/artists/#{artist.id}"}
             %i.small.material-icons keyboard_arrow_right
+        - if @current_admin.present?
+          %td.right-edge{:style => "width: 60px;"}
+            = link_to(edit_artist_path(artist)) do
+              %i.small.material-icons edit
+          %td.right-edge{:style => "width: 60px;"}
+            = link_to(artist_path(artist), method: :delete, data: { confirm: 'Are you sure to delete?' }) do
+              %i.small.material-icons delete
 
 = render :partial => "shared/initial_letter_paginations"

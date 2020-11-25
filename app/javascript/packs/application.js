@@ -1,4 +1,5 @@
 /* eslint no-console:0 */
+import Rails from 'rails-ujs';
 
 import '../styles/application';
 import navbar from './navbar';
@@ -9,21 +10,31 @@ import trackModal from './track_modal';
 import commentModal from './comment_modal';
 import features from './features';
 import featureEdit from './feature_edit';
+import {
+  trackArtistAutocomplete,
+  trackAlbumAutocomplete,
+  albumArtistAutocomplete,
+} from './admin';
+
+Rails.start();
 
 $(function() {
   navbar();
   scrollToActive();
   features();
   featureEdit();
+  trackArtistAutocomplete();
+  trackAlbumAutocomplete();
+  albumArtistAutocomplete();
   if (('standalone' in window.navigator) && window.navigator.standalone) {
     top.onload = restoreHistory;
     setupHistory();
   }
-  $('.artist-item').click(function(e) {
-    window.location = $(this).find('a').attr('href');
+  $('.artist-item td.cell').click(function(e) {
+    window.location = $(this).parent().find('a').attr('href');
   });
-  $('.album-item').click(function(e) {
-    window.location = $(this).find('a').attr('href');
+  $('.album-item td.cell').click(function(e) {
+    window.location = $(this).parent().find('a').attr('href');
   });
   $('tr.owner-item').click(function(e) {
     if (e.target.tagName === 'A') { return; }

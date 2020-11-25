@@ -4,7 +4,7 @@ class RecordsController < ApplicationController
   before_action :set_initial_letter_pages
 
   def index
-    @records = Record.all
+    @records = Record.limit(500)
                  .includes([:owner, :artist])
                  .joins(:artist)
                  .order("artists.name asc")

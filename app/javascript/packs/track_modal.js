@@ -1,7 +1,7 @@
 export default function() {
   $('#track-modal').modal();
   $('.track-item').click(function(e) {
-    if (e.target.tagName === 'A') { return; }
+    if (e.target.tagName === 'A' || e.target.tagName === 'I') { return; }
     var $parent = $(e.target).closest('.track-item');
     var title = $parent.find('.track-name').text();
     var artist = $parent.find('.artist-name > a').text();
