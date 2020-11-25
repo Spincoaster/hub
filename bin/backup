@@ -1,0 +1,3 @@
+#!/bin/bash -e
+
+eb ssh $EB_ENVIRONMENT --quiet --command "mysqldump -u$DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME" > $1

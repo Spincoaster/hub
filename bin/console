@@ -1,0 +1,4 @@
+#!/bin/bash -eux
+
+eb ssh $EB_ENVIRONMENT --verbose --command '-t sudo su webapp --login --shell=/bin/bash --command '\''cd /var/app/current/ && bin/rails console'\'''
+
