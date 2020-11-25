@@ -5,7 +5,9 @@
     "@rails/webpacker": "3.5",
     "csv-write-stream": "^2.0.0",
     "googleapis": "27",
-    "materialize-css": "0.98.2"
+    "materialize-css": "0.98.2",
+    "rails-ujs": "^5.2.3",
+    "turbolinks": "^5.2.0"
   },
   "devDependencies": {
     "webpack-dev-server": "2.11.2"
