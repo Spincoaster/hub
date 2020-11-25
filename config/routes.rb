@@ -7,12 +7,15 @@ Rails.application.routes.draw do
   post   '/login',   to: 'sessions#create'
   get    '/logout',  to: 'sessions#destroy'
 
-  resources :artists, only: [:index, :show]
-  resources :tracks, only: [:index]
-  resources :owners, only: [:index]
-  resources :records, only: [:index]
+  resources :artists
+  resources :tracks, except: [:show]
+  resources :albums, except: [:index, :show]
+  resources :owners, except: [:show]
+  resources :records, except: [:show]
   resources :features
   resources :feature_items, only: [:create, :destroy]
 
   get '/search', to: 'search#index'
+  get '/search_artists', to: 'search#artists'
+  get '/search_albums', to: 'search#albums'
 end

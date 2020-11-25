@@ -298,3 +298,7 @@ a {
 nav .brand-logo.center {
     -webkit-transform: translateX(-50%);
 }
+
+.admin.control {
+    margin-top: 8px;
+}

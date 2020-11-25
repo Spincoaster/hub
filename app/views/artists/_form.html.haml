@@ -1,0 +1,16 @@
+- url = @artist.new_record? ? artists_path : artist_path(@artist)
+
+= render 'shared/form_errors', model: @artist
+
+= form_with model: @artist, url: url, local: true do |f|
+  %br
+  = f.label(:name)
+  = f.text_field(:name)
+  %br
+  = f.label(:phonetic_name)
+  = f.text_field(:phonetic_name)
+  %br
+  = f.label(:furigana)
+  = f.text_field(:furigana)
+  %br
+  = f.submit(class: 'btn')

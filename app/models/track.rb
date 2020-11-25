@@ -6,6 +6,9 @@ class Track < ApplicationRecord
   belongs_to :artist
   belongs_to :album
 
+  attr_accessor :artist_query
+  attr_accessor :album_query
+
   scope :search, ->(q) {
     t = joins(:artist, :album)
     t.where("tracks.name LIKE ?", "%#{q}%")
