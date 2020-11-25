@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2018_11_15_091020) do
 
-  create_table "admins", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "admins", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "password_digest"
     t.datetime "created_at", null: false
@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 2018_11_15_091020) do
     t.index ["name"], name: "index_admins_on_name", unique: true
   end
 
-  create_table "albums", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "albums", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "phonetic_name"
     t.string "furigana"
@@ -33,7 +33,7 @@ ActiveRecord::Schema.define(version: 2018_11_15_091020) do
     t.index ["phonetic_name"], name: "index_albums_on_phonetic_name"
   end
 
-  create_table "artists", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "artists", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "phonetic_name"
     t.string "furigana"
@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 2018_11_15_091020) do
     t.index ["phonetic_name"], name: "index_artists_on_phonetic_name"
   end
 
-  create_table "feature_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "feature_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "feature_id"
     t.integer "item_id"
     t.string "item_type"
@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 2018_11_15_091020) do
     t.index ["feature_id"], name: "index_feature_items_on_feature_id"
   end
 
-  create_table "features", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "features", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "number"
     t.string "name"
     t.string "description"
@@ -66,7 +66,7 @@ ActiveRecord::Schema.define(version: 2018_11_15_091020) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "news_entries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "news_entries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "news_id"
     t.string "title"
     t.string "url"
@@ -79,13 +79,13 @@ ActiveRecord::Schema.define(version: 2018_11_15_091020) do
     t.index ["published_at"], name: "index_news_entries_on_published_at"
   end
 
-  create_table "owners", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "owners", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "phonetic_name"
     t.string "furigana"
@@ -103,7 +103,7 @@ ActiveRecord::Schema.define(version: 2018_11_15_091020) do
     t.index ["phonetic_name"], name: "index_records_on_phonetic_name"
   end
 
-  create_table "tracks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "tracks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "phonetic_name"
     t.string "furigana"
