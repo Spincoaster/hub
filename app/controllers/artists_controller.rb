@@ -6,7 +6,7 @@ class ArtistsController < ApplicationController
   before_action :set_initial_letter_pages
 
   def index
-    @artists = Artist.all
+    @artists = Artist.limit(300)
     if params["has_prefix"].present?
       @artists = Artist.search_with_prefix(params["has_prefix"]).order(name: :asc)
     end
