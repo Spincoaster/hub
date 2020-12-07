@@ -8,9 +8,9 @@ class TracksController < ApplicationController
     @tracks = Track.includes([:album, :artist])
                    .order("artists.name asc")
     if params["has_prefix"].present?
-      @tracks = @tracks.search_with_prefix(params["has_prefix"]).limit(300)
+      @tracks = @tracks.search_with_prefix(params["has_prefix"]).per(300)
     else
-      @tracks = @tracks.limit(300)
+      @tracks = @tracks.per(300)
     end
     if params["artist_id"].present?
       @tracks = @tracks.where(artist_id: params["artist_id"]).order(artist_id: :asc)
