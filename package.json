@@ -2,15 +2,15 @@
   "name": "hub",
   "private": true,
   "dependencies": {
-    "@rails/webpacker": "^4.0.2",
-    "csv-write-stream": "^2.0.0",
+    "@rails/webpacker": "5.2.1",
     "core-js": "3",
+    "csv-write-stream": "^2.0.0",
     "googleapis": "27",
     "materialize-css": "0.98.2",
     "rails-ujs": "^5.2.3",
     "turbolinks": "^5.2.0"
   },
   "devDependencies": {
-    "webpack-dev-server": "^3.4.1"
+    "webpack-dev-server": "^3.11.1"
   }
 }
