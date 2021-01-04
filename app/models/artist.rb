@@ -1,8 +1,8 @@
 class Artist < ApplicationRecord
   include NameSearchable
   has_many :records
-  has_many :albums
-  has_many :tracks
+  has_many :albums, dependent: :destroy
+  has_many :tracks, dependent: :destroy
 
   scope :search, ->(q) {
     where("name LIKE ?", "%#{q}%")

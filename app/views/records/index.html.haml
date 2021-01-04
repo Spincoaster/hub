@@ -1,3 +1,13 @@
+- if @current_admin.present?
+  .admin.control
+    = link_to(new_record_path, class: "btn btn-large waves-effect waves-light") do
+      New Record
+      %i.small.material-icons.right add
+    &nbsp;
+    = link_to(new_owner_path, class: "btn btn-large waves-effect waves-light") do
+      New Owner
+      %i.small.material-icons.right add
+
 = render :partial => "shared/initial_letter_paginations"
 
 .table-caption
@@ -11,6 +21,9 @@
       %th.right-edge Comments
       %th{:style => "display: none;"} Owners
       %th{:style => "display: none;"} Locations
+      - if @current_admin.present?
+        %th.right-edge
+        %th.right-edge
   %tbody
     - @records.each do |record|
       %tr.record-item
@@ -21,6 +34,13 @@
         %td.owner-name{:style => "display: none;"}
           %a{:href => "/records?owner_id=#{record.owner.id}"} #{record.owner.name}
         %td.location-name{:style => "display: none;"} #{record.location}-#{record.number}
+        - if @current_admin.present?
+          %td.right-edge{:style => "width: 60px;"}
+            = link_to(edit_record_path(record)) do
+              %i.small.material-icons edit
+          %td.right-edge{:style => "width: 60px;"}
+            = link_to(record_path(record), method: :delete, data: { confirm: 'Are you sure to delete?' }) do
+              %i.small.material-icons delete
 
 = render :partial => "shared/initial_letter_paginations"
 = render :partial => "shared/record_modal"

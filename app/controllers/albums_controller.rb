@@ -10,7 +10,7 @@ class AlbumsController < ApplicationController
   def create
     @album = Album.new(album_params)
     if @album.save
-      redirect_to albums_path, 'Created'
+      redirect_to albums_path, notice: 'Created'
     else
       render :new, status: :unprocessable_entity
     end

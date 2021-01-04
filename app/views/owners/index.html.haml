@@ -8,6 +8,9 @@
     %tr
       %th Owners
       %th.right-edge Records
+      - if @current_admin.present?
+        %th.right-edge
+        %th.right-edge
   %tbody
     - @owners.each do |owner|
       %tr.owner-item
@@ -15,5 +18,13 @@
         %td.right-edge
           %a{:href => "/records?owner_id=#{owner.id}"}
             %i.small.material-icons album
+        - if @current_admin.present?
+          %td.right-edge{:style => "width: 60px;"}
+            = link_to(edit_owner_path(owner)) do
+              %i.small.material-icons edit
+          %td.right-edge{:style => "width: 60px;"}
+            = link_to(owner_path(owner), method: :delete, data: { confirm: 'Are you sure to delete?' }) do
+              %i.small.material-icons delete
+
 
 = render :partial => "shared/initial_letter_paginations"

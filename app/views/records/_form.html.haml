@@ -1,0 +1,33 @@
+- url = @record.new_record? ? records_path : record_path(@record)
+
+= render 'shared/form_errors', model: @record
+
+= form_with model: @record, url: url, local: true do |f|
+  %br
+  = f.label(:name)
+  = f.text_field(:name)
+  %br
+  = f.label(:phonetic_name)
+  = f.text_field(:phonetic_name)
+  %br
+  = f.label(:furigana)
+  = f.text_field(:furigana)
+  %br
+  = f.label(:location)
+  = f.text_field(:location)
+  %br
+  = f.label(:number)
+  = f.number_field(:number)
+  %br
+  = f.label(:comment)
+  = f.text_field(:comment)
+  %br
+  = f.label(:artist_id)
+  = f.hidden_field(:artist_id)
+  = f.text_field(:artist_query, placeholder: "name")
+  %br
+  = f.label(:owner_id)
+  .input-field
+    = f.collection_select(:owner_id, @owners, :id, :name)
+  %br
+  = f.submit(class: 'btn')

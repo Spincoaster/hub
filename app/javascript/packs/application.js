@@ -14,6 +14,7 @@ import {
   trackArtistAutocomplete,
   trackAlbumAutocomplete,
   albumArtistAutocomplete,
+  recordArtistAutocomplete,
 } from './admin';
 
 Rails.start();
@@ -26,6 +27,7 @@ $(function() {
   trackArtistAutocomplete();
   trackAlbumAutocomplete();
   albumArtistAutocomplete();
+  recordArtistAutocomplete();
   if (('standalone' in window.navigator) && window.navigator.standalone) {
     top.onload = restoreHistory;
     setupHistory();
@@ -43,6 +45,7 @@ $(function() {
   $('.feature-item').click(function(e) {
     window.location = $(this).find('a').attr('href');
   });
+  $('select').material_select();
   recordModal();
   trackModal();
   commentModal();

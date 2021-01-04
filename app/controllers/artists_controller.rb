@@ -23,7 +23,7 @@ class ArtistsController < ApplicationController
   def create
     @artist = Artist.new(artist_params)
     if @artist.save
-      redirect_to artists_path, 'Created'
+      redirect_to artists_path, notice: 'Created'
     else
       render :new, status: :unprocessable_entity
     end
@@ -50,7 +50,6 @@ class ArtistsController < ApplicationController
       render :show, status: :unprocessable_entity
     end
   end
-
 
   def set_initial_letter_pages
     @initial_letter_pages = initial_letter_pages

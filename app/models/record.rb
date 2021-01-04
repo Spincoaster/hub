@@ -3,8 +3,10 @@ require 'csv'
 
 class Record < ApplicationRecord
   include NameSearchable
-  belongs_to :artist
+  belongs_to :artist, optional: true
   belongs_to :owner
+
+  attr_accessor :artist_query
 
   scope :search, ->(query) {
     q = query.to_hiragana

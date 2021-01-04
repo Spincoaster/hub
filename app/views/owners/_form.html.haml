@@ -1,0 +1,11 @@
+- url = @owner.new_record? ? owners_path : owner_path(@owner)
+
+= render 'shared/form_errors', model: @owner
+
+= form_with model: @owner, url: url, local: true do |f|
+  %br
+  = f.label(:name)
+  = f.text_field(:name)
+
+  %br
+  = f.submit(class: 'btn')
