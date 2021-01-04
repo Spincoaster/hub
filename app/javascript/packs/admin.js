@@ -82,3 +82,31 @@ export function albumArtistAutocomplete() {
     });
   }));
 }
+
+export function recordArtistAutocomplete() {
+  const items = {};
+  $('#record_artist_query').on('input', $.debounce(250, function(e) {
+    const $input = $(e.target);
+    $.get('/search_artists.json', { query: $input.val() }).done(function(result) {
+      var data = {};
+      result.forEach(function(artist) {
+        var id    = artist.name.trim();
+        items[id] = artist;
+        data[id]  = null;
+      });
+      $input.autocomplete({
+        data:           data,
+        limit:          Infinity,
+        minLength:      1,
+        onAutocomplete: function(val) {
+          const item = items[val];
+          $input.val($input.val());
+          $('#record_artist_id').val(item.id);
+        },
+      });
+      $input.trigger('focus');
+    }).fail(function(e) {
+      console.log(e);
+    });
+  }));
+}

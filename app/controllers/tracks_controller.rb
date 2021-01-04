@@ -27,7 +27,7 @@ class TracksController < ApplicationController
   def create
     @track = Track.new(track_params)
     if @track.save
-      redirect_to artists_path, 'Created'
+      redirect_to artists_path, notice: 'Created'
     else
       render :new, status: :unprocessable_entity
     end

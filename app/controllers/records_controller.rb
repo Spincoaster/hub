@@ -1,6 +1,7 @@
 class RecordsController < ApplicationController
   include InitialLetterPagination
 
+  before_action :require_admin, except: [:index]
   before_action :set_initial_letter_pages
 
   def index
@@ -16,7 +17,61 @@ class RecordsController < ApplicationController
     end
   end
 
+  def new
+    @record = Record.new
+    @owners = Owner.all
+  end
+
+  def create
+    @record = Record.new(record_params)
+    if @record.save
+      redirect_to records_path, notice: 'Created'
+    else
+      @owners = Owner.all
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  def edit
+    @record = Record.find(params[:id])
+    @record.artist_query = @record.artist.name
+    @owners = Owner.all
+  end
+
+  def update
+    @record = Record.find(params[:id])
+    if @record.update(record_params)
+      redirect_to records_path, notice: 'Updated'
+    else
+      @owners = Owner.all
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @record = Record.find(params[:id])
+    if @record.destroy
+      redirect_to records_path, notice: 'Destroyed'
+    else
+      render :show, status: :unprocessable_entity
+    end
+  end
+
   def set_initial_letter_pages
     @initial_letter_pages = initial_letter_pages
   end
+
+  private
+    def record_params
+      params.require(:record).permit(
+        :name,
+        :phonetic_name,
+        :furigana,
+        :location,
+        :number,
+        :comment,
+        :artist_id,
+        :owner_id
+      )
+    end
 end

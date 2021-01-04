@@ -1,7 +1,7 @@
 export default function() {
   $('#record-modal').modal();
   $('.record-item').click(function(e) {
-    if (e.target.tagName === 'A') { return; }
+    if (e.target.tagName === 'A' || e.target.tagName === 'I') { return; }
     var $parent = $(e.target).closest('.record-item');
     var title = $parent.find('.record-name').text();
     var artist = $parent.find('.artist-name > a').text();
