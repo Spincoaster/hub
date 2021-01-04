@@ -4,12 +4,13 @@
   "dependencies": {
     "@rails/webpacker": "^4.0.2",
     "csv-write-stream": "^2.0.0",
+    "core-js": "3",
     "googleapis": "27",
     "materialize-css": "0.98.2",
     "rails-ujs": "^5.2.3",
     "turbolinks": "^5.2.0"
   },
   "devDependencies": {
-    "webpack-dev-server": "2.11.2"
+    "webpack-dev-server": "^3.4.1"
   }
 }
