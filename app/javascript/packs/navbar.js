@@ -18,8 +18,11 @@ export default function() {
   $searchIcon.on('click', function() {
     $searchForm.submit();
   });
-  $searchClose.on('click', function() {
-    $searchField.blur();
+  $searchClose.on('touchstart mousedown', function(e) {
+    if ($searchField.val().length != 0) {
+      $searchField.val('');
+      e.preventDefault();
+    }
   });
 
 }
