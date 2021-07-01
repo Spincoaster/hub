@@ -16,10 +16,10 @@
     - @tracks.each do |track|
       %tr.track-item
         %td.artist-name
-          %a{:href => "/tracks?artist_id=#{track.artist.id}"} #{track.artist.name}
+          = track.artist.name
         %td.track-name #{track.name}
         %td.album-name.right-edge
-          %a{:href => "/tracks?album_id=#{track.album.id}"} #{track.album.name}
+          = track.album.name
         - if @current_admin.present?
           %td.right-edge{:style => "width: 60px;"}
             = link_to(edit_track_path(track)) do
