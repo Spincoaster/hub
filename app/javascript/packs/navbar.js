@@ -19,7 +19,7 @@ export default function() {
     $searchForm.submit();
   });
   $searchClose.on('touchstart mousedown', function(e) {
-    if ($searchField.val().length != 0) {
+    if ($searchField.val().length !== 0) {
       $searchField.val('');
       e.preventDefault();
     }
