@@ -2,11 +2,11 @@ require 'net/http'
 
 class NewsEntry < ApplicationRecord
 
-  def self.fetch_thumbnail(news_id)
-    url = "#{ENV.fetch('NEWS_URL')}/wp-json/wp/v2/media?parent=#{news_id}"
+  def self.fetch_thumbnail(media_id)
+    url = "#{ENV.fetch('NEWS_URL')}/wp-json/wp/v2/media/#{media_id}"
     json = Net::HTTP.get(URI.parse(url))
-    results = JSON.parse(json)
-    results.map { |h| h.dig("media_details", "sizes", "medium", "source_url") }.first
+    result = JSON.parse(json)
+    result.dig("media_details", "sizes", "medium", "source_url")
   end
 
   def self.crawl_latest
@@ -22,7 +22,7 @@ class NewsEntry < ApplicationRecord
       entry.url = h["link"]
       entry.published_at = Time.zone.parse(h["date"])
       entry.content = h.dig("content", "rendered")
-      entry.thumbnail = fetch_thumbnail(h["id"])
+      entry.thumbnail = fetch_thumbnail(h["featured_media"])
       entry.save!
     end
     {
