@@ -29,4 +29,13 @@ class NewsEntry < ApplicationRecord
       count: count
     }
   end
+
+  def fetch_thumbnail
+    url = "#{ENV.fetch('NEWS_URL')}/wp-json/wp/v2/news/#{news_id}"
+    json = Net::HTTP.get(URI.parse(url))
+    result = JSON.parse(json)
+
+    self.thumbnail =  NewsEntry.fetch_thumbnail(result["featured_media"])
+    save!
+  end
 end
