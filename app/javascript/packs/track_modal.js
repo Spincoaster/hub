@@ -4,8 +4,8 @@ export default function() {
     if (e.target.tagName === 'A' || e.target.tagName === 'I') { return; }
     var $parent = $(e.target).closest('.track-item');
     var title = $parent.find('.track-name').text();
-    var artist = $parent.find('.artist-name > a').text();
-    var album = $parent.find('.album-name > a').text();
+    var artist = $parent.find('.artist-name').text();
+    var album = $parent.find('.album-name').text();
     $('#track-title').text(title);
     $('#track-album').text(album);
     $('#track-artist').text(artist);

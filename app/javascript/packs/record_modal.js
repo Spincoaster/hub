@@ -4,8 +4,8 @@ export default function() {
     if (e.target.tagName === 'A' || e.target.tagName === 'I') { return; }
     var $parent = $(e.target).closest('.record-item');
     var title = $parent.find('.record-name').text();
-    var artist = $parent.find('.artist-name > a').text();
-    var owner = $parent.find('.owner-name > a').text();
+    var artist = $parent.find('.artist-name').text();
+    var owner = $parent.find('.owner-name').text();
     var location = $parent.find('.location-name').text();
     $('#record-title').text(title);
     $('#record-artist').text(artist);
