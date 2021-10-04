@@ -33,14 +33,8 @@
   ※フリーワード検索は右上の
   %i.material-icons> search
   から
-.top-section-label News
-.top-carousel
-  .top-carousel-inner
-    - @news_entries.each do |entry|
-      .top-carousel-item.s8.m8
-        %a{:href => "#{entry.url}", :target => "_blank"}
-          .card.large.waves-effect.waves-block.waves-light
-            .card-image
-              %img{:height => "200", :src => "#{entry.thumbnail}"}/
-            .card-content
-              %p #{entry.title}
+.row
+.row
+  .col.s8.offset-s2.m6.offset-m3.l4.offset-l4.xl2.offset-xl5
+    %a{:href => "https://bar.spincoaster.com/" }
+      %img{:width => "100%", :src => "/images/bar_logo.png"}/
