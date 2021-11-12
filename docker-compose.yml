@@ -1,0 +1,43 @@
+version: '3'
+services:
+  web: &web
+    build: .
+    volumes:
+      - ./:/app:cached
+      - /app/tmp
+      - bundle_data:/usr/local/bundle
+    command: >
+      sh -c "if [ -e tmp/pids/server.pid ]; then rm tmp/pids/server.pid ;fi \
+        && exec rails s -p 3000 -b '0.0.0.0'"
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+    tty: true
+    stdin_open: true
+  webpack-dev-server:
+    <<: *web
+    command: "bin/webpack-dev-server"
+    ports:
+      - "3035:3035"
+    tty: false
+    stdin_open: false
+  db:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+volumes:
+  db_data:
+  bundle_data:
