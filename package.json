@@ -2,7 +2,7 @@
   "name": "hub",
   "private": true,
   "dependencies": {
-    "@rails/webpacker": "5.2.1",
+    "@rails/webpacker": "5.4.3",
     "core-js": "3",
     "csv-write-stream": "^2.0.0",
     "googleapis": "27",
