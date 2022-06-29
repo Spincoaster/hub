@@ -1,4 +1,4 @@
-FROM ruby:2.5.3-alpine
+FROM --platform=linux/x86_64 ruby:2.7.2-alpine
 
 RUN apk add --update --no-cache \
     git \
@@ -9,7 +9,12 @@ RUN apk add --update --no-cache \
     tzdata \
     less \
     imagemagick \
-    ffmpeg
+    ffmpeg \
+    python2 \
+    make \
+    gcc \
+    g++
+
 RUN npm install -g yarn
 
 ENV MECAB_VERSION 0.996
@@ -58,6 +63,7 @@ RUN mkdir $ROOT_PATH
 WORKDIR $ROOT_PATH
 ADD Gemfile* $ROOT_PATH/
 
+RUN bundle update --bundler
 RUN bundle install -j4
 
 ADD . .
