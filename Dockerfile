@@ -1,19 +1,20 @@
-FROM --platform=linux/x86_64 ruby:2.7.2-alpine
+FROM --platform=linux/x86_64 ruby:2.7.6-alpine
 
 RUN apk add --update --no-cache \
     git \
     build-base \
     mariadb-dev \
     nodejs \
-    nodejs-npm \
+    npm \
     tzdata \
     less \
     imagemagick \
     ffmpeg \
-    python2 \
+    python3 \
     make \
     gcc \
-    g++
+    g++ \
+    libffi-dev
 
 RUN npm install -g yarn
 
@@ -44,7 +45,7 @@ RUN apk add --update --no-cache ${build_deps} \
   && make install \
   && cd \
   # Install Neologd
-  && git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git \
+  && git clone --depth 1 https://github.com/kumabook/mecab-ipadic-neologd.git \
   && mecab-ipadic-neologd/bin/install-mecab-ipadic-neologd -n -y \
   # Clean up
   && apk del ${build_deps} \
