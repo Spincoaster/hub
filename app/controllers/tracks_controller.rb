@@ -1,5 +1,7 @@
 class TracksController < ApplicationController
   include InitialLetterPagination
+  include CsvRespondable
+
   before_action :require_admin, except: :index
 
   before_action :set_initial_letter_pages
@@ -8,15 +10,19 @@ class TracksController < ApplicationController
     @tracks = Track.includes([:album, :artist])
                    .order("artists.name asc")
     if params["has_prefix"].present?
-      @tracks = @tracks.search_with_prefix(params["has_prefix"]).limit(300)
-    else
-      @tracks = @tracks.limit(300)
+      @tracks = @tracks.search_with_prefix(params["has_prefix"])
     end
     if params["artist_id"].present?
       @tracks = @tracks.where(artist_id: params["artist_id"]).order(artist_id: :asc)
     end
     if params["album_id"].present?
       @tracks = @tracks.where(album_id: params["album_id"]).order(number: :asc)
+    end
+    respond_to do |format|
+      format.html {
+        @tracks = @tracks.limit(300)
+      }
+      format.csv { response_as_csv(@tracks, Track) }
     end
   end
 

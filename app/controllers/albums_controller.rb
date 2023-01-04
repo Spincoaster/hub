@@ -1,7 +1,15 @@
 class AlbumsController < ApplicationController
   include InitialLetterPagination
+  include CsvRespondable
 
   before_action :require_admin
+
+  def index
+    @albums = Album.order(name: :asc)
+    respond_to do |format|
+      format.csv { response_as_csv(@albums, Album) }
+    end
+  end
 
   def new
     @album = Album.new
@@ -48,5 +56,5 @@ class AlbumsController < ApplicationController
           :furigana,
           :artist_id,
         )
-    end
+      end
 end

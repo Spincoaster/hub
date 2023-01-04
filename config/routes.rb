@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   resources :artists
   resources :tracks, except: [:show]
-  resources :albums, except: [:index, :show]
+  resources :albums, except: [:show]
   resources :owners, except: [:show]
   resources :records, except: [:show]
   resources :features

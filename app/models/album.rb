@@ -1,4 +1,5 @@
 class Album < ApplicationRecord
+  include Csvable
   has_many :tracks, dependent: :destroy
   belongs_to :artist
 

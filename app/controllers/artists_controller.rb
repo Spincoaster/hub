@@ -1,14 +1,21 @@
 class ArtistsController < ApplicationController
   include InitialLetterPagination
+  include CsvRespondable
 
   before_action :require_admin, except: [:index, :show]
 
   before_action :set_initial_letter_pages
 
   def index
-    @artists = Artist.limit(300)
+    @artists = Artist.order(name: :asc)
     if params["has_prefix"].present?
-      @artists = Artist.search_with_prefix(params["has_prefix"]).order(name: :asc)
+      @artists = Artist.search_with_prefix(params["has_prefix"])
+    end
+    respond_to do |format|
+      format.html {
+        @artists = @artists.limit(300)
+      }
+      format.csv { response_as_csv(@artists, Artist) }
     end
   end
 

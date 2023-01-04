@@ -1,8 +1,10 @@
 require 'net/http'
 require 'csv'
+require 'google_drive'
 
 class Track < ApplicationRecord
   include NameSearchable
+  include Csvable
   belongs_to :artist
   belongs_to :album
 
@@ -19,47 +21,72 @@ class Track < ApplicationRecord
       .or(t.where("albums.furigana LIKE ?", "%#{q}%"))
   }
 
-  def self.crawl(file_id, api_key)
-    url = "https://www.googleapis.com/drive/v3/files/#{file_id}?alt=media&key=#{api_key}&mimeType=text/plain"
-    csv = Net::HTTP.get(URI.parse(url))
-    count = 0
-    total = 0
-    index = 0
-    CSV.parse(csv) do |row|
-      index += 1
-      next if index == 1
-      number, title, album_name, artist_name, comment, genre, date, copyright = row
-      next if [title, album_name, artist_name].any?(&:blank?)
+  def self.google_drive_session(client_id, client_secret, refresh_token)
+    credentials = Google::Auth::UserRefreshCredentials.new(
+      client_id: client_id,
+      client_secret: client_secret,
+      scope: %w(https://www.googleapis.com/auth/drive https://spreadsheets.google.com/feeds/),
+      redirect_uri: 'http://example.com/redirect'
+    )
+    credentials.refresh_token = refresh_token
+    credentials.fetch_access_token!
+    GoogleDrive::Session.from_credentials(credentials)
+  end
 
-      [number, title, album_name, artist_name, comment, genre, date, copyright].each do |v|
-        v&.force_encoding("UTF-8")
-      end
+  def self.crawl
+    session = google_drive_session(
+      ENV.fetch('GOOGLE_DRIVE_CLIENT_ID'),
+      ENV.fetch('GOOGLE_DRIVE_CLIENT_SECRET'),
+      ENV.fetch('GOOGLE_DRIVE_REFRESH_TOKEN')
+    )
+    sp = session.spreadsheet_by_key(ENV.fetch('GOOGLE_DRIVE_TRACKS_SPREADSHEET_ID'))
 
-      artist = Artist.where(name: artist_name).first_or_create
-      artist.furigana = artist_name.furigana
-      artist.phonetic_name = artist_name.phonetic
-      artist.save!
-
-      album = Album.where(name: album_name, artist: artist).first_or_create
-      album.furigana = album_name.furigana
-      album.phonetic_name = album_name.phonetic
-      album.save!
-
-      track = Track.where(name: title, album: album, artist: artist).first_or_create do
-        count += 1
-      end
-
-      track.furigana = name.furigana
-      track.phonetic_name = name.phonetic
-      track.number = number
-      track.save!
-
-      puts "#{title}|#{album_name}|#{artist_name} is saved"
-      total += 1
+    ws2hashes(sp.worksheet_by_title("artists")).each do |hash|
+      artist = Artist.find_or_create_by(id: hash["id"])
+      artist.update(
+        name: hash["name"],
+        phonetic_name: hash["phonetic_name"],
+        furigana: hash["furigana"],
+      )
     end
-    {
-      count: count,
-      total: total
-    }
+
+    ws2hashes(sp.worksheet_by_title("albums")).each do |hash|
+      album = Album.find_or_create_by(id: hash["id"])
+      album.update(
+        name: hash["name"],
+        phonetic_name: hash["phonetic_name"],
+        furigana: hash["furigana"],
+        artist_id: hash["artist_id"]
+      )
+    end
+
+    ws2hashes(sp.worksheet_by_title("tracks")).each do |hash|
+      track = Track.find_or_create_by(id: hash["id"])
+      track.update(
+        number: hash["number"],
+        name: hash["name"],
+        phonetic_name: hash["phonetic_name"],
+        furigana: hash["furigana"],
+        artist_id: hash["artist_id"],
+        album_id: hash["album_id"]
+      )
+    end
+  end
+
+  def self.ws2hashes(ws)
+    return [] if ws.nil?
+    keys = 1.step.take_while { |i|  ws[1, i] != ""}
+             .map { |i| ws[1, i].underscore }
+    2.step.take_while { |j|  ws[j, 1] != ""}.map do |j|
+      (0...keys.count).each_with_object({}) do |i, memo|
+        value = ws[j, i + 1]
+        case keys[i]
+        when /id$/
+          value = value == "" ? nil : value.to_i
+        end
+        value = nil if value == ""
+        memo.merge!(keys[i] => value)
+      end
+    end
   end
 end
