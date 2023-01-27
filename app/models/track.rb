@@ -41,6 +41,7 @@ class Track < ApplicationRecord
     )
     sp = session.spreadsheet_by_key(ENV.fetch('GOOGLE_DRIVE_TRACKS_SPREADSHEET_ID'))
 
+    artist_count = 0
     ws2hashes(sp.worksheet_by_title("artists")).each do |hash|
       artist = Artist.find_or_create_by(id: hash["id"])
       artist.update(
@@ -48,8 +49,10 @@ class Track < ApplicationRecord
         phonetic_name: hash["phonetic_name"],
         furigana: hash["furigana"],
       )
+      artist_count += 1
     end
 
+    album_count = 0
     ws2hashes(sp.worksheet_by_title("albums")).each do |hash|
       album = Album.find_or_create_by(id: hash["id"])
       album.update(
@@ -58,8 +61,10 @@ class Track < ApplicationRecord
         furigana: hash["furigana"],
         artist_id: hash["artist_id"]
       )
+      album_count += 1
     end
 
+    track_count = 0
     ws2hashes(sp.worksheet_by_title("tracks")).each do |hash|
       track = Track.find_or_create_by(id: hash["id"])
       track.update(
@@ -70,7 +75,14 @@ class Track < ApplicationRecord
         artist_id: hash["artist_id"],
         album_id: hash["album_id"]
       )
+      track_count += 1
     end
+
+    return {
+      artist_count: artist_count,
+      album_count: album_count,
+      track_count: track_count
+    }
   end
 
   def self.ws2hashes(ws)

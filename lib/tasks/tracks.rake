@@ -2,11 +2,10 @@ require "slack"
 
 task crawl_tracks: :environment do
   begin
-    #  notify_slack "Start crawling tracks..."
     result = Track.crawl
-    if result[:count] > 0
-      notify_slack "Crawled #{result[:total]} tracks. Add #{result[:count]} new tracks"
-    end
+    notify_slack "Crawled #{result[:artist_count]} artists" if result[:artist_count] > 0
+    notify_slack "Crawled #{result[:album_count]} albums" if result[:album_count] > 0
+    notify_slack "Crawled #{result[:track_count]} tracks" if result[:track_count] > 0
   rescue => error
     notify_slack error.message
   end
