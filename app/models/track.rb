@@ -49,7 +49,7 @@ class Track < ApplicationRecord
         phonetic_name: hash["phonetic_name"],
         furigana: hash["furigana"],
       )
-      artist_count += 1
+      artist_count += 1 if artist.changed?
     end
 
     album_count = 0
@@ -61,7 +61,7 @@ class Track < ApplicationRecord
         furigana: hash["furigana"],
         artist_id: hash["artist_id"]
       )
-      album_count += 1
+      album_count += 1 if album.changed?
     end
 
     track_count = 0
@@ -75,7 +75,7 @@ class Track < ApplicationRecord
         artist_id: hash["artist_id"],
         album_id: hash["album_id"]
       )
-      track_count += 1
+      track_count += 1 if track.changed?
     end
 
     return {
