@@ -51,7 +51,7 @@ class RecordsController < ApplicationController
   def destroy
     @record = Record.find(params[:id])
     if @record.destroy
-      redirect_to records_path, notice: 'Destroyed'
+      redirect_back fallback_location: records_path, notice: 'Destroyed'
     else
       render :show, status: :unprocessable_entity
     end

@@ -52,7 +52,7 @@ class ArtistsController < ApplicationController
   def destroy
     @artist = Artist.find(params[:id])
     if @artist.destroy
-      redirect_to artists_path, notice: 'Destroyed'
+      redirect_back fallback_location: artists_path, notice: 'Destroyed'
     else
       render :show, status: :unprocessable_entity
     end

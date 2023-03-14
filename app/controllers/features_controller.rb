@@ -48,7 +48,7 @@ class FeaturesController < ApplicationController
   def destroy
     respond_to do |format|
       if @feature.destroy
-        format.html { redirect_to features_path, notice: "Feature was deleted" }
+        format.html { redirect_back fallback_location: features_path, notice: "Feature was deleted" }
         format.json { render json: {} }
       else
         format.html { redirect_to features_path }
