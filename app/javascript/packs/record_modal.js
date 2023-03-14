@@ -12,5 +12,11 @@ export default function() {
     $('#record-location').text(location);
     $('#record-owner').text(owner);
     $('#record-modal').modal('open');
+
+    gtag('event', 'record_modal', {
+      title,
+      artist,
+      owner
+    });
   });
 }

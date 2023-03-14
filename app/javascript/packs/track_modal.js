@@ -10,5 +10,11 @@ export default function() {
     $('#track-album').text(album);
     $('#track-artist').text(artist);
     $('#track-modal').modal('open');
+
+    gtag('event', 'track_modal', {
+      title,
+      artist,
+      album
+    });
   });
 }
