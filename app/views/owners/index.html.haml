@@ -13,7 +13,7 @@
         %th.right-edge
   %tbody
     - @owners.each do |owner|
-      %tr.owner-item
+      %tr.owner-item{id: "owner-#{owner.id}"}
         %td #{owner.name}
         %td.right-edge
           %a{:href => "/records?owner_id=#{owner.id}"}
@@ -23,7 +23,7 @@
             = link_to(edit_owner_path(owner)) do
               %i.small.material-icons edit
           %td.right-edge{:style => "width: 60px;"}
-            = link_to(owner_path(owner), method: :delete, data: { confirm: 'Are you sure to delete?' }) do
+            = link_to(owner_path(owner), method: :delete, remote: true, data: { confirm: 'Are you sure to delete?' }) do
               %i.small.material-icons delete
 
 

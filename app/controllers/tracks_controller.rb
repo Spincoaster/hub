@@ -57,7 +57,14 @@ class TracksController < ApplicationController
   def destroy
     @track = Track.find(params[:id])
     if @track.destroy
-      redirect_back fallback_location: tracks_path, notice: 'Destroyed'
+      respond_to do |format|
+        format.js {
+          render layout: false
+        }
+        format.html {
+          redirect_back fallback_location: tracks_path, notice: 'Destroyed'
+        }
+      end
     else
       render :show, status: :unprocessable_entity
     end

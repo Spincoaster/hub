@@ -39,7 +39,7 @@ $(function() {
     window.location = $(this).parent().find('a').attr('href');
   });
   $('tr.owner-item').click(function(e) {
-    if (e.target.tagName === 'A') { return; }
+    if (e.target.tagName === 'A' || e.target.tagName === 'I') { return; }
     window.location = $(this).find('a').attr('href');
   });
   $('.feature-item').click(function(e) {

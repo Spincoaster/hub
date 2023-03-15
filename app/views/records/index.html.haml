@@ -26,7 +26,7 @@
         %th.right-edge
   %tbody
     - @records.each do |record|
-      %tr.record-item
+      %tr.record-item{id: "record-#{record.id}"}
         %td.artist-name
           = record.artist.name
         %td.record-name #{record.name}
@@ -39,7 +39,7 @@
             = link_to(edit_record_path(record)) do
               %i.small.material-icons edit
           %td.right-edge{:style => "width: 60px;"}
-            = link_to(record_path(record), method: :delete, data: { confirm: 'Are you sure to delete?' }) do
+            = link_to(record_path(record), method: :delete, remote: true, data: { confirm: 'Are you sure to delete?' }) do
               %i.small.material-icons delete
 
 = render :partial => "shared/initial_letter_paginations"

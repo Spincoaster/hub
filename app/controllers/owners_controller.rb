@@ -40,7 +40,14 @@ class OwnersController < ApplicationController
   def destroy
     @owner = Owner.find(params[:id])
     if @owner.destroy
-      redirect_back fallback_location: owners_path, notice: 'Destroyed'
+      respond_to do |format|
+        format.js {
+          render layout: false
+        }
+        format.html {
+          redirect_back fallback_location: owners_path, notice: 'Destroyed'
+        }
+      end
     else
       render :show, status: :unprocessable_entity
     end

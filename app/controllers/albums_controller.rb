@@ -41,7 +41,14 @@ class AlbumsController < ApplicationController
   def destroy
     @album = Album.find(params[:id])
     if @album.destroy
-      redirect_back fallback_location: albums_path, notice: 'Destroyed'
+      respond_to do |format|
+        format.js {
+          render layout: false
+        }
+        format.html {
+          redirect_back fallback_location: albums_path, notice: 'Destroyed'
+        }
+      end
     else
       render :show, status: :unprocessable_entity
     end
