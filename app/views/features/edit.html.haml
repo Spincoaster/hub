@@ -50,10 +50,10 @@
         %td #{item.item_type}
         - if item.track?
           %td
-            #{@items[i].name}
+            #{@items[i]&.name}
         - if item.record?
           %td
-            #{@items[i].name}
+            #{@items[i]&.name}
         %td #{item.comment}
         %td.feature-item-button
           %a.remove-featured-item-button.btn-floating.btn-large.waves-effect.waves-light
