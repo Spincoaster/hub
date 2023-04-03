@@ -13,10 +13,9 @@ export default function() {
     $('#record-owner').text(owner);
     $('#record-modal').modal('open');
 
-    gtag('event', 'record_modal', {
-      title,
-      artist,
-      owner
+    gtag('event', 'select_content', {
+      content_type: 'record',
+      item_id: title
     });
   });
 }

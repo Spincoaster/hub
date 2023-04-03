@@ -11,10 +11,9 @@ export default function() {
     $('#track-artist').text(artist);
     $('#track-modal').modal('open');
 
-    gtag('event', 'track_modal', {
-      title,
-      artist,
-      album
+    gtag('event', 'select_content', {
+      content_type: 'track',
+      item_id: title
     });
   });
 }
