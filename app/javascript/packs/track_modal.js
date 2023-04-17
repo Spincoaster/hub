@@ -13,6 +13,7 @@ export default function() {
 
     gtag('event', 'select_content', {
       content_type: 'track',
+      content_id: title,
       item_id: title
     });
   });

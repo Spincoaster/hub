@@ -15,6 +15,7 @@ export default function() {
 
     gtag('event', 'select_content', {
       content_type: 'record',
+      content_id: title,
       item_id: title
     });
   });
