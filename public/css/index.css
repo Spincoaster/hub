@@ -301,3 +301,12 @@ nav .brand-logo.center {
 .admin.control {
     margin-top: 8px;
 }
+
+.card {
+  max-width: 100%;
+  aspect-ratio: 3 / 2;
+}
+
+.card .card-image {
+    max-height: 65% !important;
+}
