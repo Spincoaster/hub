@@ -59,7 +59,7 @@
           %a{:href => menu[:href]}
             %i.small.material-icons #{menu[:icon]}
             ="　#{menu[:label]}"
-    .row
+    .container
       .col.s12.offset-s0
         = yield
     %a.back.btn-floating.btn-large.waves-effect.waves-light.black{:href => "javascript:history.back(0)", :style => "display: none;"}
