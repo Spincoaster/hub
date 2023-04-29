@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_15_091020) do
+ActiveRecord::Schema.define(version: 2023_04_29_055559) do
 
   create_table "admins", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
@@ -42,6 +42,12 @@ ActiveRecord::Schema.define(version: 2018_11_15_091020) do
     t.index ["furigana"], name: "index_artists_on_furigana"
     t.index ["name"], name: "index_artists_on_name"
     t.index ["phonetic_name"], name: "index_artists_on_phonetic_name"
+  end
+
+  create_table "bars", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "feature_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
@@ -96,7 +102,9 @@ ActiveRecord::Schema.define(version: 2018_11_15_091020) do
     t.bigint "owner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "bar"
     t.index ["artist_id"], name: "index_records_on_artist_id"
+    t.index ["bar"], name: "index_records_on_bar"
     t.index ["furigana"], name: "index_records_on_furigana"
     t.index ["name"], name: "index_records_on_name"
     t.index ["owner_id"], name: "index_records_on_owner_id"
