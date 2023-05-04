@@ -1,8 +1,16 @@
 class SearchController < ApplicationController
   def index
+    bar = params["bar"]
     q = params["query"]
     @records = Record.includes([:owner, :artist]).search(q)
     @tracks = Track.search(q).includes([:album, :artist])
+    case bar
+    when 'shinjuku'
+      @records = @records.where(bar: bar)
+    when 'ebisu'
+      @records = @records.where(bar: bar)
+      @tracks = []
+    end
     respond_to do |format|
       format.html
       format.json {

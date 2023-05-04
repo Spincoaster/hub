@@ -9,6 +9,7 @@ class RecordsController < ApplicationController
                  .includes([:owner, :artist])
                  .joins(:artist)
                  .order("artists.name asc")
+    @records = @records.where(bar: @bar) if @bar.present?
     if params["has_prefix"].present?
       @records = @records.search_with_prefix(params["has_prefix"])
     end

@@ -4,6 +4,9 @@
 
 = form_with model: @record, url: url, local: true do |f|
   %br
+  = f.label(:bar)
+  = f.text_field(:bar)
+  %br
   = f.label(:name)
   = f.text_field(:name)
   %br

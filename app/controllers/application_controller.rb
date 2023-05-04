@@ -2,15 +2,31 @@ class ApplicationController < ActionController::Base
   before_action :set_menus
 
   def set_menus
-    @navigation_menus = [
-      { href: "/", icon: "home", label:"Top" },
-      { href: "/features", icon: "collections_bookmark", label: "Feature" },
-      { href: "/artists?has_prefix=a", icon: "assignment_ind", label:"Artists" },
-      { href: "/records?has_prefix=a", icon: "album", label:"Records" },
-      { href: "/tracks?has_prefix=a" , icon: "high_quality", label: "Hi-Res" },
-      { href: "/owners", icon: "perm_identity", label: "Owners" }
-    ]
-    @navigation_menus.push({ href: "/logout", icon: "undo", label: "Logout" }) if logged_in?
+    @bar = params[:bar]
+    @bars = %w[shinjuku ebisu]
+    @navigation_menus = []
+    case @bar
+    when "shinjuku"
+      @navigation_menus += [
+        { href: "/#{@bar}", icon: "home", label:"Top" },
+        { href: "/#{@bar}/features", icon: "collections_bookmark", label: "Feature" },
+        { href: "/#{@bar}/artists?has_prefix=a", icon: "assignment_ind", label:"Artists" },
+        { href: "/#{@bar}/records?has_prefix=a", icon: "album", label: "Records" },
+        { href: "/tracks?has_prefix=a" , icon: "high_quality", label: "Hi-Res" },
+      ]
+    when "ebisu"
+      @navigation_menus += [
+        { href: "/#{@bar}", icon: "home", label:"Top" },
+        { href: "/#{@bar}/artists?has_prefix=a", icon: "assignment_ind", label:"Artists" },
+        { href: "/#{@bar}/records?has_prefix=a", icon: "album", label: "Records" },
+      ]
+    else
+      @navigation_menus += [
+        { href: "/shinjuku", icon: nil, label: 'SHINJUKU' },
+        { href: "/ebisu", icon: nil, label: 'EBISU' },
+      ]
+    end
+    @navigation_menus << { href: "/logout", icon: "undo", label: "Logout" } if logged_in?
   end
 
   def login(admin)

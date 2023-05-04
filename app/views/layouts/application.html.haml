@@ -7,6 +7,7 @@
     = csp_meta_tag
 
     = stylesheet_link_tag "//fonts.googleapis.com/icon?family=Material+Icons"
+    = stylesheet_link_tag "//fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Oswald&display=swap"
     = javascript_include_tag "//code.jquery.com/jquery-2.1.1.min.js"
     = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.js"
     = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"
@@ -41,24 +42,37 @@
           %a{:href => "/"}
             %span#title.brand-logo.center
               %img.logo{:src => "/images/spin-logo.png"}
-          %ul.right
-            %li
-              %a#search.show-on-large{"data-activates" => "search"}
-                %i.material-icons search
+          - if @bar.present?
+            %ul.left.font-display.nav-bar-label
+              = @bar.upcase
+            %ul.right
+              %li
+                %a#search.show-on-large{"data-activates" => "search"}
+                  %i.material-icons search
       %nav#nav-search{:style => "display: none;"}
         .nav-wrapper
-          %form#search-form{:action => "/search", :method => "get"}
+          %form#search-form{:action => "/#{@bar}/search", :method => "get"}
             .input-field
               %input#search-field{:name => "query", :placeholder => "", :type => "search", :value => "#{params["query"]}"}/
               %label#search-icon.label-icon{:for => "search"}
                 %i.material-icons.search-bar-icons search
               %i#search-close.material-icons.search-bar-icons close
     %ul#sidebar-menu.side-nav
+      - if @bar.present?
+        %li.menu-bar-label
+          = @bar.upcase
       - @navigation_menus.each do |menu|
         %li.menu-item
           %a{:href => menu[:href]}
-            %i.small.material-icons #{menu[:icon]}
-            ="　#{menu[:label]}"
+            - if menu[:icon].present?
+              %i.small.material-icons #{menu[:icon]}
+              ="　#{menu[:label]}"
+            - else
+              ="#{menu[:label]}"
+      - if @bar.present?
+        %li.menu-item.menu-bar-list-label
+          %a{:href => "/" }
+            ="Bar List"
     .container
       .col.s12.offset-s0
         = yield

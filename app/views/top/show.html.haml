@@ -1,0 +1,58 @@
+.row
+.row
+  .col.s12.m8.offset-m2
+    %a{:href => "https://lin.ee/tAcbPS7" }
+      %img{:width => "100%", :src => "/images/line_banner.png"}/
+.top-section-label Menu
+.row.top-card-grid
+  - if @bar == 'shinjuku'
+    .col.s12.m6
+      %a{:href => "https://storage.spincoaster.com/assets/spincoaster_menu0417.pdf", :target => "_blank"}
+        .card.small.waves-effect.waves-block.waves-light
+          .card-image
+            %img{:height => "200", :src => "/images/shinjuku.jpg"}/
+          .card-content Menu
+  - if @bar == 'ebisu'
+    .col.s12.m6
+      %a{:href => "https://storage.spincoaster.com/assets/spincoaster_menu_ebisu_v1.pdf", :target => "_blank"}
+        .card.small.waves-effect.waves-block.waves-light
+          .card-image
+            %img{:height => "200", :src => "/images/ebisu.jpg"}/
+          .card-content Menu
+.top-section-label Music
+.row.top-card-grid
+  - if @bar == 'shinjuku'
+    .col.s12.m6
+      %a{:href => "#{@bar}/features"}
+        .card.small.waves-effect.waves-block.waves-light
+          .card-image
+            %img{:height => "200", :src => "/images/feature.png"}/
+          .card-content Feature
+  .col.s12.m6
+    %a{:href => "#{@bar}/artists?has_prefix=a"}
+      .card.small.waves-effect.waves-block.waves-light
+        .card-image
+          %img{:height => "200", :src => "/images/artist.jpg"}/
+        .card-content Artists
+  .col.s12.m6
+    %a{:href => "#{@bar}/records?has_prefix=a"}
+      .card.small.waves-effect.waves-block.waves-light
+        .card-image
+          %img{:height => "200", :src => "/images/record.jpg"}/
+        .card-content Records
+  - if @bar == 'shinjuku'
+    .col.s12.m6
+      %a{:href => "#{@bar}/tracks?has_prefix=a"}
+        .card.small.waves-effect.waves-block.waves-light
+          .card-image
+            %img{:height => "200", :src => "/images/track.jpg"}/
+          .card-content Hi-Res
+.top-info-label
+  ※フリーワード検索は右上の
+  %i.material-icons> search
+  から
+.row
+.row
+  .col.s8.offset-s2.m6.offset-m3.l4.offset-l4.xl2.offset-xl5
+    %a{:href => "https://bar.spincoaster.com/" }
+      %img{:width => "100%", :src => "/images/bar_logo.png"}/
