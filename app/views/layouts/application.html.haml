@@ -33,7 +33,8 @@
       $(document).ready(function() {
         $('.button-collapse').sideNav();
         $('.carousel').carousel({fullWidth: true});
-      })
+      });
+      window.bar = "#{@bar}";
     .navbar-fixed
       %nav#nav-normal
         .nav-wrapper
