@@ -21,6 +21,8 @@ class ArtistsController < ApplicationController
 
   def show
     @artist = Artist.includes([:records, :albums, :tracks]).find(params[:id])
+    @records = @artist.records
+    @records = @records.select { |r| r.bar == @bar } if @bar.present?
   end
 
   def new

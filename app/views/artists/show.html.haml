@@ -13,7 +13,7 @@
         %th{:style => "display: none;"} Owners
         %th{:style => "display: none;"} Locations
     %tbody
-      - @artist.records.each do |record|
+      - @records.each do |record|
         %tr.record-item
           %td.record-name #{record.name}
           %td.right-edge #{record.comment}
