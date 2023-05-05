@@ -6,10 +6,22 @@ class ArtistsController < ApplicationController
 
   before_action :set_initial_letter_pages
 
+  def ebisu_artist_ids
+    Record.where(bar: 'ebisu').distinct_column(:artist_id)
+  end
+
   def index
     @artists = Artist.order(name: :asc)
+    if @bar == 'ebisu'
+      @artists = @artists.where(id: ebisu_artist_ids)
+    elsif @bar == 'shinjuku'
+      exclude_ids = Set.new(ebisu_artist_ids)
+      exclude_ids -= Set.new(Track.where(artist_id: exclude_ids).distinct_column(:artist_id))
+      exclude_ids -= Set.new(Record.where(bar: 'shinjuku').where(artist_id: exclude_ids).distinct_column(:artist_id))
+      @artists = @artists.where.not(id: exclude_ids)
+    end
     if params["has_prefix"].present?
-      @artists = Artist.search_with_prefix(params["has_prefix"])
+      @artists = @artists.search_with_prefix(params["has_prefix"])
     end
     respond_to do |format|
       format.html {
@@ -20,9 +32,15 @@ class ArtistsController < ApplicationController
   end
 
   def show
-    @artist = Artist.includes([:records, :albums, :tracks]).find(params[:id])
-    @records = @artist.records
-    @records = @records.select { |r| r.bar == @bar } if @bar.present?
+    @artist = Artist.find(params[:id])
+    @records = Record.where(artist_id: @artist, bar: @bar)
+    if @bar == 'shinjuku'
+      @tracks = Track.where(artist_id: @artist)
+      @albums = Album.where(artist_id: @artist)
+    else
+      @tracks = []
+      @albums = []
+    end
   end
 
   def new

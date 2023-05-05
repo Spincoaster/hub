@@ -1,6 +1,8 @@
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
+  scope :distinct_column, -> (column){ select(column).distinct.pluck(column) }
+
   def as_error_json
     {
       errors: errors,

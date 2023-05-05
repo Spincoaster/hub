@@ -23,7 +23,7 @@
             %a{:href => "/records?owner_id=#{record.owner.id}"} #{record.owner.name}
           %td.location-name{:style => "display: none;"} #{record.location}-#{record.number}
 
-- if @artist.albums.present?
+- if @albums.present?
   .table-caption
     %i.small.material-icons library_music
     %span Albums
@@ -41,7 +41,7 @@
             %a{:href => "/tracks?album_id=#{album.id}"}
               %i.small.material-icons keyboard_arrow_right
 
-- if @artist.tracks.present?
+- if @tracks.present?
   .table-caption
     %i.small.material-icons library_music
     %span Tracks
