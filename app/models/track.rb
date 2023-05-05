@@ -22,13 +22,13 @@ class Track < ApplicationRecord
   }
 
   def self.crawl
-    ws = google_drive_wordsheet(
+    tracks_ws = google_drive_wordsheet(
       ENV.fetch('GOOGLE_DRIVE_TRACKS_SPREADSHEET_ID'),
       "artists"
     )
 
     artist_count = 0
-    ws2hashes(ws).each do |hash|
+    ws2hashes(tracks_ws).each do |hash|
       artist = Artist.find_or_create_by(id: hash["id"])
       artist.update(
         name: hash["name"],
@@ -39,7 +39,12 @@ class Track < ApplicationRecord
     end
 
     album_count = 0
-    ws2hashes(sp.worksheet_by_title("albums")).each do |hash|
+
+    albums_ws = google_drive_wordsheet(
+      ENV.fetch('GOOGLE_DRIVE_TRACKS_SPREADSHEET_ID'),
+      "albums"
+    )
+    ws2hashes(albums_ws).each do |hash|
       album = Album.find_or_create_by(id: hash["id"])
       album.update(
         name: hash["name"],
@@ -51,7 +56,11 @@ class Track < ApplicationRecord
     end
 
     track_count = 0
-    ws2hashes(sp.worksheet_by_title("tracks")).each do |hash|
+    tracks_ws = google_drive_wordsheet(
+      ENV.fetch('GOOGLE_DRIVE_TRACKS_SPREADSHEET_ID'),
+      "tracks"
+    )
+    ws2hashes(tracks_ws).each do |hash|
       track = Track.find_or_create_by(id: hash["id"])
       track.update(
         number: hash["number"],
