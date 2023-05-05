@@ -24,7 +24,7 @@ class Track < ApplicationRecord
   def self.crawl
     ws = google_drive_wordsheet(
       ENV.fetch('GOOGLE_DRIVE_TRACKS_SPREADSHEET_ID'),
-      artists
+      "artists"
     )
 
     artist_count = 0
