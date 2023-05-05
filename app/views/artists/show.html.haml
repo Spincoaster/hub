@@ -22,7 +22,7 @@
           %td.owner-name{:style => "display: none;"}
             %a{:href => "/records?owner_id=#{record.owner.id}"} #{record.owner.name}
           %td.location-name{:style => "display: none;"} #{record.location}-#{record.number}
-
+  %br
 - if @albums.present?
   .table-caption
     %i.small.material-icons library_music
@@ -40,7 +40,7 @@
           %td.right-edge{:style => "width: 60px;"}
             %a{:href => tracks_path(album_id: album.id, bar: @bar) }
               %i.small.material-icons keyboard_arrow_right
-
+  %br
 - if @tracks.present?
   .table-caption
     %i.small.material-icons library_music
@@ -59,6 +59,7 @@
           %td.track-name #{track.name}
           %td.album-name.right-edge
             %a{:href => tracks_path(album_id: track.album.id) } #{track.album.name}
+  %br
 
 = render :partial => "shared/record_modal"
 = render :partial => "shared/track_modal"
