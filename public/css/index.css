@@ -145,6 +145,10 @@ h5 > span > i {
     font-size: 30px;
 }
 
+.modal-footer {
+  margin-bottom: 16px;
+}
+
 .modal-footer > .btn-flat {
     padding: 0 16px;
 }
