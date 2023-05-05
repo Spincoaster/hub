@@ -38,7 +38,7 @@
         %tr.album-item
           %td.cell #{album.name}
           %td.right-edge{:style => "width: 60px;"}
-            %a{:href => "/tracks?album_id=#{album.id}"}
+            %a{:href => tracks_path(album_id: album.id, bar: @bar) }
               %i.small.material-icons keyboard_arrow_right
 
 - if @tracks.present?
@@ -55,10 +55,10 @@
       - @artist.tracks.each do |track|
         %tr.track-item
           %td.artist-name
-            %a{:href => "/tracks?artist_id=#{track.artist.id}"} #{track.artist.name}
+            %a{:href => tracks_path(artist_id: track.artist.id)} #{track.artist.name}
           %td.track-name #{track.name}
           %td.album-name.right-edge
-            %a{:href => "/tracks?album_id=#{track.album.id}"} #{track.album.name}
+            %a{:href => tracks_path(album_id: track.album.id) } #{track.album.name}
 
 = render :partial => "shared/record_modal"
 = render :partial => "shared/track_modal"
