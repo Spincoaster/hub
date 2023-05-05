@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
         { href: "/#{@bar}/features", icon: "collections_bookmark", label: "Feature" },
         { href: "/#{@bar}/artists?has_prefix=a", icon: "assignment_ind", label:"Artists" },
         { href: "/#{@bar}/records?has_prefix=a", icon: "album", label: "Records" },
-        { href: "/tracks?has_prefix=a" , icon: "high_quality", label: "Hi-Res" },
+        { href: "/#{@bar}/tracks?has_prefix=a" , icon: "high_quality", label: "Hi-Res" },
       ]
     when "ebisu"
       @navigation_menus += [
