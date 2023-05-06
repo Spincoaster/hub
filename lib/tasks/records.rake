@@ -3,12 +3,12 @@ require "slack"
 task crawl_records: :environment do
   begin
     #  notify_slack "Start crawling records..."
-    result = Record.crawl(bar: "ebisu")
+    result = Record.crawl("ebisu")
     if result[:count] > 0
       notify_slack "Crawled #{result[:total]} records. Add #{result[:count]} new records"
     end
 
-    result = Record.crawl(bar: "shinjuku")
+    result = Record.crawl("shinjuku")
     if result[:count] > 0
       notify_slack "Crawled #{result[:total]} records. Add #{result[:count]} new records"
     end
