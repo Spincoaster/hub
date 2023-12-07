@@ -7,7 +7,7 @@ module InitialLetterPagination
 
   def initial_letter_pages
     letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZあかさたなはまやらわ＃"
-    current_letter = params["has_prefix"] || ""
+    current_letter = params["has_prefix"] || "a"
     current_letter.upcase!
     letters.chars.map do |c|
       InitialLetterPage.new(c, current_letter.upcase == c)

@@ -22,6 +22,8 @@ class ArtistsController < ApplicationController
     end
     if params["has_prefix"].present?
       @artists = @artists.search_with_prefix(params["has_prefix"])
+    else
+      @artists = @artists.search_with_prefix("a")
     end
     respond_to do |format|
       format.html {
