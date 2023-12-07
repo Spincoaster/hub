@@ -55,10 +55,10 @@
       - @artist.tracks.each do |track|
         %tr.track-item
           %td.artist-name
-            %a{:href => tracks_path(artist_id: track.artist.id)} #{track.artist.name}
+            = track.artist.name
           %td.track-name #{track.name}
           %td.album-name.right-edge
-            %a{:href => tracks_path(album_id: track.album.id) } #{track.album.name}
+            = track.album.name
   %br
 
 = render :partial => "shared/record_modal"
