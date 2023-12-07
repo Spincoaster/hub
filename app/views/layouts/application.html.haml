@@ -40,9 +40,8 @@
         .nav-wrapper
           %a.button-collapse.show-on-large{"data-activates" => "sidebar-menu", :href => "#"}
             %i.material-icons menu
-          %a{:href => "/"}
-            %span#title.brand-logo.center
-              %img.logo{:src => "/images/spin-logo.png"}
+          %span#title.brand-logo.center
+            %img.logo{:src => "/images/spin-logo.png"}
           - if @bar.present?
             %ul.left.font-display.nav-bar-label
               = @bar.upcase
