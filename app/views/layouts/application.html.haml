@@ -38,8 +38,11 @@
     .navbar-fixed
       %nav#nav-normal
         .nav-wrapper
-          %a.button-collapse.show-on-large{"data-activates" => "sidebar-menu", :href => "#"}
-            %i.material-icons menu
+          - if @navigation_menus.present?
+            %a.button-collapse.show-on-large{"data-activates" => "sidebar-menu", :href => "#"}
+              %i.material-icons menu
+          - else
+            %span.button-collapse.show-on-large
           %span#title.brand-logo.center
             %img.logo{:src => "/images/spin-logo.png"}
           - if @bar.present?
@@ -57,22 +60,19 @@
               %label#search-icon.label-icon{:for => "search"}
                 %i.material-icons.search-bar-icons search
               %i#search-close.material-icons.search-bar-icons close
-    %ul#sidebar-menu.side-nav
-      - if @bar.present?
-        %li.menu-bar-label
-          = @bar.upcase
-      - @navigation_menus.each do |menu|
-        %li.menu-item
-          %a{:href => menu[:href]}
-            - if menu[:icon].present?
-              %i.small.material-icons #{menu[:icon]}
-              ="　#{menu[:label]}"
-            - else
-              ="#{menu[:label]}"
-      - if @bar.present?
-        %li.menu-item.menu-bar-list-label
-          %a{:href => "/" }
-            ="Bar List"
+    - if @navigation_menus.present?
+      %ul#sidebar-menu.side-nav
+        - if @bar.present?
+          %li.menu-bar-label
+            = @bar.upcase
+        - @navigation_menus.each do |menu|
+          %li.menu-item
+            %a{:href => menu[:href]}
+              - if menu[:icon].present?
+                %i.small.material-icons #{menu[:icon]}
+                ="　#{menu[:label]}"
+              - else
+                ="#{menu[:label]}"
     .container
       .col.s12.offset-s0
         = yield
