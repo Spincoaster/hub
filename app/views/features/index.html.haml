@@ -12,7 +12,7 @@
             \#{group[:category]}
           .collapsible-body.feature-item
             - group[:features].each do |feature|
-              %a{:href => "/features/#{feature.id}"}
+              %a{:href => "/#{@bar}/features/#{feature.id}"}
                 .collapsible-header
                   #{feature.name}
                   - if @current_admin.present?
@@ -23,7 +23,7 @@
 
         - else
           - group[:features].each do |feature|
-            %a{:href => "/features/#{feature.id}"}
+            %a{:href => "/#{@bar}/features/#{feature.id}"}
               .collapsible-header.feature-item
                 #{feature.name}
                 - if @current_admin.present?
