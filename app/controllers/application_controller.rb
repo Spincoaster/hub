@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
     when "shinjuku"
       @navigation_menus += [
 #        { href: "/#{@bar}", icon: "home", label:"Top" },
+        { href: "https://menu.spincoaster.com/shinjuku", icon: "local_bar", label: "Menu" },
         { href: "/#{@bar}/features", icon: "collections_bookmark", label: "Feature" },
         { href: "/#{@bar}/artists?has_prefix=a", icon: "assignment_ind", label:"Artists" },
 #        { href: "/#{@bar}/records?has_prefix=a", icon: "album", label: "Records" },
@@ -17,6 +18,7 @@ class ApplicationController < ActionController::Base
     when "ebisu"
       @navigation_menus += [
 #        { href: "/#{@bar}", icon: "home", label:"Top" },
+        { href: "https://menu.spincoaster.com/ebisu", label: "Drink Menus" },
 #        { href: "/#{@bar}/artists?has_prefix=a", icon: "assignment_ind", label:"Artists" },
 #        { href: "/#{@bar}/records?has_prefix=a", icon: "album", label: "Records" },
       ]
