@@ -8,5 +8,6 @@ task crawl_tracks: :environment do
 #    notify_slack "Crawled #{result[:track_count]} tracks" if result[:track_count] > 0
   rescue => error
     notify_slack error.message
+    notify_slack error.backtrace.join("\n")
   end
 end

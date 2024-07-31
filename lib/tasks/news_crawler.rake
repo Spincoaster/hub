@@ -11,5 +11,6 @@ task crawl_news: :environment do
     end
   rescue => error
     notify_slack error.message
+    notify_slack error.backtrace.join("\n")
   end
 end
