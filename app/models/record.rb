@@ -58,7 +58,7 @@ class Record < ApplicationRecord
       artist_name = hash['アーティスト']
       comment = hash['コメント']
 
-      next if title.nil?
+      next if title.nil? || artist_name.nil?
 
       owner = Owner.where(name: owner_name).first_or_create
 
