@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Admin {
+  id             BigInt   @id @default(autoincrement())
+  name           String?  @unique
+  passwordDigest String?  @map("password_digest")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
+model Album {
+  id           BigInt   @id @default(autoincrement())
+  name         String?
+  phoneticName String?  @map("phonetic_name")
+  furigana     String?
+  artistId     BigInt?  @map("artist_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  artist Artist? @relation(fields: [artistId], references: [id])
+  tracks Track[]
+
+  @@map("albums")
+}
+
+model Artist {
+  id           BigInt   @id @default(autoincrement())
+  name         String?
+  phoneticName String?  @map("phonetic_name")
+  furigana     String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  albums  Album[]
+  records Record[]
+  tracks  Track[]
+
+  @@map("artists")
+}
+
+model Bar {
+  id        BigInt   @id @default(autoincrement())
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("bars")
+}
+
+model FeatureItem {
+  id        BigInt   @id @default(autoincrement())
+  featureId BigInt?  @map("feature_id")
+  itemId    Int?     @map("item_id")
+  itemType  String?  @map("item_type")
+  number    Int?
+  comment   String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  feature Feature? @relation(fields: [featureId], references: [id])
+
+  @@map("feature_items")
+}
+
+model Feature {
+  id                BigInt   @id @default(autoincrement())
+  number            Int?
+  name              String?
+  description       String?
+  externalLink      String?  @map("external_link")
+  externalThumbnail String?  @map("external_thumbnail")
+  category          String?
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  featureItems FeatureItem[]
+
+  @@map("features")
+}
+
+model NewsEntry {
+  id          BigInt    @id @default(autoincrement())
+  newsId      Int?      @unique @map("news_id")
+  title       String?
+  url         String?
+  publishedAt DateTime? @map("published_at")
+  content     String?
+  thumbnail   String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@index([publishedAt])
+  @@map("news_entries")
+}
+
+model Owner {
+  id        BigInt   @id @default(autoincrement())
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  records Record[]
+
+  @@map("owners")
+}
+
+model Record {
+  id           BigInt   @id @default(autoincrement())
+  name         String?
+  phoneticName String?  @map("phonetic_name")
+  furigana     String?
+  location     String?
+  number       Int?
+  comment      String?
+  artistId     BigInt?  @map("artist_id")
+  ownerId      BigInt?  @map("owner_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  bar          Int?
+
+  artist Artist? @relation(fields: [artistId], references: [id])
+  owner  Owner?  @relation(fields: [ownerId], references: [id])
+
+  @@map("records")
+}
+
+model Track {
+  id           BigInt   @id @default(autoincrement())
+  name         String?
+  phoneticName String?  @map("phonetic_name")
+  furigana     String?
+  number       Int?
+  artistId     BigInt?  @map("artist_id")
+  albumId      BigInt?  @map("album_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  artist Artist? @relation(fields: [artistId], references: [id])
+  album  Album?  @relation(fields: [albumId], references: [id])
+
+  @@map("tracks")
+}
