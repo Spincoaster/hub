@@ -1,114 +1,76 @@
 import Link from "next/link";
-import { auth } from "@/lib/auth";
-import { signOut } from "@/lib/auth";
+import Image from "next/image";
 import { MobileMenu } from "@/components/MobileMenu";
 
-const navigationMenus = {
+const navigationMenus: Record<string, { href: string; label: string; external: boolean }[]> = {
   shinjuku: [
-    {
-      href: "https://menu.spincoaster.com/shinjuku",
-      label: "Menu",
-      external: true,
-    },
-    { href: "/shinjuku/features", label: "Feature", external: false },
-    { href: "/shinjuku/artists", label: "Artists", external: false },
+    { href: "https://menu.spincoaster.com/shinjuku", label: "Menu", external: true },
     { href: "/shinjuku/records", label: "Records", external: false },
-    { href: "/shinjuku/tracks", label: "Tracks", external: false },
-    { href: "/shinjuku/albums", label: "Albums", external: false },
-    { href: "/shinjuku/owners", label: "Owners", external: false },
+    { href: "/shinjuku/tracks", label: "Hi-Res", external: false },
+    { href: "/shinjuku/features", label: "Recommend", external: false },
+    { href: "/shinjuku/new-arrivals", label: "New Arrival", external: false },
   ],
   ebisu: [
-    {
-      href: "https://menu.spincoaster.com/ebisu",
-      label: "Drink Menus",
-      external: true,
-    },
-    { href: "/ebisu/artists", label: "Artists", external: false },
+    { href: "https://menu.spincoaster.com/ebisu", label: "Menu", external: true },
     { href: "/ebisu/records", label: "Records", external: false },
-    { href: "/ebisu/tracks", label: "Tracks", external: false },
-    { href: "/ebisu/albums", label: "Albums", external: false },
-    { href: "/ebisu/owners", label: "Owners", external: false },
+    { href: "/ebisu/tracks", label: "Hi-Res", external: false },
+    { href: "/ebisu/features", label: "Recommend", external: false },
+    { href: "/ebisu/new-arrivals", label: "New Arrival", external: false },
+  ],
+  kagurazaka: [
+    { href: "https://menu.spincoaster.com/kagurazaka", label: "Menu", external: true },
+    { href: "/kagurazaka/records", label: "Records", external: false },
+    { href: "/kagurazaka/tracks", label: "Hi-Res", external: false },
+    { href: "/kagurazaka/features", label: "Recommend", external: false },
+    { href: "/kagurazaka/new-arrivals", label: "New Arrival", external: false },
   ],
   default: [
     { href: "/shinjuku", label: "SHINJUKU", external: false },
     { href: "/ebisu", label: "EBISU", external: false },
+    { href: "/kagurazaka", label: "KAGURAZAKA", external: false },
   ],
 };
 
-type Bar = "shinjuku" | "ebisu";
-
-function isBar(value: string): value is Bar {
-  return value === "shinjuku" || value === "ebisu";
-}
-
 function getMenuItems(bar?: string) {
-  if (bar && isBar(bar)) {
+  if (bar && bar in navigationMenus) {
     return navigationMenus[bar];
   }
   return navigationMenus.default;
 }
 
-export async function Navigation({ bar }: { bar?: string }) {
-  const session = await auth();
+export function Navigation({ bar }: { bar?: string }) {
   const menuItems = getMenuItems(bar);
   const homeHref = bar ? `/${bar}` : "/";
-  const title = bar ? bar.toUpperCase() : "SPINCOASTER HUB";
+  const searchHref = bar ? `/${bar}/search` : "/";
 
   return (
-    <nav className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+    <nav className="border-b border-zinc-800 bg-zinc-950">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-        <Link
-          href={homeHref}
-          className="text-lg font-bold tracking-wider text-zinc-900 dark:text-zinc-100"
-        >
-          {title}
+        {/* Left spacer */}
+        <div className="w-20" />
+
+        {/* Center: Logo */}
+        <Link href={homeHref} className="flex items-center">
+          <Image
+            src="/spin_logo.png"
+            alt="Spincoaster"
+            width={160}
+            height={40}
+            className="h-6 w-auto"
+            priority
+          />
         </Link>
 
-        {/* Desktop menu */}
-        <div className="hidden items-center gap-6 md:flex">
-          {menuItems.map((item) =>
-            item.external ? (
-              <a
-                key={item.href}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-              >
-                {item.label}
-              </a>
-            ) : (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-sm text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-              >
-                {item.label}
-              </Link>
-            )
-          )}
-          {session?.user && (
-            <form
-              action={async () => {
-                "use server";
-                await signOut({ redirectTo: "/" });
-              }}
-            >
-              <button
-                type="submit"
-                className="text-sm text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-              >
-                Logout
-              </button>
-            </form>
-          )}
+        {/* Right: Search + Menu */}
+        <div className="flex w-20 items-center justify-end gap-3">
+          <Link href={searchHref} className="p-1 text-zinc-400 transition-colors hover:text-white">
+            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+          </Link>
+          <MobileMenu menuItems={menuItems} isLoggedIn={false} />
         </div>
-
-        {/* Mobile menu */}
-        <MobileMenu
-          menuItems={menuItems}
-          isLoggedIn={!!session?.user}
-        />
       </div>
     </nav>
   );

@@ -24,6 +24,7 @@ export function serializeBigInt<T>(data: T): T {
 export const BAR_VALUES: Record<string, number> = {
   shinjuku: 0,
   ebisu: 1,
+  kagurazaka: 2,
 };
 
 /**
