@@ -61,7 +61,7 @@ export function NavMenu({
 
       {/* Menu dropdown */}
       {open && (
-        <div className="absolute inset-x-0 top-14 z-50 border-b border-zinc-800 bg-zinc-950">
+        <div className="absolute inset-x-0 top-14 z-50 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm">
           <div className="flex flex-col">
             {menuItems.map((item) => {
               const content = (

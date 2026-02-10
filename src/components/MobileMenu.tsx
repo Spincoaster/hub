@@ -37,7 +37,7 @@ export function MobileMenu({
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 top-14 z-50 border-b border-zinc-800 bg-zinc-950 px-4 py-4">
+        <div className="absolute left-0 right-0 top-14 z-50 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm px-4 py-4">
           <div className="mx-auto flex max-w-5xl flex-col gap-4">
             {menuItems.map((item) =>
               item.external ? (

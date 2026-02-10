@@ -9,7 +9,7 @@ const shops = [
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-white px-4 dark:bg-zinc-950">
+    <div className="flex min-h-screen flex-col items-center justify-center px-4">
       <Image
         src="/bar_logo.png"
         alt="SPINCOASTER MUSIC BAR"
@@ -18,7 +18,7 @@ export default function Home() {
         className="mb-8"
         priority
       />
-      <h1 className="mb-12 text-center text-4xl font-bold tracking-wider text-zinc-900 dark:text-zinc-100">
+      <h1 className="mb-12 text-center text-4xl font-bold tracking-wider text-zinc-100">
         MUSIC LIST
       </h1>
       <div className="flex w-full max-w-sm flex-col gap-4">
@@ -26,7 +26,7 @@ export default function Home() {
           <Link
             key={shop.slug}
             href={`/${shop.slug}`}
-            className="flex h-20 items-center justify-center rounded-lg border border-zinc-200 text-xl font-semibold tracking-widest text-zinc-800 transition-all hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-800 dark:text-zinc-200 dark:hover:border-zinc-600 dark:hover:bg-zinc-900"
+            className="flex h-20 items-center justify-center rounded-lg border border-zinc-800 text-xl font-semibold tracking-widest text-zinc-200 transition-all hover:border-zinc-600 hover:bg-zinc-900"
           >
             {shop.label}
           </Link>

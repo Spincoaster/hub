@@ -49,7 +49,7 @@ export function Navigation({ bar }: { bar?: string }) {
   const barLabel = bar ? capitalize(bar) : undefined;
 
   return (
-    <nav className="relative border-b border-zinc-800 bg-zinc-950">
+    <nav className="relative border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
         {/* Left spacer */}
         <div className="w-24" />
