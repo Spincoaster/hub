@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { BAR_VALUES, buildPrefixFilter } from "@/lib/utils";
 import InitialLetterPagination from "@/components/InitialLetterPagination";
-import DeleteButton from "@/components/DeleteButton";
 
 export default async function RecordsPage({
   params,
@@ -40,86 +39,56 @@ export default async function RecordsPage({
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Records</h1>
+      <div className="mb-6 flex items-start justify-between">
+        <h1 className="text-5xl font-light tracking-tight md:text-7xl">
+          All Record List
+        </h1>
         {session && (
           <Link
             href={`/${bar}/records/new`}
-            className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+            className="mt-2 shrink-0 rounded bg-white/10 px-4 py-2 text-sm text-white hover:bg-white/20"
           >
             New Record
           </Link>
         )}
       </div>
 
-      <InitialLetterPagination
-        basePath={`/${bar}/records`}
-        currentPrefix={hasPrefix}
-      />
+      <div className="mb-8">
+        <InitialLetterPagination
+          basePath={`/${bar}/records`}
+          currentPrefix={hasPrefix}
+        />
+      </div>
 
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="border-b bg-gray-50 text-left text-sm text-gray-600">
-            <th className="px-4 py-2">Name</th>
-            <th className="px-4 py-2">Artist</th>
-            <th className="px-4 py-2">Owner</th>
-            <th className="px-4 py-2">Location</th>
-            <th className="px-4 py-2">Number</th>
-            {session && <th className="px-4 py-2">Actions</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {records.map((record) => (
-            <tr key={Number(record.id)} className="border-b hover:bg-gray-50">
-              <td className="px-4 py-2">{record.name}</td>
-              <td className="px-4 py-2 text-sm text-gray-600">
-                {record.artist ? (
-                  <Link
-                    href={`/${bar}/artists/${Number(record.artist.id)}`}
-                    className="text-blue-600 hover:underline"
-                  >
-                    {record.artist.name}
-                  </Link>
-                ) : (
-                  "-"
-                )}
-              </td>
-              <td className="px-4 py-2 text-sm text-gray-600">
-                {record.owner?.name || "-"}
-              </td>
-              <td className="px-4 py-2 text-sm text-gray-600">
-                {record.location || "-"}
-              </td>
-              <td className="px-4 py-2 text-sm text-gray-600">
-                {record.number ?? "-"}
-              </td>
-              {session && (
-                <td className="flex gap-2 px-4 py-2">
-                  <Link
-                    href={`/${bar}/records/${Number(record.id)}/edit`}
-                    className="text-sm text-blue-600 hover:text-blue-800"
-                  >
-                    Edit
-                  </Link>
-                  <DeleteButton
-                    apiPath={`/api/records/${Number(record.id)}`}
-                  />
-                </td>
-              )}
-            </tr>
-          ))}
-          {records.length === 0 && (
-            <tr>
-              <td
-                colSpan={session ? 6 : 5}
-                className="px-4 py-8 text-center text-gray-500"
-              >
-                No records found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      <div className="flex flex-col">
+        {records.map((record) => (
+          <Link
+            key={Number(record.id)}
+            href={
+              session
+                ? `/${bar}/records/${Number(record.id)}/edit`
+                : `/${bar}/artists/${Number(record.artist?.id)}`
+            }
+            className="group flex items-center justify-between border-b border-zinc-700 py-4 transition-colors hover:bg-white/5"
+          >
+            <span className="text-white">
+              {record.artist?.name || record.name}
+            </span>
+            <svg
+              className="h-5 w-5 shrink-0 text-zinc-500 transition-colors group-hover:text-white"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <path d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        ))}
+        {records.length === 0 && (
+          <p className="py-8 text-center text-zinc-500">No records found.</p>
+        )}
+      </div>
     </div>
   );
 }
