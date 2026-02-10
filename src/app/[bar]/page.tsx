@@ -142,7 +142,7 @@ export default async function BarPage({
 
           <div className="flex flex-col gap-3">
             <Link
-              href={`/${bar}/records`}
+              href={`/${bar}/records/artists`}
               className="flex items-center justify-between rounded-full border border-zinc-600 px-6 py-2.5 text-sm font-medium transition-colors hover:border-white"
             >
               <span>View All Record</span>
@@ -152,7 +152,7 @@ export default async function BarPage({
               </svg>
             </Link>
             <Link
-              href={`/${bar}/tracks`}
+              href={`/${bar}/tracks/artists`}
               className="flex items-center justify-between rounded-full border border-zinc-600 px-6 py-2.5 text-sm font-medium transition-colors hover:border-white"
             >
               <span>View All Hi-Res</span>
