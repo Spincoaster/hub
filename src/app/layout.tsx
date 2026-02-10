@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Cabin, Geist_Mono } from "next/font/google";
 import NoiseBackground from "@/components/NoiseBackground";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const cabin = Cabin({
+  variable: "--font-cabin",
   subsets: ["latin"],
 });
 
@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${cabin.variable} ${geistMono.variable} antialiased`}
       >
         <NoiseBackground />
         {children}
