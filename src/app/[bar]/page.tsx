@@ -1,43 +1,12 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
+import { RecordList } from "@/components/RecordList";
 
 export const dynamic = "force-dynamic";
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function RecordRow({
-  artist,
-  album,
-  number,
-  href,
-}: {
-  artist: string;
-  album: string;
-  number: number | null;
-  href: string;
-}) {
-  return (
-    <Link href={href} className="group flex items-center border-b border-zinc-800 py-3 transition-colors hover:bg-zinc-900/50">
-      <span className="w-2/5 truncate text-sm">{artist}</span>
-      <span className="w-2/5 truncate text-sm">{album}</span>
-      <span className="flex w-1/5 items-center justify-end gap-1 text-sm text-zinc-400">
-        {number != null && (
-          <>
-            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
-            <span>{String(number).padStart(3, "0")}</span>
-          </>
-        )}
-        <svg className="ml-2 h-4 w-4 text-zinc-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-          <path d="M9 18l6-6-6-6" />
-        </svg>
-      </span>
-    </Link>
-  );
 }
 
 function SectionHeader({
@@ -85,7 +54,7 @@ export default async function BarPage({
       where: { bar: barValue },
       orderBy: { number: "desc" },
       take: 5,
-      include: { artist: true },
+      include: { artist: true, owner: true },
     }),
     prisma.track.findMany({
       orderBy: { number: "desc" },
@@ -105,7 +74,7 @@ export default async function BarPage({
       where: { bar: barValue },
       orderBy: { createdAt: "desc" },
       take: 5,
-      include: { artist: true },
+      include: { artist: true, owner: true },
     }),
   ]);
 
@@ -113,6 +82,37 @@ export default async function BarPage({
   const tracks = serializeBigInt(topTracks);
   const featureList = serializeBigInt(features);
   const arrivals = serializeBigInt(newArrivals);
+
+  const recordItems = records.map((r) => ({
+    id: String(r.id),
+    name: r.name ?? "—",
+    artistName: r.artist?.name ?? "—",
+    albumName: r.name ?? "—",
+    number: r.number,
+    type: "Record" as const,
+    ownerName: r.owner?.name ?? undefined,
+    location: r.location ?? undefined,
+  }));
+
+  const trackItems = tracks.map((t) => ({
+    id: String(t.id),
+    name: t.name ?? "—",
+    artistName: t.artist?.name ?? "—",
+    albumName: t.album?.name ?? "—",
+    number: t.number,
+    type: "Hi-Res" as const,
+  }));
+
+  const arrivalItems = arrivals.map((r) => ({
+    id: String(r.id),
+    name: r.name ?? "—",
+    artistName: r.artist?.name ?? "—",
+    albumName: r.name ?? "—",
+    number: r.number,
+    type: "Record" as const,
+    ownerName: r.owner?.name ?? undefined,
+    location: r.location ?? undefined,
+  }));
 
   return (
     <div>
@@ -173,15 +173,7 @@ export default async function BarPage({
           viewAllLabel="View All Record"
         />
         <TableHeader />
-        {records.map((record) => (
-          <RecordRow
-            key={record.id}
-            artist={record.artist?.name ?? "—"}
-            album={record.name ?? "—"}
-            number={record.number}
-            href={`/${bar}/records`}
-          />
-        ))}
+        <RecordList items={recordItems} />
       </section>
 
       {/* Hi-Res TOP 100 */}
@@ -192,15 +184,7 @@ export default async function BarPage({
           viewAllLabel="View All Hi-res"
         />
         <TableHeader />
-        {tracks.map((track) => (
-          <RecordRow
-            key={track.id}
-            artist={track.artist?.name ?? "—"}
-            album={track.album?.name ?? "—"}
-            number={track.number}
-            href={`/${bar}/tracks`}
-          />
-        ))}
+        <RecordList items={trackItems} />
       </section>
 
       {/* Recommend */}
@@ -211,15 +195,16 @@ export default async function BarPage({
           viewAllLabel="View All"
         />
         <TableHeader />
-        {featureList.map((feature) => (
-          <RecordRow
-            key={feature.id}
-            artist={feature.name ?? "—"}
-            album={feature.description ?? "—"}
-            number={feature.number}
-            href={`/${bar}/features`}
-          />
-        ))}
+        <RecordList
+          items={featureList.map((f) => ({
+            id: String(f.id),
+            name: f.name ?? "—",
+            artistName: f.name ?? "—",
+            albumName: f.description ?? "—",
+            number: f.number,
+            type: "Record" as const,
+          }))}
+        />
       </section>
 
       {/* New Arrival */}
@@ -230,15 +215,7 @@ export default async function BarPage({
           viewAllLabel="View All"
         />
         <TableHeader />
-        {arrivals.map((record) => (
-          <RecordRow
-            key={record.id}
-            artist={record.artist?.name ?? "—"}
-            album={record.name ?? "—"}
-            number={record.number}
-            href={`/${bar}/records`}
-          />
-        ))}
+        <RecordList items={arrivalItems} />
       </section>
     </div>
   );

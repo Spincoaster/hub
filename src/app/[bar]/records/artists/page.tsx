@@ -47,7 +47,7 @@ export default async function RecordArtistsPage({
         {artists.map((artist) => (
           <Link
             key={Number(artist.id)}
-            href={`/${bar}/artists/${Number(artist.id)}`}
+            href={`/${bar}/artists/${Number(artist.id)}/records`}
             className="group flex items-center justify-between border-b border-zinc-700 py-4 transition-colors hover:bg-white/5"
           >
             <span className="text-white">{artist.name}</span>
