@@ -1,10 +1,12 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { serializeBigInt } from "@/lib/utils";
 import { auth } from "@/lib/auth";
 
 type Params = Promise<{ bar: string; id: string }>;
+
+export const dynamic = "force-dynamic";
 
 export default async function FeatureDetailPage({
   params,
@@ -13,6 +15,7 @@ export default async function FeatureDetailPage({
 }) {
   const { bar, id } = await params;
   const session = await auth();
+  if (!session) redirect("/login");
 
   const feature = await prisma.feature.findUnique({
     where: { id: BigInt(id) },
@@ -55,24 +58,22 @@ export default async function FeatureDetailPage({
       <div className="mb-4">
         <Link
           href={`/${bar}/features`}
-          className="text-sm text-blue-600 hover:underline"
+          className="text-sm text-zinc-400 hover:text-white hover:underline"
         >
           &larr; Features 一覧
         </Link>
       </div>
 
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-white">
           {serialized.name ?? "Untitled"}
         </h1>
-        {session && (
-          <Link
-            href={`/${bar}/features/${id}/edit`}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-          >
-            編集
-          </Link>
-        )}
+        <Link
+          href={`/${bar}/features/${id}/edit`}
+          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          編集
+        </Link>
       </div>
 
       {serialized.externalThumbnail && (
@@ -84,7 +85,7 @@ export default async function FeatureDetailPage({
       )}
 
       {serialized.description && (
-        <p className="mb-6 text-gray-700">{serialized.description}</p>
+        <p className="mb-6 text-zinc-300">{serialized.description}</p>
       )}
 
       {serialized.externalLink && (
@@ -92,22 +93,18 @@ export default async function FeatureDetailPage({
           href={serialized.externalLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="mb-6 inline-block text-sm text-blue-600 hover:underline"
+          className="mb-6 inline-block text-sm text-blue-400 hover:underline"
         >
           外部リンク
         </a>
       )}
 
-      <div className="mb-4 flex items-center gap-4">
-        <span className="text-sm text-gray-500">
-          カテゴリ: {serialized.category ?? "なし"}
-        </span>
-      </div>
-
-      <h2 className="mb-4 text-xl font-semibold text-gray-800">アイテム</h2>
+      <h2 className="mb-4 text-xl font-semibold text-white">
+        アイテム ({serialized.featureItems.length})
+      </h2>
 
       {serialized.featureItems.length === 0 ? (
-        <p className="text-gray-500">アイテムがありません。</p>
+        <p className="text-zinc-500">アイテムがありません。</p>
       ) : (
         <div className="space-y-4">
           {serialized.featureItems.map(
@@ -125,42 +122,42 @@ export default async function FeatureDetailPage({
             }) => (
               <div
                 key={String(item.id)}
-                className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
+                className="rounded-lg border border-zinc-700 p-4"
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <span className="mr-2 text-sm font-medium text-gray-400">
+                    <span className="mr-2 text-sm font-medium text-zinc-500">
                       #{item.number}
                     </span>
-                    <span className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
+                    <span className="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400">
                       {item.itemType}
                     </span>
                   </div>
                 </div>
                 {item.itemData && (
                   <div className="mt-2">
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-white">
                       {item.itemData.name ?? ""}
                     </p>
                     {item.itemData.artist && (
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-zinc-400">
                         Artist: {item.itemData.artist.name ?? ""}
                       </p>
                     )}
                     {item.itemType === "Track" && item.itemData.album && (
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-zinc-400">
                         Album: {item.itemData.album.name ?? ""}
                       </p>
                     )}
                     {item.itemType === "Record" && item.itemData.owner && (
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-zinc-400">
                         Owner: {item.itemData.owner.name ?? ""}
                       </p>
                     )}
                   </div>
                 )}
                 {item.comment && (
-                  <p className="mt-2 text-sm text-gray-600 italic">
+                  <p className="mt-2 text-sm text-zinc-500 italic">
                     {item.comment}
                   </p>
                 )}

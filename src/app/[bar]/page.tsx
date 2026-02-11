@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
 import { RecordList } from "@/components/RecordList";
 import { getSessionId } from "@/lib/session";
+import { auth } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -265,8 +266,10 @@ export default async function BarPage({
         ownerName: item.itemType === "Record" ? (item.itemData!.owner?.name ?? undefined) : undefined,
         location: item.itemType === "Record" ? ((item.itemData as { location?: string }).location ?? undefined) : undefined,
       }));
-    return { name: f.name as string, items };
+    return { id: f.id as string, name: f.name as string, items };
   });
+
+  const session = await auth();
 
   return (
     <div>
@@ -344,7 +347,17 @@ export default async function BarPage({
       {/* Dynamic Feature Sections */}
       {featureSections.map((section, idx) => (
         <section key={idx} className="mb-16">
-          <h2 className="mb-2 text-2xl font-bold">{section.name}</h2>
+          <div className="mb-2 flex items-end justify-between">
+            <h2 className="text-2xl font-bold">{section.name}</h2>
+            {session && (
+              <Link
+                href={`/${bar}/features/${section.id}/edit`}
+                className="text-sm text-zinc-400 underline transition-colors hover:text-white"
+              >
+                [ edit &gt; ]
+              </Link>
+            )}
+          </div>
           <TableHeader />
           <RecordList items={section.items} likeMap={likeMap} likeCounts={likeCounts} />
         </section>
