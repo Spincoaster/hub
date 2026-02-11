@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
       externalLink: body.externalLink,
       externalThumbnail: body.externalThumbnail,
       category: body.category,
+      bar: body.bar ?? null,
     },
   });
   return NextResponse.json(serializeBigInt(feature), { status: 201 });

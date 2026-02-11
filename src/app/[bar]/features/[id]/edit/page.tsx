@@ -21,6 +21,7 @@ interface Feature {
   externalLink: string | null;
   externalThumbnail: string | null;
   category: string | null;
+  bar: number | null;
   featureItems: FeatureItem[];
 }
 
@@ -46,6 +47,7 @@ export default function FeatureEditPage() {
   const [number, setNumber] = useState<number | "">("");
   const [externalLink, setExternalLink] = useState("");
   const [externalThumbnail, setExternalThumbnail] = useState("");
+  const [barValue, setBarValue] = useState<number | "">("");
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [newItemType, setNewItemType] = useState<"Track" | "Record">("Track");
@@ -66,6 +68,7 @@ export default function FeatureEditPage() {
       setNumber(data.number ?? "");
       setExternalLink(data.externalLink ?? "");
       setExternalThumbnail(data.externalThumbnail ?? "");
+      setBarValue(data.bar ?? "");
     } catch {
       setError("フィーチャーの取得に失敗しました");
     } finally {
@@ -93,6 +96,7 @@ export default function FeatureEditPage() {
           number: number === "" ? null : number,
           externalLink: externalLink || null,
           externalThumbnail: externalThumbnail || null,
+          bar: barValue === "" ? null : barValue,
         }),
       });
       if (!res.ok) throw new Error("Failed to save");
@@ -277,6 +281,24 @@ export default function FeatureEditPage() {
             onChange={(e) => setExternalThumbnail(e.target.value)}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            バー
+          </label>
+          <select
+            value={barValue}
+            onChange={(e) =>
+              setBarValue(e.target.value === "" ? "" : parseInt(e.target.value))
+            }
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            <option value="">未設定</option>
+            <option value="0">Shinjuku</option>
+            <option value="1">Ebisu</option>
+            <option value="2">Kagurazaka</option>
+          </select>
         </div>
 
         <button

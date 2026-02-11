@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
 import { RecordList } from "@/components/RecordList";
+import { getSessionId } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
@@ -49,70 +50,223 @@ export default async function BarPage({
   const { bar } = await params;
   const barValue = BAR_VALUES[bar];
 
-  const [topRecords, topTracks, features, newArrivals] = await Promise.all([
-    prisma.record.findMany({
-      where: { bar: barValue },
-      orderBy: { number: "desc" },
-      take: 5,
-      include: { artist: true, owner: true },
+  // Records with at least 1 like, ordered by like count desc
+  const topRecordLikes = await prisma.like.groupBy({
+    by: ["recordId"],
+    where: {
+      recordId: { not: null },
+      record: { bar: barValue },
+    },
+    _count: { recordId: true },
+    orderBy: { _count: { recordId: "desc" } },
+    take: 5,
+  });
+
+  const topRecordIds = topRecordLikes
+    .map((l) => l.recordId)
+    .filter((id): id is bigint => id !== null);
+
+  const topRecords =
+    topRecordIds.length > 0
+      ? await prisma.record.findMany({
+          where: { id: { in: topRecordIds } },
+          include: { artist: true, owner: true },
+        })
+      : [];
+
+  // Tracks with at least 1 like, ordered by like count desc
+  const topTrackLikes = await prisma.like.groupBy({
+    by: ["trackId"],
+    where: { trackId: { not: null } },
+    _count: { trackId: true },
+    orderBy: { _count: { trackId: "desc" } },
+    take: 5,
+  });
+
+  const topTrackIds = topTrackLikes
+    .map((l) => l.trackId)
+    .filter((id): id is bigint => id !== null);
+
+  const topTracks =
+    topTrackIds.length > 0
+      ? await prisma.track.findMany({
+          where: { id: { in: topTrackIds } },
+          include: { artist: true, album: true },
+        })
+      : [];
+
+  const barFeatures = await prisma.feature.findMany({
+    where: { bar: barValue },
+    orderBy: { number: "asc" },
+    include: {
+      featureItems: { orderBy: { number: "asc" } },
+    },
+  });
+
+  // Build likeCounts map
+  const likeCounts: Record<string, number> = {};
+  for (const l of topRecordLikes) {
+    if (l.recordId) likeCounts[String(l.recordId)] = l._count.recordId;
+  }
+  for (const l of topTrackLikes) {
+    if (l.trackId) likeCounts[String(l.trackId)] = l._count.trackId;
+  }
+
+  // Resolve feature items polymorphically
+  const featuresWithItems = await Promise.all(
+    barFeatures.map(async (feature) => {
+      const resolvedItems = await Promise.all(
+        feature.featureItems.map(async (item) => {
+          let itemData: Record<string, unknown> | null = null;
+          if (item.itemId) {
+            if (item.itemType === "Record") {
+              itemData = (await prisma.record.findUnique({
+                where: { id: BigInt(item.itemId) },
+                include: { artist: true, owner: true },
+              })) as unknown as Record<string, unknown> | null;
+            } else if (item.itemType === "Track") {
+              itemData = (await prisma.track.findUnique({
+                where: { id: BigInt(item.itemId) },
+                include: { artist: true, album: true },
+              })) as unknown as Record<string, unknown> | null;
+            }
+          }
+          return { ...item, itemData, itemType: item.itemType };
+        }),
+      );
+      return { ...feature, resolvedItems };
     }),
-    prisma.track.findMany({
-      orderBy: { number: "desc" },
-      take: 5,
-      include: { artist: true, album: true },
-    }),
-    prisma.feature.findMany({
-      orderBy: { number: "desc" },
-      take: 5,
-      include: {
-        featureItems: {
-          take: 1,
-        },
-      },
-    }),
-    prisma.record.findMany({
-      where: { bar: barValue },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-      include: { artist: true, owner: true },
-    }),
-  ]);
+  );
+
+  // Collect all record/track IDs from features for like counts
+  const featureRecordIds: bigint[] = [];
+  const featureTrackIds: bigint[] = [];
+  for (const f of featuresWithItems) {
+    for (const item of f.resolvedItems) {
+      if (item.itemData && item.itemId) {
+        if (item.itemType === "Record") featureRecordIds.push(BigInt(item.itemId));
+        if (item.itemType === "Track") featureTrackIds.push(BigInt(item.itemId));
+      }
+    }
+  }
+
+  // Get like counts for feature items
+  if (featureRecordIds.length > 0) {
+    const featureRecordLikes = await prisma.like.groupBy({
+      by: ["recordId"],
+      where: { recordId: { in: featureRecordIds } },
+      _count: { recordId: true },
+    });
+    for (const l of featureRecordLikes) {
+      if (l.recordId) likeCounts[String(l.recordId)] = l._count.recordId;
+    }
+  }
+  if (featureTrackIds.length > 0) {
+    const featureTrackLikes = await prisma.like.groupBy({
+      by: ["trackId"],
+      where: { trackId: { in: featureTrackIds } },
+      _count: { trackId: true },
+    });
+    for (const l of featureTrackLikes) {
+      if (l.trackId) likeCounts[String(l.trackId)] = l._count.trackId;
+    }
+  }
+
+  // Build likeMap for current session
+  const sessionId = await getSessionId();
+  const allRecordIds = [...topRecordIds, ...featureRecordIds];
+  const allTrackIds = [...topTrackIds, ...featureTrackIds];
+
+  let likeMap: Record<string, string> = {};
+  if (sessionId) {
+    const orConditions = [];
+    if (allRecordIds.length > 0)
+      orConditions.push({ recordId: { in: allRecordIds } });
+    if (allTrackIds.length > 0)
+      orConditions.push({ trackId: { in: allTrackIds } });
+
+    if (orConditions.length > 0) {
+      const likes = await prisma.like.findMany({
+        where: { sessionId, OR: orConditions },
+      });
+      for (const like of likes) {
+        const itemId = like.recordId ?? like.trackId;
+        if (itemId) likeMap[String(itemId)] = String(like.id);
+      }
+    }
+  }
 
   const records = serializeBigInt(topRecords);
   const tracks = serializeBigInt(topTracks);
-  const featureList = serializeBigInt(features);
-  const arrivals = serializeBigInt(newArrivals);
+  const serializedFeatures = serializeBigInt(featuresWithItems);
 
-  const recordItems = records.map((r) => ({
-    id: String(r.id),
-    name: r.name ?? "—",
-    artistName: r.artist?.name ?? "—",
-    albumName: r.name ?? "—",
-    number: r.number,
-    type: "Record" as const,
-    ownerName: r.owner?.name ?? undefined,
-    location: r.location ?? undefined,
-  }));
+  // Sort by like count (groupBy order)
+  const recordOrder = new Map(topRecordIds.map((id, i) => [String(id), i]));
+  const trackOrder = new Map(topTrackIds.map((id, i) => [String(id), i]));
 
-  const trackItems = tracks.map((t) => ({
-    id: String(t.id),
-    name: t.name ?? "—",
-    artistName: t.artist?.name ?? "—",
-    albumName: t.album?.name ?? "—",
-    number: t.number,
-    type: "Hi-Res" as const,
-  }));
+  const recordItems = records
+    .sort(
+      (a, b) =>
+        (recordOrder.get(String(a.id)) ?? 999) -
+        (recordOrder.get(String(b.id)) ?? 999),
+    )
+    .map((r) => ({
+      id: String(r.id),
+      name: r.name ?? "—",
+      artistName: r.artist?.name ?? "—",
+      albumName: r.name ?? "—",
+      number: r.number,
+      type: "Record" as const,
+      ownerName: r.owner?.name ?? undefined,
+      location: r.location ?? undefined,
+    }));
 
-  const arrivalItems = arrivals.map((r) => ({
-    id: String(r.id),
-    name: r.name ?? "—",
-    artistName: r.artist?.name ?? "—",
-    albumName: r.name ?? "—",
-    number: r.number,
-    type: "Record" as const,
-    ownerName: r.owner?.name ?? undefined,
-    location: r.location ?? undefined,
-  }));
+  const trackItems = tracks
+    .sort(
+      (a, b) =>
+        (trackOrder.get(String(a.id)) ?? 999) -
+        (trackOrder.get(String(b.id)) ?? 999),
+    )
+    .map((t) => ({
+      id: String(t.id),
+      name: t.name ?? "—",
+      artistName: t.artist?.name ?? "—",
+      albumName: t.album?.name ?? "—",
+      number: t.number,
+      type: "Hi-Res" as const,
+    }));
+
+  // Build items for each feature section
+  const featureSections = serializedFeatures.map((f: Record<string, unknown>) => {
+    const resolvedItems = f.resolvedItems as Array<{
+      itemType: string | null;
+      itemData: {
+        id?: string;
+        name?: string;
+        artist?: { name?: string } | null;
+        album?: { name?: string } | null;
+        owner?: { name?: string } | null;
+        location?: string;
+        number?: number | null;
+      } | null;
+    }>;
+    const items = resolvedItems
+      .filter((item) => item.itemData)
+      .map((item) => ({
+        id: String(item.itemData!.id),
+        name: item.itemData!.name ?? "—",
+        artistName: item.itemData!.artist?.name ?? "—",
+        albumName:
+          item.itemType === "Track"
+            ? (item.itemData!.album?.name ?? "—")
+            : (item.itemData!.name ?? "—"),
+        number: item.itemData!.number ?? null,
+        type: (item.itemType === "Track" ? "Hi-Res" : "Record") as "Record" | "Hi-Res",
+        ownerName: item.itemType === "Record" ? (item.itemData!.owner?.name ?? undefined) : undefined,
+        location: item.itemType === "Record" ? ((item.itemData as { location?: string }).location ?? undefined) : undefined,
+      }));
+    return { name: f.name as string, items };
+  });
 
   return (
     <div>
@@ -173,7 +327,7 @@ export default async function BarPage({
           viewAllLabel="View All Record"
         />
         <TableHeader />
-        <RecordList items={recordItems} />
+        <RecordList items={recordItems} likeMap={likeMap} likeCounts={likeCounts} />
       </section>
 
       {/* Hi-Res TOP 100 */}
@@ -184,39 +338,17 @@ export default async function BarPage({
           viewAllLabel="View All Hi-res"
         />
         <TableHeader />
-        <RecordList items={trackItems} />
+        <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} />
       </section>
 
-      {/* Recommend */}
-      <section className="mb-16">
-        <SectionHeader
-          title="Recommend"
-          viewAllHref={`/${bar}/features`}
-          viewAllLabel="View All"
-        />
-        <TableHeader />
-        <RecordList
-          items={featureList.map((f) => ({
-            id: String(f.id),
-            name: f.name ?? "—",
-            artistName: f.name ?? "—",
-            albumName: f.description ?? "—",
-            number: f.number,
-            type: "Record" as const,
-          }))}
-        />
-      </section>
-
-      {/* New Arrival */}
-      <section className="mb-16">
-        <SectionHeader
-          title="New Arrival"
-          viewAllHref={`/${bar}/new-arrivals`}
-          viewAllLabel="View All"
-        />
-        <TableHeader />
-        <RecordList items={arrivalItems} />
-      </section>
+      {/* Dynamic Feature Sections */}
+      {featureSections.map((section, idx) => (
+        <section key={idx} className="mb-16">
+          <h2 className="mb-2 text-2xl font-bold">{section.name}</h2>
+          <TableHeader />
+          <RecordList items={section.items} likeMap={likeMap} likeCounts={likeCounts} />
+        </section>
+      ))}
     </div>
   );
 }

@@ -60,6 +60,7 @@ export async function PUT(
       externalLink: body.externalLink,
       externalThumbnail: body.externalThumbnail,
       category: body.category,
+      bar: body.bar ?? null,
     },
   });
   return NextResponse.json(serializeBigInt(feature));

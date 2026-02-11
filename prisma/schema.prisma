@@ -82,6 +82,7 @@ model Feature {
   externalLink      String?  @map("external_link")
   externalThumbnail String?  @map("external_thumbnail")
   category          String?
+  bar               Int?
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")
 
@@ -132,6 +133,7 @@ model Record {
 
   artist Artist? @relation(fields: [artistId], references: [id])
   owner  Owner?  @relation(fields: [ownerId], references: [id])
+  likes  Like[]
 
   @@map("records")
 }
@@ -149,6 +151,23 @@ model Track {
 
   artist Artist? @relation(fields: [artistId], references: [id])
   album  Album?  @relation(fields: [albumId], references: [id])
+  likes  Like[]
 
   @@map("tracks")
+}
+
+model Like {
+  id        BigInt   @id @default(autoincrement())
+  sessionId String   @map("session_id")
+  recordId  BigInt?  @map("record_id")
+  trackId   BigInt?  @map("track_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  record Record? @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  track  Track?  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, recordId])
+  @@unique([sessionId, trackId])
+  @@index([sessionId])
+  @@map("likes")
 }
