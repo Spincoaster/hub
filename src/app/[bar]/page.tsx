@@ -4,6 +4,7 @@ import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
 import { RecordList } from "@/components/RecordList";
 import { getSessionId } from "@/lib/session";
 import { auth } from "@/lib/auth";
+import { RightUpArrow } from "@/components/icons/RightUpArrow";
 
 export const dynamic = "force-dynamic";
 
@@ -284,43 +285,47 @@ export default async function BarPage({
           </span>
         </div>
 
-        <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div className="text-sm leading-relaxed text-white">
-            <p>There&apos;s a 900yen cover charge per person,</p>
-            <p>and the following are complimentary.</p>
-            <p className="mt-2 text-white">
+        <div className="mt-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="space-y-2 text-base leading-relaxed text-white">
+            <div className="font-semibold leading-relaxed">
+              <p>There&apos;s a 900yen cover charge per person,</p>
+              <p>and the following are complimentary.</p>
+            </div>
+            <p className="mt-4 text-white">
               当店は900円のカバーチャージをいただいております。以下はサービスです。
             </p>
-            <ul className="mt-3 text-white">
-              <li>・Snacks on the table　テーブルスナック</li>
-              <li>・1 Song Request　1曲リクエスト</li>
+            <ul className="mt-6 text-white">
+              <li className="flex"><span className="w-1/2">・<span className="font-semibold">Snacks on the table</span></span><span className="w-1/2">テーブルスナック</span></li>
+              <li className="flex"><span className="w-1/2">・<span className="font-semibold">1 Song Request</span></span><span className="w-1/2">1曲リクエスト</span></li>
             </ul>
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-6">
             <Link
               href={`/${bar}/records/artists`}
-              className="flex items-center justify-between rounded-full border border-zinc-600 px-6 py-2.5 text-sm font-medium transition-colors hover:border-white"
+              className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
             >
               <span>View All Record</span>
-              <svg className="ml-4 h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 8l4 4-4 4M8 12h8" />
-              </svg>
+              <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
+                <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
+                <RightUpArrow className="relative h-2.5 w-2.5" />
+              </span>
             </Link>
             <Link
               href={`/${bar}/tracks/artists`}
-              className="flex items-center justify-between rounded-full border border-zinc-600 px-6 py-2.5 text-sm font-medium transition-colors hover:border-white"
+              className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
             >
               <span>View All Hi-Res</span>
-              <svg className="ml-4 h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 8l4 4-4 4M8 12h8" />
-              </svg>
+              <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
+                <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
+                <RightUpArrow className="relative h-2.5 w-2.5" />
+              </span>
             </Link>
           </div>
         </div>
       </section>
+
+      <hr className="-mx-4 mb-16 border-zinc-700" />
 
       {/* Record TOP 100 */}
       <section className="mb-16">
@@ -332,6 +337,8 @@ export default async function BarPage({
         <TableHeader />
         <RecordList items={recordItems} likeMap={likeMap} likeCounts={likeCounts} />
       </section>
+
+      <hr className="-mx-4 mb-16 border-zinc-700" />
 
       {/* Hi-Res TOP 100 */}
       <section className="mb-16">
@@ -346,7 +353,7 @@ export default async function BarPage({
 
       {/* Dynamic Feature Sections */}
       {featureSections.map((section, idx) => (
-        <section key={idx} className="mb-16">
+        <section key={idx} className="mb-16 -mx-4 border-t border-zinc-700 px-4 pt-16">
           <div className="mb-2 flex items-end justify-between">
             <h2 className="text-2xl font-bold">{section.name}</h2>
             {session && (
