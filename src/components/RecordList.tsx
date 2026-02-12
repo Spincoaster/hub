@@ -131,7 +131,7 @@ export function RecordList({
           <button
             key={item.id}
             onClick={() => setPopupItemId(item.id)}
-            className="group flex w-full items-stretch border-b border-zinc-600 first:border-t text-left transition-colors hover:bg-zinc-900/50"
+            className="group flex w-full items-stretch border-b border-zinc-600 first:border-t md:first:border-t-0 text-left transition-colors hover:bg-zinc-900/50"
           >
             <span className={`flex min-w-0 ${singleColumn ? "w-4/5" : "w-4/5 flex-col md:flex-row md:items-stretch"}`}>
               <span className={`min-w-0 truncate pl-2 pr-4 text-sm ${singleColumn ? "py-5 leading-[1.4]" : "pt-5 md:flex md:w-1/2 md:items-center md:py-5"}`}>{item.name}</span>
