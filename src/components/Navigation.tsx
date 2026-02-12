@@ -55,7 +55,7 @@ export function Navigation({ bar }: { bar?: string }) {
         <div className="w-24" />
 
         {/* Center: Logo */}
-        <Link href={homeHref} className="flex items-center">
+        <Link href={homeHref} className="-ml-4 flex items-center">
           <Image
             src="/spin_logo.png"
             alt="Spincoaster"
