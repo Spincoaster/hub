@@ -86,7 +86,7 @@ export default async function TrackTop100Page({
     }));
 
   return (
-    <div>
+    <div className="mx-auto max-w-5xl px-4">
       <div className="mb-8">
         <Link
           href={`/${bar}`}

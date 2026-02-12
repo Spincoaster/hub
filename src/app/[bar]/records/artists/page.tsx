@@ -29,7 +29,7 @@ export default async function RecordArtistsPage({
   });
 
   return (
-    <div>
+    <div className="mx-auto max-w-5xl px-4">
       <div className="mb-6">
         <h1 className="text-5xl font-light tracking-tight md:text-7xl">
           All Record List

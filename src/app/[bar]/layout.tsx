@@ -19,7 +19,7 @@ export default async function BarLayout({
   return (
     <div className="min-h-screen text-white">
       <Navigation bar={bar} />
-      <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
+      <main className="py-8">{children}</main>
     </div>
   );
 }

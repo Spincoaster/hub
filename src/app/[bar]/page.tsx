@@ -275,7 +275,7 @@ export default async function BarPage({
   return (
     <div>
       {/* Hero */}
-      <section className="mb-24">
+      <section className="mx-auto mb-24 max-w-5xl px-4">
         <div className="flex flex-col gap-4 md:flex-row md:gap-0 md:items-center md:justify-between">
           <h1 className="text-6xl font-normal tracking-normal md:text-8xl">
             MUSIC LIST
@@ -325,10 +325,10 @@ export default async function BarPage({
         </div>
       </section>
 
-      <hr className="mb-16 border-zinc-700" style={{ marginLeft: "calc(-50vw + 50%)", marginRight: "calc(-50vw + 50%)" }} />
+      <hr className="mb-16 border-zinc-700" />
 
       {/* Record TOP 100 */}
-      <section className="mb-16">
+      <section className="mx-auto mb-16 max-w-5xl px-4">
         <SectionHeader
           title="Record TOP 100"
           viewAllHref={`/${bar}/records/top100`}
@@ -338,10 +338,10 @@ export default async function BarPage({
         <RecordList items={recordItems} likeMap={likeMap} likeCounts={likeCounts} />
       </section>
 
-      <hr className="mb-16 border-zinc-700" style={{ marginLeft: "calc(-50vw + 50%)", marginRight: "calc(-50vw + 50%)" }} />
+      <hr className="mb-16 border-zinc-700" />
 
       {/* Hi-Res TOP 100 */}
-      <section className="mb-16">
+      <section className="mx-auto mb-16 max-w-5xl px-4">
         <SectionHeader
           title="Hi-Res TOP 100"
           viewAllHref={`/${bar}/tracks/top100`}
@@ -354,20 +354,22 @@ export default async function BarPage({
       {/* Dynamic Feature Sections */}
       {featureSections.map((section, idx) => (
         <section key={idx} className="mb-16">
-          <hr className="mb-16 border-zinc-700" style={{ marginLeft: "calc(-50vw + 50%)", marginRight: "calc(-50vw + 50%)" }} />
-          <div className="mb-2 flex items-end justify-between">
-            <h2 className="text-2xl font-bold">{section.name}</h2>
-            {session && (
-              <Link
-                href={`/${bar}/features/${section.id}/edit`}
-                className="text-sm text-white underline transition-colors hover:text-white"
-              >
-                [ edit &gt; ]
-              </Link>
-            )}
+          <hr className="mb-16 border-zinc-700" />
+          <div className="mx-auto max-w-5xl px-4">
+            <div className="mb-2 flex items-end justify-between">
+              <h2 className="text-2xl font-bold">{section.name}</h2>
+              {session && (
+                <Link
+                  href={`/${bar}/features/${section.id}/edit`}
+                  className="text-sm text-white underline transition-colors hover:text-white"
+                >
+                  [ edit &gt; ]
+                </Link>
+              )}
+            </div>
+            <TableHeader />
+            <RecordList items={section.items} likeMap={likeMap} likeCounts={likeCounts} />
           </div>
-          <TableHeader />
-          <RecordList items={section.items} likeMap={likeMap} likeCounts={likeCounts} />
         </section>
       ))}
     </div>

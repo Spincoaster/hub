@@ -31,7 +31,7 @@ export default async function ArtistDetailPage({
   if (!artist) notFound();
 
   return (
-    <div>
+    <div className="mx-auto max-w-5xl px-4">
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold">{artist.name}</h1>
         {session && (

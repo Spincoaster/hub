@@ -41,7 +41,7 @@ export default async function ArtistsPage({
   });
 
   return (
-    <div>
+    <div className="mx-auto max-w-5xl px-4">
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Artists</h1>
         {session && (
