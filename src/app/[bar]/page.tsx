@@ -325,7 +325,7 @@ export default async function BarPage({
         </div>
       </section>
 
-      <hr className="-mx-4 mb-16 border-zinc-700" />
+      <hr className="mb-16 border-zinc-700" style={{ marginLeft: "calc(-50vw + 50%)", marginRight: "calc(-50vw + 50%)" }} />
 
       {/* Record TOP 100 */}
       <section className="mb-16">
@@ -338,7 +338,7 @@ export default async function BarPage({
         <RecordList items={recordItems} likeMap={likeMap} likeCounts={likeCounts} />
       </section>
 
-      <hr className="-mx-4 mb-16 border-zinc-700" />
+      <hr className="mb-16 border-zinc-700" style={{ marginLeft: "calc(-50vw + 50%)", marginRight: "calc(-50vw + 50%)" }} />
 
       {/* Hi-Res TOP 100 */}
       <section className="mb-16">
@@ -353,7 +353,8 @@ export default async function BarPage({
 
       {/* Dynamic Feature Sections */}
       {featureSections.map((section, idx) => (
-        <section key={idx} className="mb-16 -mx-4 border-t border-zinc-700 px-4 pt-16">
+        <section key={idx} className="mb-16">
+          <hr className="mb-16 border-zinc-700" style={{ marginLeft: "calc(-50vw + 50%)", marginRight: "calc(-50vw + 50%)" }} />
           <div className="mb-2 flex items-end justify-between">
             <h2 className="text-2xl font-bold">{section.name}</h2>
             {session && (

@@ -84,42 +84,42 @@ export function NavMenu({
 
       {/* Menu dropdown */}
       {open && (
-        <div className="absolute inset-x-0 top-28 z-50 h-screen overflow-hidden bg-[#0a0a0a]">
-          <NoiseBackground className="pointer-events-none absolute inset-0 h-full w-full" />
-          <div className="relative flex flex-col border-t border-white">
-            {menuItems.map((item) => {
-              const content = (
-                <>
-                  <span>{item.label}</span>
-                  <span className="ml-8">
-                    <ArrowIcon />
-                  </span>
-                </>
-              );
-              return item.external ? (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center border-b border-white px-6 py-5 text-base text-white transition-colors hover:bg-zinc-900"
-                  onClick={() => setOpen(false)}
-                >
-                  {content}
-                </a>
-              ) : (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="flex items-center border-b border-white px-6 py-5 text-base text-white transition-colors hover:bg-zinc-900"
-                  onClick={() => setOpen(false)}
-                >
-                  {content}
-                </Link>
-              );
-            })}
-          </div>
+      <div className="absolute inset-x-0 top-28 z-50 h-screen overflow-hidden bg-[#0a0a0a]">
+        <NoiseBackground className="pointer-events-none absolute inset-0 h-full w-full" />
+        <div className="relative flex flex-col border-t border-white">
+          {menuItems.map((item) => {
+            const content = (
+              <>
+                <span>{item.label}</span>
+                <span className="ml-8">
+                  <ArrowIcon />
+                </span>
+              </>
+            );
+            return item.external ? (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center border-b border-white px-6 py-5 text-base text-white transition-colors hover:bg-zinc-900"
+                onClick={() => setOpen(false)}
+              >
+                {content}
+              </a>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center border-b border-white px-6 py-5 text-base text-white transition-colors hover:bg-zinc-900"
+                onClick={() => setOpen(false)}
+              >
+                {content}
+              </Link>
+            );
+          })}
         </div>
+      </div>
       )}
     </>
   );
