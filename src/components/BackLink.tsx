@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export function BackLink({ label, href }: { label: string; href: string }) {
+export function BackLink({ label, href, className }: { label: string; href: string; className?: string }) {
   const router = useRouter();
 
   const handleClick = (e: React.MouseEvent) => {
@@ -18,7 +18,7 @@ export function BackLink({ label, href }: { label: string; href: string }) {
     <Link
       href={href}
       onClick={handleClick}
-      className="text-sm text-zinc-400 hover:text-white"
+      className={`text-sm text-zinc-400 hover:text-white ${className ?? ""}`}
     >
       {label}
     </Link>

@@ -76,10 +76,10 @@ export default async function ArtistRecordsPage({
   return (
     <div className="mx-auto max-w-5xl px-4">
       <div className="-mt-8 mb-6">
-        <nav className="flex items-center gap-1 text-sm text-zinc-400">
-          <Link href={`/${bar}`} className="hover:text-white">Top</Link>
-          <span>/</span>
-          <BackLink label="All Record List" href={`/${bar}/records/artists`} />
+        <nav className="flex min-w-0 items-center gap-1 text-sm text-zinc-400">
+          <Link href={`/${bar}`} className="shrink-0 hover:text-white">Top</Link>
+          <span className="shrink-0">/</span>
+          <BackLink label="All Record List" href={`/${bar}/records/artists`} className="truncate" />
         </nav>
         <h1 className="mt-2 text-4xl font-normal tracking-tight">
           {artist.name}

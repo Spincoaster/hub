@@ -6,32 +6,33 @@ import { BackLink } from "@/components/BackLink";
 import { RecordList } from "@/components/RecordList";
 import { getSessionId } from "@/lib/session";
 
-export default async function ArtistTracksPage({
+export default async function AlbumTracksPage({
   params,
 }: {
   params: Promise<{ bar: string; id: string }>;
 }) {
   const { bar, id } = await params;
 
-  const artist = await prisma.artist.findUnique({
+  const album = await prisma.album.findUnique({
     where: { id: BigInt(id) },
     include: {
+      artist: true,
       tracks: {
-        include: { album: true },
-        orderBy: { name: "asc" },
+        include: { artist: true },
+        orderBy: { number: "asc" },
       },
     },
   });
 
-  if (!artist) notFound();
+  if (!album) notFound();
 
-  const tracks = serializeBigInt(artist.tracks);
+  const tracks = serializeBigInt(album.tracks);
 
   const items = tracks.map((t) => ({
     id: String(t.id),
     name: t.name ?? "—",
-    artistName: artist.name ?? "—",
-    albumName: t.album?.name ?? "—",
+    artistName: t.artist?.name ?? album.artist?.name ?? "—",
+    albumName: album.name ?? "—",
     number: t.number,
     type: "Hi-Res" as const,
   }));
@@ -69,10 +70,12 @@ export default async function ArtistTracksPage({
         <nav className="flex min-w-0 items-center gap-1 text-sm text-zinc-400">
           <Link href={`/${bar}`} className="shrink-0 hover:text-white">Top</Link>
           <span className="shrink-0">/</span>
-          <BackLink label="All Hi-Res List" href={`/${bar}/tracks/artists`} className="truncate" />
+          <Link href={`/${bar}/tracks/artists`} className="shrink-0 hover:text-white">All Hi-Res List</Link>
+          <span className="shrink-0">/</span>
+          <BackLink label={album.artist?.name ?? "Albums"} href={`/${bar}/artists/${Number(album.artistId)}/albums`} className="truncate" />
         </nav>
         <h1 className="mt-2 text-4xl font-normal tracking-tight">
-          {artist.name}
+          {album.name}
         </h1>
         <p className="mt-2 text-sm text-white">[ Hi-Res Tracks ]</p>
       </div>
