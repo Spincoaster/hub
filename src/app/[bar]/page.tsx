@@ -331,16 +331,18 @@ export default async function BarPage({
                 <RightUpArrow className="relative h-2.5 w-2.5" />
               </span>
             </Link>
-            <Link
-              href={`/${bar}/tracks/artists`}
-              className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
-            >
-              <span>View All Hi-Res</span>
-              <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
-                <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
-                <RightUpArrow className="relative h-2.5 w-2.5" />
-              </span>
-            </Link>
+            {bar === "shinjuku" && (
+              <Link
+                href={`/${bar}/tracks/artists`}
+                className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
+              >
+                <span>View All Hi-Res</span>
+                <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
+                  <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
+                  <RightUpArrow className="relative h-2.5 w-2.5" />
+                </span>
+              </Link>
+            )}
           </div>
         </div>
       </section>
@@ -358,18 +360,22 @@ export default async function BarPage({
         <RecordList items={recordItems} likeMap={likeMap} likeCounts={likeCounts} />
       </section>
 
-      <hr className="mb-12 border-zinc-600" />
+      {bar === "shinjuku" && (
+        <>
+          <hr className="mb-12 border-zinc-600" />
 
-      {/* Hi-Res TOP 100 */}
-      <section className="mx-auto mb-16 max-w-5xl px-4">
-        <SectionHeader
-          title="Hi-Res TOP 100"
-          viewAllHref={`/${bar}/tracks/top100`}
-          viewAllLabel="View All"
-        />
-        <TableHeader columns={["Title", "Album / Artist"]} />
-        <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} />
-      </section>
+          {/* Hi-Res TOP 100 */}
+          <section className="mx-auto mb-16 max-w-5xl px-4">
+            <SectionHeader
+              title="Hi-Res TOP 100"
+              viewAllHref={`/${bar}/tracks/top100`}
+              viewAllLabel="View All"
+            />
+            <TableHeader columns={["Title", "Album / Artist"]} />
+            <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} />
+          </section>
+        </>
+      )}
 
       {/* Dynamic Feature Sections */}
       {featureSections.map((section, idx) => (

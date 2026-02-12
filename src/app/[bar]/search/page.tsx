@@ -43,6 +43,7 @@ export default function SearchPage() {
   const searchParams = useSearchParams();
   const bar = params.bar as string;
   const query = searchParams.get("query") ?? "";
+  const hasHiRes = bar === "shinjuku";
 
   const [records, setRecords] = useState<SearchRecord[]>([]);
   const [tracks, setTracks] = useState<SearchTrack[]>([]);
@@ -108,7 +109,7 @@ export default function SearchPage() {
           Search results of {query}
         </h1>
         <p className="mt-2 text-sm text-white">
-          {records.length} record, {tracks.length} track are found.
+          {records.length} record{hasHiRes ? `, ${tracks.length} track` : ""} are found.
         </p>
       </div>
 
@@ -132,19 +133,21 @@ export default function SearchPage() {
           </section>
 
           {/* Hi-Res */}
-          <section className="mt-12">
-            <p className="mb-4 text-sm text-white">[ Hi-Res ]</p>
-            {trackItems.length === 0 ? (
-              <p className="text-zinc-400">No results found.</p>
-            ) : (
-              <>
-                <TableHeader columns={["Title", "Album / Artist"]} />
-                <div className="border-t border-zinc-600 md:border-t-0">
-                  <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} />
-                </div>
-              </>
-            )}
-          </section>
+          {hasHiRes && (
+            <section className="mt-12">
+              <p className="mb-4 text-sm text-white">[ Hi-Res ]</p>
+              {trackItems.length === 0 ? (
+                <p className="text-zinc-400">No results found.</p>
+              ) : (
+                <>
+                  <TableHeader columns={["Title", "Album / Artist"]} />
+                  <div className="border-t border-zinc-600 md:border-t-0">
+                    <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} />
+                  </div>
+                </>
+              )}
+            </section>
+          )}
         </>
       )}
     </div>
