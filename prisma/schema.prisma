@@ -173,3 +173,16 @@ model Like {
   @@index([trackId])
   @@map("likes")
 }
+
+model SyncJob {
+  id         BigInt    @id @default(autoincrement())
+  bar        Int
+  status     String    // running, completed, failed
+  startedAt  DateTime  @default(now()) @map("started_at")
+  finishedAt DateTime? @map("finished_at")
+  result     String?
+  error      String?
+
+  @@index([bar, status])
+  @@map("sync_jobs")
+}
