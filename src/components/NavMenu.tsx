@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 
@@ -29,11 +29,14 @@ function ArrowIcon() {
 export function NavMenu({
   menuItems,
   barLabel,
+  open,
+  onToggle,
 }: {
   menuItems: MenuItem[];
   barLabel?: string;
+  open: boolean;
+  onToggle: (open: boolean) => void;
 }) {
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -49,7 +52,7 @@ export function NavMenu({
   return (
     <>
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => onToggle(!open)}
         className="p-1 hover:opacity-70"
         aria-label="Toggle menu"
       >
@@ -114,7 +117,7 @@ export function NavMenu({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center border-b border-white py-5 pl-6 pr-6 text-base text-white transition-colors hover:bg-zinc-900 md:pl-18"
-                onClick={() => setOpen(false)}
+                onClick={() => onToggle(false)}
               >
                 {content}
               </a>
@@ -123,7 +126,7 @@ export function NavMenu({
                 key={item.href}
                 href={item.href}
                 className="flex items-center border-b border-white py-5 pl-6 pr-6 text-base text-white transition-colors hover:bg-zinc-900 md:pl-18"
-                onClick={() => setOpen(false)}
+                onClick={() => onToggle(false)}
               >
                 {content}
               </Link>

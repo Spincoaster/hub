@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { NavMenu } from "@/components/NavMenu";
@@ -45,8 +48,8 @@ function getMenuItems(bar?: string) {
 export function Navigation({ bar }: { bar?: string }) {
   const menuItems = getMenuItems(bar);
   const homeHref = bar ? `/${bar}` : "/";
-
   const barLabel = bar ? capitalize(bar) : undefined;
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <nav className="relative z-50 bg-zinc-950/80 backdrop-blur-sm">
@@ -68,8 +71,8 @@ export function Navigation({ bar }: { bar?: string }) {
 
         {/* Right: Search + Menu */}
         <div className="flex w-24 items-center justify-end gap-3">
-          <SearchBar bar={bar} />
-          <NavMenu menuItems={menuItems} barLabel={barLabel} />
+          <SearchBar bar={bar} onOpen={() => setMenuOpen(false)} />
+          <NavMenu menuItems={menuItems} barLabel={barLabel} open={menuOpen} onToggle={setMenuOpen} />
         </div>
       </div>
     </nav>
