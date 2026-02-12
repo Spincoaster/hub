@@ -86,8 +86,8 @@ export function NavMenu({
 
       {/* Bar label in header row when open */}
       {open && barLabel && (
-        <div className="absolute left-0 top-0 z-[60] flex h-56 items-center md:h-28">
-          <span className="inline-block w-64 rounded-r-full bg-white px-4 py-1 text-center text-base font-semibold text-black">
+        <div className="absolute left-0 top-0 z-[60] flex h-64 items-center md:h-28">
+          <span className="inline-block w-52 rounded-r-full bg-white px-4 py-1 text-center text-base font-semibold text-black md:w-64">
             {barLabel}
           </span>
         </div>
@@ -97,7 +97,7 @@ export function NavMenu({
       {open && (
       <div className="absolute inset-x-0 top-28 z-50 h-screen overflow-hidden bg-[#0a0a0a]">
         <NoiseBackground className="pointer-events-none absolute inset-0 h-full w-full" />
-        <div className="relative mt-12 flex flex-col border-t border-white md:mt-0">
+        <div className="relative mt-20 flex flex-col border-t border-white md:mt-0">
           {menuItems.map((item) => {
             const content = (
               <>
@@ -113,7 +113,7 @@ export function NavMenu({
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center border-b border-white px-6 py-5 text-base text-white transition-colors hover:bg-zinc-900"
+                className="flex items-center border-b border-white py-5 pl-6 pr-6 text-base text-white transition-colors hover:bg-zinc-900 md:pl-18"
                 onClick={() => setOpen(false)}
               >
                 {content}
@@ -122,7 +122,7 @@ export function NavMenu({
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center border-b border-white px-6 py-5 text-base text-white transition-colors hover:bg-zinc-900"
+                className="flex items-center border-b border-white py-5 pl-6 pr-6 text-base text-white transition-colors hover:bg-zinc-900 md:pl-18"
                 onClick={() => setOpen(false)}
               >
                 {content}
