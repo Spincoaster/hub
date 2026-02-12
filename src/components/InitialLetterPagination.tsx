@@ -8,9 +8,11 @@ const LETTERS = "abcdefghijklmnopqrstuvwxyz".split("");
 export default function InitialLetterPagination({
   basePath,
   currentPrefix,
+  showAll = false,
 }: {
   basePath: string;
   currentPrefix?: string;
+  showAll?: boolean;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const thumbRef = useRef<HTMLDivElement>(null);
@@ -114,6 +116,18 @@ export default function InitialLetterPagination({
           ref={scrollRef}
           className="flex items-center gap-1 overflow-x-auto scrollbar-hide"
         >
+          {showAll && (
+            <Link
+              href={basePath}
+              className={`flex h-10 shrink-0 items-center justify-center px-3 text-lg font-normal ${
+                !currentPrefix
+                  ? "rounded-full bg-black text-white"
+                  : "text-black"
+              }`}
+            >
+              All
+            </Link>
+          )}
           {LETTERS.map((letter) => (
             <Link
               key={letter}

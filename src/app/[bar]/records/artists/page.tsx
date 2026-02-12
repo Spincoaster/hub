@@ -12,12 +12,12 @@ export default async function RecordArtistsPage({
 }) {
   const { bar } = await params;
   const { has_prefix } = await searchParams;
-  const hasPrefix = has_prefix ?? "a";
+  const hasPrefix = has_prefix ?? undefined;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {
     records: { some: { bar: BAR_VALUES[bar] } },
-    ...buildPrefixFilter(hasPrefix),
+    ...(hasPrefix ? buildPrefixFilter(hasPrefix) : {}),
   };
 
   const artists = await prisma.artist.findMany({
@@ -44,6 +44,7 @@ export default async function RecordArtistsPage({
         <InitialLetterPagination
           basePath={`/${bar}/records/artists`}
           currentPrefix={hasPrefix}
+          showAll
         />
       </div>
 
