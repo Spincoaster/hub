@@ -293,7 +293,7 @@ export default async function BarPage({
           </span>
         </div>
 
-        <div className="mt-12 flex flex-col gap-10 md:flex-row md:gap-6 md:items-end md:justify-between">
+        <div className="mt-12 flex flex-col gap-10 md:flex-row md:gap-6 md:items-start md:justify-between">
           <div className="space-y-2 text-base leading-relaxed text-white">
             <div className="font-semibold leading-relaxed">
               <p>There&apos;s a 900yen cover charge per person,</p>
@@ -309,6 +309,18 @@ export default async function BarPage({
           </div>
 
           <div className="flex flex-col gap-6">
+            <a
+              href={`https://menu.spincoaster.com/${bar}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between rounded-full h-16 border border-zinc-600 pl-10 pr-0 text-sm font-medium"
+            >
+              <span>Drink Menu</span>
+              <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
+                <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
+                <RightUpArrow className="relative h-2.5 w-2.5" />
+              </span>
+            </a>
             <Link
               href={`/${bar}/records/artists`}
               className="flex items-center justify-between rounded-full h-16 border border-zinc-600 pl-10 pr-0 text-sm font-medium"
