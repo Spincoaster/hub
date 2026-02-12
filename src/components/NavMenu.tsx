@@ -36,18 +36,38 @@ export function NavMenu({
     <>
       <button
         onClick={() => setOpen(!open)}
-        className="p-1 text-zinc-400 transition-colors hover:text-white"
+        className="p-1 hover:opacity-70"
         aria-label="Toggle menu"
       >
-        {open ? (
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        ) : (
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        )}
+        <svg className="h-4 w-5" viewBox="0 0 52 39" fill="none">
+          {/* Top line */}
+          <line
+            x1="0" y1="19.35" x2="52" y2="19.35"
+            stroke="#fff" strokeMiterlimit={10} strokeWidth={5}
+            className="transition-transform duration-300 ease-in-out"
+            style={{
+              transformOrigin: "26px 19.35px",
+              transform: open ? "rotate(33deg)" : "translateY(-16.85px)",
+            }}
+          />
+          {/* Middle line */}
+          <line
+            x1="0" y1="19.35" x2="52" y2="19.35"
+            stroke="#fff" strokeMiterlimit={10} strokeWidth={5}
+            className="transition-opacity duration-300 ease-in-out"
+            style={{ opacity: open ? 0 : 1 }}
+          />
+          {/* Bottom line */}
+          <line
+            x1="0" y1="19.35" x2="52" y2="19.35"
+            stroke="#fff" strokeMiterlimit={10} strokeWidth={5}
+            className="transition-transform duration-300 ease-in-out"
+            style={{
+              transformOrigin: "26px 19.35px",
+              transform: open ? "rotate(-33deg)" : "translateY(16.85px)",
+            }}
+          />
+        </svg>
       </button>
 
       {/* Bar label in header row when open */}

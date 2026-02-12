@@ -49,7 +49,7 @@ export function Navigation({ bar }: { bar?: string }) {
   const barLabel = bar ? capitalize(bar) : undefined;
 
   return (
-    <nav className="relative border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm">
+    <nav className="relative bg-zinc-950/80 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
         {/* Left spacer */}
         <div className="w-24" />
@@ -61,18 +61,15 @@ export function Navigation({ bar }: { bar?: string }) {
             alt="Spincoaster"
             width={160}
             height={40}
-            className="h-6 w-auto"
+            className="h-8 w-auto"
             priority
           />
         </Link>
 
         {/* Right: Search + Menu */}
         <div className="flex w-24 items-center justify-end gap-3">
-          <Link href={searchHref} className="p-1 text-zinc-400 transition-colors hover:text-white">
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-              <circle cx="11" cy="11" r="8" />
-              <path d="M21 21l-4.35-4.35" />
-            </svg>
+          <Link href={searchHref} className="p-1 transition-colors hover:opacity-70">
+            <img src="/search.svg" alt="Search" className="h-5 w-5" />
           </Link>
           <NavMenu menuItems={menuItems} barLabel={barLabel} />
         </div>
