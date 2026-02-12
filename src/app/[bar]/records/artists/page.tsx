@@ -31,9 +31,10 @@ export default async function RecordArtistsPage({
   return (
     <div className="mx-auto max-w-5xl px-4">
       <div className="mb-6">
-        <h1 className="text-5xl font-light tracking-tight md:text-7xl">
+        <h1 className="text-5xl font-normal tracking-tight md:text-7xl">
           All Record List
         </h1>
+
       </div>
 
       <div className="mb-8">
@@ -48,9 +49,9 @@ export default async function RecordArtistsPage({
           <Link
             key={Number(artist.id)}
             href={`/${bar}/artists/${Number(artist.id)}/records`}
-            className="group flex items-center justify-between border-b border-zinc-700 py-4 transition-colors hover:bg-white/5"
+            className="group flex items-center justify-between border-b border-zinc-700 py-4 text-white transition-colors hover:bg-white/5"
           >
-            <span className="text-white">{artist.name}</span>
+            <span className="text-sm text-white">{artist.name}</span>
             <svg
               className="h-5 w-5 shrink-0 text-zinc-500 transition-colors group-hover:text-white"
               viewBox="0 0 24 24"

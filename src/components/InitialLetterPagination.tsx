@@ -25,7 +25,7 @@ export default function InitialLetterPagination({
 
   return (
     <div>
-      <p className="mb-2 text-sm text-zinc-400">[ Artist ]</p>
+      <p className="mb-2 text-sm text-white">[ Artist ]</p>
       <div className="flex items-center overflow-hidden bg-white py-2">
         <button
           onClick={() => scroll("left")}
