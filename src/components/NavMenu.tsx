@@ -80,7 +80,7 @@ export function NavMenu({
 
       {/* Bar label in header row when open */}
       {open && barLabel && (
-        <div className="absolute left-0 top-0 flex h-28 items-center">
+        <div className="absolute left-0 top-0 z-[60] flex h-56 items-center md:h-28">
           <span className="inline-block w-64 rounded-r-full bg-white px-4 py-1 text-center text-base font-semibold text-black">
             {barLabel}
           </span>
@@ -91,7 +91,7 @@ export function NavMenu({
       {open && (
       <div className="absolute inset-x-0 top-28 z-50 h-screen overflow-hidden bg-[#0a0a0a]">
         <NoiseBackground className="pointer-events-none absolute inset-0 h-full w-full" />
-        <div className="relative flex flex-col border-t border-white">
+        <div className="relative mt-12 flex flex-col border-t border-white md:mt-0">
           {menuItems.map((item) => {
             const content = (
               <>
