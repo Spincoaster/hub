@@ -60,132 +60,133 @@ export default async function BarPage({
   const { bar } = await params;
   const barValue = BAR_VALUES[bar];
 
-  // Records with at least 1 like, ordered by like count desc
-  const topRecordLikes = await prisma.like.groupBy({
-    by: ["recordId"],
-    where: {
-      recordId: { not: null },
-      record: { bar: barValue },
-    },
-    _count: { recordId: true },
-    orderBy: { _count: { recordId: "desc" } },
-    take: 5,
-  });
+  // Parallel: top likes + features + session
+  const [topRecordLikes, topTrackLikes, barFeatures, sessionId] =
+    await Promise.all([
+      prisma.like.groupBy({
+        by: ["recordId"],
+        where: {
+          recordId: { not: null },
+          record: { bar: barValue },
+        },
+        _count: { recordId: true },
+        orderBy: { _count: { recordId: "desc" } },
+        take: 5,
+      }),
+      prisma.like.groupBy({
+        by: ["trackId"],
+        where: { trackId: { not: null } },
+        _count: { trackId: true },
+        orderBy: { _count: { trackId: "desc" } },
+        take: 5,
+      }),
+      prisma.feature.findMany({
+        where: { bar: barValue },
+        orderBy: { number: "asc" },
+        include: {
+          featureItems: { orderBy: { number: "asc" } },
+        },
+      }),
+      getSessionId(),
+    ]);
 
   const topRecordIds = topRecordLikes
     .map((l) => l.recordId)
     .filter((id): id is bigint => id !== null);
-
-  const topRecords =
-    topRecordIds.length > 0
-      ? await prisma.record.findMany({
-          where: { id: { in: topRecordIds } },
-          include: { artist: true, owner: true },
-        })
-      : [];
-
-  // Tracks with at least 1 like, ordered by like count desc
-  const topTrackLikes = await prisma.like.groupBy({
-    by: ["trackId"],
-    where: { trackId: { not: null } },
-    _count: { trackId: true },
-    orderBy: { _count: { trackId: "desc" } },
-    take: 5,
-  });
-
   const topTrackIds = topTrackLikes
     .map((l) => l.trackId)
     .filter((id): id is bigint => id !== null);
 
-  const topTracks =
-    topTrackIds.length > 0
-      ? await prisma.track.findMany({
-          where: { id: { in: topTrackIds } },
-          include: { artist: true, album: true },
-        })
-      : [];
-
-  const barFeatures = await prisma.feature.findMany({
-    where: { bar: barValue },
-    orderBy: { number: "asc" },
-    include: {
-      featureItems: { orderBy: { number: "asc" } },
-    },
-  });
-
-  // Build likeCounts map
-  const likeCounts: Record<string, number> = {};
-  for (const l of topRecordLikes) {
-    if (l.recordId) likeCounts[String(l.recordId)] = l._count.recordId;
-  }
-  for (const l of topTrackLikes) {
-    if (l.trackId) likeCounts[String(l.trackId)] = l._count.trackId;
-  }
-
-  // Resolve feature items polymorphically
-  const featuresWithItems = await Promise.all(
-    barFeatures.map(async (feature) => {
-      const resolvedItems = await Promise.all(
-        feature.featureItems.map(async (item) => {
-          let itemData: Record<string, unknown> | null = null;
-          if (item.itemId) {
-            if (item.itemType === "Record") {
-              itemData = (await prisma.record.findUnique({
-                where: { id: BigInt(item.itemId) },
-                include: { artist: true, owner: true },
-              })) as unknown as Record<string, unknown> | null;
-            } else if (item.itemType === "Track") {
-              itemData = (await prisma.track.findUnique({
-                where: { id: BigInt(item.itemId) },
-                include: { artist: true, album: true },
-              })) as unknown as Record<string, unknown> | null;
-            }
-          }
-          return { ...item, itemData, itemType: item.itemType };
-        }),
-      );
-      return { ...feature, resolvedItems };
-    }),
-  );
-
-  // Collect all record/track IDs from features for like counts
+  // Collect all feature item IDs for batch query
   const featureRecordIds: bigint[] = [];
   const featureTrackIds: bigint[] = [];
-  for (const f of featuresWithItems) {
-    for (const item of f.resolvedItems) {
-      if (item.itemData && item.itemId) {
+  for (const f of barFeatures) {
+    for (const item of f.featureItems) {
+      if (item.itemId) {
         if (item.itemType === "Record") featureRecordIds.push(BigInt(item.itemId));
         if (item.itemType === "Track") featureTrackIds.push(BigInt(item.itemId));
       }
     }
   }
 
-  // Get like counts for feature items
-  if (featureRecordIds.length > 0) {
-    const featureRecordLikes = await prisma.like.groupBy({
-      by: ["recordId"],
-      where: { recordId: { in: featureRecordIds } },
-      _count: { recordId: true },
-    });
-    for (const l of featureRecordLikes) {
-      if (l.recordId) likeCounts[String(l.recordId)] = l._count.recordId;
-    }
-  }
-  if (featureTrackIds.length > 0) {
-    const featureTrackLikes = await prisma.like.groupBy({
-      by: ["trackId"],
-      where: { trackId: { in: featureTrackIds } },
-      _count: { trackId: true },
-    });
-    for (const l of featureTrackLikes) {
-      if (l.trackId) likeCounts[String(l.trackId)] = l._count.trackId;
-    }
-  }
-
-  // Build likeMap for current session
-  const sessionId = await getSessionId();
+  // Parallel: fetch records, tracks, and like counts in batch
   const allRecordIds = [...topRecordIds, ...featureRecordIds];
   const allTrackIds = [...topTrackIds, ...featureTrackIds];
+
+  const [topRecords, topTracks, featureRecords, featureTracks, ...likeResults] =
+    await Promise.all([
+      topRecordIds.length > 0
+        ? prisma.record.findMany({
+            where: { id: { in: topRecordIds } },
+            include: { artist: true, owner: true },
+          })
+        : Promise.resolve([]),
+      topTrackIds.length > 0
+        ? prisma.track.findMany({
+            where: { id: { in: topTrackIds } },
+            include: { artist: true, album: true },
+          })
+        : Promise.resolve([]),
+      featureRecordIds.length > 0
+        ? prisma.record.findMany({
+            where: { id: { in: featureRecordIds } },
+            include: { artist: true, owner: true },
+          })
+        : Promise.resolve([]),
+      featureTrackIds.length > 0
+        ? prisma.track.findMany({
+            where: { id: { in: featureTrackIds } },
+            include: { artist: true, album: true },
+          })
+        : Promise.resolve([]),
+      allRecordIds.length > 0
+        ? prisma.like.groupBy({
+            by: ["recordId"],
+            where: { recordId: { in: allRecordIds } },
+            _count: { recordId: true },
+          })
+        : Promise.resolve([]),
+      allTrackIds.length > 0
+        ? prisma.like.groupBy({
+            by: ["trackId"],
+            where: { trackId: { in: allTrackIds } },
+            _count: { trackId: true },
+          })
+        : Promise.resolve([]),
+    ]);
+
+  // Build likeCounts map
+  const likeCounts: Record<string, number> = {};
+  for (const l of likeResults[0] as { recordId: bigint | null; _count: { recordId: number } }[]) {
+    if (l.recordId) likeCounts[String(l.recordId)] = l._count.recordId;
+  }
+  for (const l of likeResults[1] as { trackId: bigint | null; _count: { trackId: number } }[]) {
+    if (l.trackId) likeCounts[String(l.trackId)] = l._count.trackId;
+  }
+
+  // Build lookup maps for feature items
+  const recordMap = new Map(
+    featureRecords.map((r) => [String(r.id), r])
+  );
+  const trackMap = new Map(
+    featureTracks.map((t) => [String(t.id), t])
+  );
+
+  // Resolve feature items using lookup maps (no extra queries)
+  const featuresWithItems = barFeatures.map((feature) => {
+    const resolvedItems = feature.featureItems.map((item) => {
+      let itemData: Record<string, unknown> | null = null;
+      if (item.itemId) {
+        if (item.itemType === "Record") {
+          itemData = (recordMap.get(String(item.itemId)) ?? null) as unknown as Record<string, unknown> | null;
+        } else if (item.itemType === "Track") {
+          itemData = (trackMap.get(String(item.itemId)) ?? null) as unknown as Record<string, unknown> | null;
+        }
+      }
+      return { ...item, itemData, itemType: item.itemType };
+    });
+    return { ...feature, resolvedItems };
+  });
 
   let likeMap: Record<string, string> = {};
   if (sessionId) {
