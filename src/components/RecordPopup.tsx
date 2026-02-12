@@ -28,7 +28,7 @@ export function RecordPopup({
       onClick={onClose}
     >
       <div
-        className="mx-4 w-full max-w-xl border border-zinc-600 bg-zinc-950 p-6"
+        className="mx-4 w-full max-w-xl border border-white bg-zinc-950/5 p-6 backdrop-blur-[4px]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -84,39 +84,32 @@ export function RecordPopup({
           </span>
         </div>
 
-        {/* Divider */}
-        <div className="mb-4 border-t border-zinc-700" />
 
         {/* Request message */}
-        <div className="mb-6 space-y-2 text-sm leading-relaxed text-white">
+        <div className="mb-6 text-sm leading-snug text-white">
           {data.type === "Record" ? (
             <>
-              <p>
-                このレコードからリクエストする場合はこの画面をスタッフにご提示ください。
-              </p>
-              <p>レコードをお持ちしますのでそこから１曲お選びいただけます。</p>
-              <p className="mt-3">
-                To request a track from this record, please show this screen to
-                our staff.
-              </p>
-              <p>
-                We will bring the record to you so you can choose one track.
-              </p>
+              <div className="space-y-0.5">
+                <p>To request a track from this record, please show this screen to our staff.</p>
+                <p>We will bring the record to you so you can choose one track.</p>
+              </div>
+              <div className="mt-3 space-y-0.5">
+                <p>このレコードからリクエストする場合はこの画面をスタッフにご提示ください。</p>
+                <p>レコードをお持ちしますのでそこから１曲お選びいただけます。</p>
+              </div>
             </>
           ) : (
             <>
-              <p>
-                このトラックをリクエストする場合はこの画面をスタッフにご提示ください。
-              </p>
-              <p className="mt-3">
-                To request this track, please show this screen to our staff.
-              </p>
+              <div className="space-y-0.5">
+                <p>To request this track, please show this screen to our staff.</p>
+              </div>
+              <div className="mt-3 space-y-0.5">
+                <p>このトラックをリクエストする場合はこの画面をスタッフにご提示ください。</p>
+              </div>
             </>
           )}
         </div>
 
-        {/* Divider */}
-        <div className="mb-4 border-t border-zinc-700" />
 
         {/* Footer */}
         <div className="flex items-center justify-between">
