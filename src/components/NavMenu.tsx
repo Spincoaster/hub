@@ -86,7 +86,7 @@ export function NavMenu({
       {open && (
         <div className="absolute inset-x-0 top-28 z-50 h-screen overflow-hidden bg-[#0a0a0a]">
           <NoiseBackground className="pointer-events-none absolute inset-0 h-full w-full" />
-          <div className="relative mt-2 flex flex-col border-t border-white">
+          <div className="relative flex flex-col border-t border-white">
             {menuItems.map((item) => {
               const content = (
                 <>
