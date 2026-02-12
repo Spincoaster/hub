@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { NavMenu } from "@/components/NavMenu";
+import { SearchBar } from "@/components/SearchBar";
 
 const navigationMenus: Record<string, { href: string; label: string; external: boolean }[]> = {
   shinjuku: [
@@ -44,7 +45,7 @@ function getMenuItems(bar?: string) {
 export function Navigation({ bar }: { bar?: string }) {
   const menuItems = getMenuItems(bar);
   const homeHref = bar ? `/${bar}` : "/";
-  const searchHref = bar ? `/${bar}/search` : "/";
+
   const barLabel = bar ? capitalize(bar) : undefined;
 
   return (
@@ -67,9 +68,7 @@ export function Navigation({ bar }: { bar?: string }) {
 
         {/* Right: Search + Menu */}
         <div className="flex w-24 items-center justify-end gap-3">
-          <Link href={searchHref} className="p-1 transition-colors hover:opacity-70">
-            <img src="/search.svg" alt="Search" className="h-5 w-5" />
-          </Link>
+          <SearchBar bar={bar} />
           <NavMenu menuItems={menuItems} barLabel={barLabel} />
         </div>
       </div>

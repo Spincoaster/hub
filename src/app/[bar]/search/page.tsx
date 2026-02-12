@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 interface Artist {
   id: string;
@@ -17,24 +17,22 @@ interface Album {
 
 export default function SearchPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const bar = params.bar as string;
 
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(searchParams.get("query") ?? "");
   const [artists, setArtists] = useState<Artist[]>([]);
   const [albums, setAlbums] = useState<Album[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  async function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    if (!query.trim()) return;
-
+  const doSearch = useCallback(async (q: string) => {
+    if (!q.trim()) return;
     setLoading(true);
     setSearched(true);
-
     try {
       const res = await fetch(
-        `/api/search?query=${encodeURIComponent(query.trim())}`
+        `/api/search?query=${encodeURIComponent(q.trim())}`
       );
       if (!res.ok) throw new Error("Search failed");
       const data = await res.json();
@@ -46,6 +44,16 @@ export default function SearchPage() {
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  useEffect(() => {
+    const q = searchParams.get("query");
+    if (q) doSearch(q);
+  }, [searchParams, doSearch]);
+
+  async function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    doSearch(query);
   }
 
   return (
