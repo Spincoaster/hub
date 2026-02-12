@@ -183,7 +183,7 @@ async function failLock(jobId: bigint, error: string): Promise<void> {
 }
 
 interface ChangeEntry {
-  type: "created" | "updated" | "deleted";
+  type: "created" | "updated" | "deleted" | "duplicated";
   name: string;
   artist: string;
   owner: string;
@@ -192,8 +192,10 @@ interface ChangeEntry {
 }
 
 async function syncBar(config: SheetConfig, accessToken: string) {
+  console.log(`[sync] Starting sync for ${config.sheetName} (bar=${config.bar})`);
   const sheetData = await fetchSheetData(config.sheetName, accessToken);
   const rows = parseRows(sheetData, config);
+  console.log(`[sync] Parsed ${rows.length} rows from sheet`);
 
   // Collect unique artist and owner names
   const artistNames = [
@@ -256,12 +258,35 @@ async function syncBar(config: SheetConfig, accessToken: string) {
   let updated = 0;
   const changes: ChangeEntry[] = [];
 
-  // Track which keys exist in the sheet
-  const sheetKeys = new Set<string>();
-
+  // Deduplicate rows by key (last occurrence wins)
+  const deduped = new Map<string, RowData>();
+  const duplicatedKeys = new Set<string>();
   for (const row of rows) {
     const key = `${row.location}:${row.number}`;
-    sheetKeys.add(key);
+    if (deduped.has(key)) {
+      duplicatedKeys.add(key);
+    }
+    deduped.set(key, row);
+  }
+  const uniqueRows = [...deduped.values()];
+  const sheetKeys = new Set(deduped.keys());
+  if (duplicatedKeys.size > 0) {
+    console.log(`[sync] Deduplicated: ${rows.length} → ${uniqueRows.length} rows (${duplicatedKeys.size} duplicated keys)`);
+    for (const key of duplicatedKeys) {
+      const row = deduped.get(key)!;
+      console.log(`[sync]   duplicate key=${key} → kept "${row.title}" / ${row.artistName}`);
+      changes.push({
+        type: "duplicated",
+        name: row.title,
+        artist: row.artistName,
+        owner: row.ownerName,
+        number: row.number,
+      });
+    }
+  }
+
+  for (const row of uniqueRows) {
+    const key = `${row.location}:${row.number}`;
 
     const artistId = row.artistName
       ? (artistMap.get(row.artistName) ?? null)
@@ -291,6 +316,12 @@ async function syncBar(config: SheetConfig, accessToken: string) {
       if (existing.ownerId !== data.ownerId) changedFields.push("ownerId");
 
       if (changedFields.length > 0) {
+        console.log(`[sync] UPDATE #${row.number} "${row.title}" changed: [${changedFields.join(", ")}]`);
+        for (const f of changedFields) {
+          const oldVal = (existing as Record<string, unknown>)[f];
+          const newVal = (data as Record<string, unknown>)[f];
+          console.log(`[sync]   ${f}: ${JSON.stringify(oldVal)} → ${JSON.stringify(newVal)}`);
+        }
         await prisma.record.update({ where: { id: existing.id }, data });
         updated++;
         changes.push({
@@ -303,6 +334,7 @@ async function syncBar(config: SheetConfig, accessToken: string) {
         });
       }
     } else {
+      console.log(`[sync] CREATE #${row.number} "${row.title}"`);
       await prisma.record.create({ data });
       created++;
       changes.push({
@@ -322,6 +354,9 @@ async function syncBar(config: SheetConfig, accessToken: string) {
   });
 
   if (toDelete.length > 0) {
+    for (const r of toDelete) {
+      console.log(`[sync] DELETE #${r.number} "${r.name}" (key="${r.location ?? ""}:${r.number}")`);
+    }
     await prisma.record.deleteMany({
       where: { id: { in: toDelete.map((r) => r.id) } },
     });
@@ -336,15 +371,18 @@ async function syncBar(config: SheetConfig, accessToken: string) {
     }
   }
 
-  return {
+  const result = {
     sheetRows: rows.length,
     created,
     updated,
     deleted: toDelete.length,
+    duplicated: duplicatedKeys.size,
     newArtists: artistNames.length - existingArtists.length,
     newOwners: ownerNames.length - existingOwners.length,
     changes,
   };
+  console.log(`[sync] Done ${config.sheetName}: created=${created} updated=${updated} deleted=${toDelete.length}`);
+  return result;
 }
 
 export async function GET(request: NextRequest) {

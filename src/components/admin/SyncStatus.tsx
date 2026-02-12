@@ -29,7 +29,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 interface ChangeEntry {
-  type: "created" | "updated" | "deleted";
+  type: "created" | "updated" | "deleted" | "duplicated";
   name: string;
   artist: string;
   owner: string;
@@ -56,10 +56,12 @@ function ChangeDetails({ changes }: { changes: ChangeEntry[] }) {
                   ? "text-green-400"
                   : c.type === "deleted"
                     ? "text-red-400"
-                    : "text-yellow-400"
+                    : c.type === "duplicated"
+                      ? "text-orange-400"
+                      : "text-yellow-400"
               }
             >
-              {c.type === "created" ? "+" : c.type === "deleted" ? "−" : "~"}
+              {c.type === "created" ? "+" : c.type === "deleted" ? "−" : c.type === "duplicated" ? "!" : "~"}
             </span>
             <span>
               #{c.number} {c.name}
@@ -157,8 +159,13 @@ export function SyncStatus({
                   </span>
                 )}
                 {parsedResult.deleted != null && (
-                  <span>
+                  <span className="mr-4">
                     Deleted: {String(parsedResult.deleted)}
+                  </span>
+                )}
+                {parsedResult.duplicated != null && Number(parsedResult.duplicated) > 0 && (
+                  <span className="text-orange-400">
+                    Duplicated: {String(parsedResult.duplicated)}
                   </span>
                 )}
               </div>
