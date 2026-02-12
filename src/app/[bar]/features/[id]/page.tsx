@@ -3,6 +3,9 @@ import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { serializeBigInt } from "@/lib/utils";
 import { auth } from "@/lib/auth";
+import { getSessionId } from "@/lib/session";
+import { DeleteFeatureButton } from "@/components/admin/DeleteFeatureButton";
+import { RecordList } from "@/components/RecordList";
 
 type Params = Promise<{ bar: string; id: string }>;
 
@@ -28,39 +31,129 @@ export default async function FeatureDetailPage({
     notFound();
   }
 
-  const itemsWithData = await Promise.all(
-    feature.featureItems.map(async (item) => {
-      let itemData: Record<string, unknown> | null = null;
-      if (item.itemId) {
-        if (item.itemType === "Track") {
-          itemData = (await prisma.track.findUnique({
-            where: { id: BigInt(item.itemId) },
-            include: { artist: true, album: true },
-          })) as unknown as Record<string, unknown> | null;
-        } else if (item.itemType === "Record") {
-          itemData = (await prisma.record.findUnique({
-            where: { id: BigInt(item.itemId) },
-            include: { artist: true, owner: true },
-          })) as unknown as Record<string, unknown> | null;
-        }
-      }
-      return { ...item, itemData };
-    })
-  );
+  // Collect item IDs by type
+  const recordIds: bigint[] = [];
+  const trackIds: bigint[] = [];
+  for (const item of feature.featureItems) {
+    if (item.itemId) {
+      if (item.itemType === "Record") recordIds.push(BigInt(item.itemId));
+      if (item.itemType === "Track") trackIds.push(BigInt(item.itemId));
+    }
+  }
 
-  const serialized = serializeBigInt({
-    ...feature,
-    featureItems: itemsWithData,
-  });
+  // Batch fetch records, tracks, like counts, and session likes
+  const allItemIds = [...recordIds, ...trackIds];
+  const sessionId = await getSessionId();
+
+  const [records, tracks, recordLikeCounts, trackLikeCounts, sessionLikes] =
+    await Promise.all([
+      recordIds.length > 0
+        ? prisma.record.findMany({
+            where: { id: { in: recordIds } },
+            include: { artist: true, owner: true },
+          })
+        : Promise.resolve([]),
+      trackIds.length > 0
+        ? prisma.track.findMany({
+            where: { id: { in: trackIds } },
+            include: { artist: true, album: true },
+          })
+        : Promise.resolve([]),
+      recordIds.length > 0
+        ? prisma.like.groupBy({
+            by: ["recordId"],
+            where: { recordId: { in: recordIds } },
+            _count: { recordId: true },
+          })
+        : Promise.resolve([]),
+      trackIds.length > 0
+        ? prisma.like.groupBy({
+            by: ["trackId"],
+            where: { trackId: { in: trackIds } },
+            _count: { trackId: true },
+          })
+        : Promise.resolve([]),
+      sessionId && allItemIds.length > 0
+        ? prisma.like.findMany({
+            where: {
+              sessionId,
+              OR: [
+                ...(recordIds.length > 0
+                  ? [{ recordId: { in: recordIds } }]
+                  : []),
+                ...(trackIds.length > 0
+                  ? [{ trackId: { in: trackIds } }]
+                  : []),
+              ],
+            },
+          })
+        : Promise.resolve([]),
+    ]);
+
+  // Build lookup maps
+  const recordMap = new Map(records.map((r) => [String(r.id), r]));
+  const trackMap = new Map(tracks.map((t) => [String(t.id), t]));
+
+  // Build likeCounts
+  const likeCounts: Record<string, number> = {};
+  for (const l of recordLikeCounts) {
+    if (l.recordId) likeCounts[String(l.recordId)] = l._count.recordId;
+  }
+  for (const l of trackLikeCounts) {
+    if (l.trackId) likeCounts[String(l.trackId)] = l._count.trackId;
+  }
+
+  // Build likeMap
+  const likeMap: Record<string, string> = {};
+  for (const like of sessionLikes) {
+    const itemId = like.recordId ?? like.trackId;
+    if (itemId) likeMap[String(itemId)] = String(like.id);
+  }
+
+  // Build RecordList items
+  const items = feature.featureItems
+    .map((item) => {
+      if (!item.itemId) return null;
+      if (item.itemType === "Record") {
+        const r = recordMap.get(String(item.itemId));
+        if (!r) return null;
+        return {
+          id: String(r.id),
+          name: r.name ?? "—",
+          artistName: r.artist?.name ?? "—",
+          albumName: r.name ?? "—",
+          number: r.number,
+          type: "Record" as const,
+          ownerName: r.owner?.name ?? undefined,
+          location: r.location ?? undefined,
+        };
+      }
+      if (item.itemType === "Track") {
+        const t = trackMap.get(String(item.itemId));
+        if (!t) return null;
+        return {
+          id: String(t.id),
+          name: t.name ?? "—",
+          artistName: t.artist?.name ?? "—",
+          albumName: t.album?.name ?? "—",
+          number: t.number,
+          type: "Hi-Res" as const,
+        };
+      }
+      return null;
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== null);
+
+  const serialized = serializeBigInt(feature);
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
+    <div className="mx-auto max-w-5xl px-4 py-8">
       <div className="mb-4">
         <Link
-          href={`/${bar}/features`}
+          href={`/${bar}/admin`}
           className="text-sm text-zinc-400 hover:text-white hover:underline"
         >
-          &larr; Features 一覧
+          &larr; Admin
         </Link>
       </div>
 
@@ -68,103 +161,42 @@ export default async function FeatureDetailPage({
         <h1 className="text-2xl font-bold text-white">
           {serialized.name ?? "Untitled"}
         </h1>
-        <Link
-          href={`/${bar}/features/${id}/edit`}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-        >
-          編集
-        </Link>
+        <div className="flex gap-3">
+          <Link
+            href={`/${bar}/features/${id}/edit`}
+            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          >
+            編集
+          </Link>
+          <DeleteFeatureButton id={id} bar={bar} />
+        </div>
       </div>
 
-      {serialized.externalThumbnail && (
-        <img
-          src={serialized.externalThumbnail}
-          alt={serialized.name ?? ""}
-          className="mb-6 h-64 w-full rounded-lg object-cover"
-        />
-      )}
-
-      {serialized.description && (
-        <p className="mb-6 text-zinc-300">{serialized.description}</p>
-      )}
-
-      {serialized.externalLink && (
-        <a
-          href={serialized.externalLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mb-6 inline-block text-sm text-blue-400 hover:underline"
-        >
-          外部リンク
-        </a>
-      )}
+      <dl className="mb-6 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
+        <dt className="text-zinc-500">番号</dt>
+        <dd className="text-white">{serialized.number ?? "-"}</dd>
+        <dt className="text-zinc-500">説明</dt>
+        <dd className="text-zinc-300">{serialized.description || "-"}</dd>
+      </dl>
 
       <h2 className="mb-4 text-xl font-semibold text-white">
-        アイテム ({serialized.featureItems.length})
+        アイテム ({items.length})
       </h2>
 
-      {serialized.featureItems.length === 0 ? (
+      {items.length === 0 ? (
         <p className="text-zinc-500">アイテムがありません。</p>
       ) : (
-        <div className="space-y-4">
-          {serialized.featureItems.map(
-            (item: {
-              id: string | bigint;
-              number: number | null;
-              itemType: string | null;
-              comment: string | null;
-              itemData: {
-                name?: string;
-                artist?: { name?: string } | null;
-                album?: { name?: string } | null;
-                owner?: { name?: string } | null;
-              } | null;
-            }) => (
-              <div
-                key={String(item.id)}
-                className="rounded-lg border border-zinc-700 p-4"
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <span className="mr-2 text-sm font-medium text-zinc-500">
-                      #{item.number}
-                    </span>
-                    <span className="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400">
-                      {item.itemType}
-                    </span>
-                  </div>
-                </div>
-                {item.itemData && (
-                  <div className="mt-2">
-                    <p className="font-medium text-white">
-                      {item.itemData.name ?? ""}
-                    </p>
-                    {item.itemData.artist && (
-                      <p className="text-sm text-zinc-400">
-                        Artist: {item.itemData.artist.name ?? ""}
-                      </p>
-                    )}
-                    {item.itemType === "Track" && item.itemData.album && (
-                      <p className="text-sm text-zinc-400">
-                        Album: {item.itemData.album.name ?? ""}
-                      </p>
-                    )}
-                    {item.itemType === "Record" && item.itemData.owner && (
-                      <p className="text-sm text-zinc-400">
-                        Owner: {item.itemData.owner.name ?? ""}
-                      </p>
-                    )}
-                  </div>
-                )}
-                {item.comment && (
-                  <p className="mt-2 text-sm text-zinc-500 italic">
-                    {item.comment}
-                  </p>
-                )}
-              </div>
-            )
-          )}
-        </div>
+        <>
+          <div className="hidden items-stretch border-b border-zinc-600 text-xs font-semibold text-white md:flex">
+            <span className="flex w-4/5 items-stretch">
+              <span className="flex w-1/2 items-center py-2 pl-2 pr-4">Title</span>
+              <span className="w-px self-stretch bg-zinc-600" />
+              <span className="flex w-1/2 items-center py-2 pl-4">Artist</span>
+            </span>
+            <span className="w-1/5" />
+          </div>
+          <RecordList items={items} likeMap={likeMap} likeCounts={likeCounts} />
+        </>
       )}
     </div>
   );

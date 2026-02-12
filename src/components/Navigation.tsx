@@ -45,7 +45,7 @@ function getMenuItems(bar?: string) {
   return navigationMenus.default;
 }
 
-export function Navigation({ bar }: { bar?: string }) {
+export function Navigation({ bar, isAdmin }: { bar?: string; isAdmin?: boolean }) {
   const menuItems = getMenuItems(bar);
   const homeHref = bar ? `/${bar}` : "/";
   const barLabel = bar ? capitalize(bar) : undefined;
@@ -72,7 +72,7 @@ export function Navigation({ bar }: { bar?: string }) {
         {/* Right: Search + Menu */}
         <div className="flex w-24 items-center justify-end gap-3">
           <SearchBar bar={bar} onOpen={() => setMenuOpen(false)} />
-          <NavMenu menuItems={menuItems} barLabel={barLabel} open={menuOpen} onToggle={setMenuOpen} />
+          <NavMenu menuItems={menuItems} barLabel={barLabel} open={menuOpen} onToggle={setMenuOpen} adminHref={isAdmin && bar ? `/${bar}/admin` : undefined} />
         </div>
       </div>
     </nav>

@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import { GoogleAuth } from "google-auth-library";
 
 export const maxDuration = 300;
@@ -334,6 +335,84 @@ export async function GET(request: NextRequest) {
     accessToken = await getAccessToken();
   } catch (error) {
     // Release all locks on auth failure
+    for (const { jobId } of jobs) {
+      await failLock(jobId, String(error));
+    }
+    return Response.json(
+      { success: false, error: String(error) },
+      { status: 500 },
+    );
+  }
+
+  const results: Record<string, unknown> = {};
+
+  for (const { config, jobId } of jobs) {
+    try {
+      const result = await syncBar(config, accessToken);
+      await completeLock(jobId, result);
+      results[config.sheetName] = { success: true, ...result };
+    } catch (error) {
+      await failLock(jobId, String(error));
+      results[config.sheetName] = { success: false, error: String(error) };
+    }
+  }
+
+  return Response.json({
+    success: true,
+    results,
+    ...(skipped.length > 0 ? { skipped } : {}),
+  });
+}
+
+// POST: triggered from admin UI (session auth)
+export async function POST(request: NextRequest) {
+  const session = await auth();
+  if (!session) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const barParam = request.nextUrl.searchParams.get("bar");
+  const configs = barParam
+    ? SHEET_CONFIGS.filter(
+        (c) =>
+          c.sheetName.startsWith(barParam) || String(c.bar) === barParam,
+      )
+    : SHEET_CONFIGS;
+
+  if (configs.length === 0) {
+    return Response.json(
+      { success: false, error: `Unknown bar: ${barParam}` },
+      { status: 400 },
+    );
+  }
+
+  const jobs: { config: SheetConfig; jobId: bigint }[] = [];
+  const skipped: string[] = [];
+
+  for (const config of configs) {
+    const jobId = await acquireLock(config.bar);
+    if (jobId) {
+      jobs.push({ config, jobId });
+    } else {
+      skipped.push(config.sheetName);
+    }
+  }
+
+  if (jobs.length === 0) {
+    return Response.json(
+      {
+        success: false,
+        error: "All requested bars are already syncing",
+        skipped,
+      },
+      { status: 409 },
+    );
+  }
+
+  let accessToken: string;
+  try {
+    accessToken = await getAccessToken();
+  } catch (error) {
     for (const { jobId } of jobs) {
       await failLock(jobId, String(error));
     }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Navigation } from "@/components/Navigation";
+import { auth } from "@/lib/auth";
 
 const validBars = ["shinjuku", "ebisu", "kagurazaka"];
 
@@ -32,9 +33,11 @@ export default async function BarLayout({
     notFound();
   }
 
+  const session = await auth();
+
   return (
     <div className="min-h-screen text-white">
-      <Navigation bar={bar} />
+      <Navigation bar={bar} isAdmin={!!session} />
       <main className="py-8">{children}</main>
     </div>
   );

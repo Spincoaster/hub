@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
 import { RecordList } from "@/components/RecordList";
 import { getSessionId } from "@/lib/session";
-import { auth } from "@/lib/auth";
 import { RightUpArrow } from "@/components/icons/RightUpArrow";
 
 export const dynamic = "force-dynamic";
@@ -279,8 +278,6 @@ export default async function BarPage({
     return { id: f.id as string, name: f.name as string, items };
   });
 
-  const session = await auth();
-
   return (
     <div>
       {/* Hero */}
@@ -385,14 +382,6 @@ export default async function BarPage({
           <div className="mx-auto max-w-5xl px-4">
             <div className="mb-2 flex items-end justify-between">
               <h2 className="text-2xl font-bold">{section.name}</h2>
-              {session && (
-                <Link
-                  href={`/${bar}/features/${section.id}/edit`}
-                  className="text-sm text-white underline transition-colors hover:text-white"
-                >
-                  [ edit &gt; ]
-                </Link>
-              )}
             </div>
             <TableHeader />
             <RecordList items={section.items} likeMap={likeMap} likeCounts={likeCounts} />

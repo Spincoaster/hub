@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
   const bar = searchParams.get("bar");
   const hasPrefix = searchParams.get("has_prefix");
   const ownerId = searchParams.get("owner_id");
+  const query = searchParams.get("query");
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
@@ -23,9 +24,13 @@ export async function GET(request: NextRequest) {
     where.ownerId = BigInt(ownerId);
   }
 
+  if (query) {
+    where.name = { contains: query, mode: "insensitive" };
+  }
+
   const records = await prisma.record.findMany({
     where,
-    include: { owner: true, artist: true },
+    include: { owner: true, artist: true, _count: { select: { likes: true } } },
     orderBy: { artist: { name: "asc" } },
     take: 500,
   });

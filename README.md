@@ -11,3 +11,4 @@
 - `/:shop/tracks` ... ハイレゾトラックリスト
 - `/:shop/features` ... おすすめ
 - `/:shop/new-ariivals` ... おすすめ
+

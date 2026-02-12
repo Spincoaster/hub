@@ -5,6 +5,7 @@ import { serializeBigInt, buildPrefixFilter } from "@/lib/utils";
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const hasPrefix = searchParams.get("has_prefix");
+  const query = searchParams.get("query");
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
@@ -12,9 +13,13 @@ export async function GET(request: NextRequest) {
     Object.assign(where, buildPrefixFilter(hasPrefix));
   }
 
+  if (query) {
+    where.name = { contains: query, mode: "insensitive" };
+  }
+
   const tracks = await prisma.track.findMany({
     where,
-    include: { artist: true, album: true },
+    include: { artist: true, album: true, _count: { select: { likes: true } } },
     orderBy: { name: "asc" },
   });
 

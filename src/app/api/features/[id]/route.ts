@@ -26,12 +26,12 @@ export async function GET(
         if (item.itemType === "Track") {
           itemData = await prisma.track.findUnique({
             where: { id: BigInt(item.itemId) },
-            include: { artist: true, album: true },
+            include: { artist: true, album: true, _count: { select: { likes: true } } },
           });
         } else if (item.itemType === "Record") {
           itemData = await prisma.record.findUnique({
             where: { id: BigInt(item.itemId) },
-            include: { artist: true, owner: true },
+            include: { artist: true, owner: true, _count: { select: { likes: true } } },
           });
         }
       }

@@ -31,11 +31,13 @@ export function NavMenu({
   barLabel,
   open,
   onToggle,
+  adminHref,
 }: {
   menuItems: MenuItem[];
   barLabel?: string;
   open: boolean;
   onToggle: (open: boolean) => void;
+  adminHref?: string;
 }) {
 
   useEffect(() => {
@@ -132,6 +134,18 @@ export function NavMenu({
               </Link>
             );
           })}
+          {adminHref && (
+            <Link
+              href={adminHref}
+              className="flex items-center border-b border-white py-5 pl-6 pr-6 text-base text-white transition-colors hover:bg-zinc-900 md:pl-18"
+              onClick={() => onToggle(false)}
+            >
+              <span>Admin</span>
+              <span className="ml-8">
+                <ArrowIcon />
+              </span>
+            </Link>
+          )}
         </div>
       </div>
       )}

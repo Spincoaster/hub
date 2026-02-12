@@ -10,7 +10,13 @@ interface FeatureItem {
   itemType: string | null;
   number: number | null;
   comment: string | null;
-  itemData?: { name?: string } | null;
+  itemData?: {
+    name?: string;
+    artist?: { name?: string } | null;
+    album?: { name?: string } | null;
+    owner?: { name?: string } | null;
+    _count?: { likes: number };
+  } | null;
 }
 
 interface Feature {
@@ -28,6 +34,10 @@ interface Feature {
 interface SearchResult {
   id: string;
   name: string | null;
+  artist?: { name?: string } | null;
+  album?: { name?: string } | null;
+  owner?: { name?: string } | null;
+  _count?: { likes: number };
 }
 
 export default function FeatureEditPage() {
@@ -43,7 +53,6 @@ export default function FeatureEditPage() {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
   const [number, setNumber] = useState<number | "">("");
   const [externalLink, setExternalLink] = useState("");
   const [externalThumbnail, setExternalThumbnail] = useState("");
@@ -54,7 +63,6 @@ export default function FeatureEditPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
-  const [newItemComment, setNewItemComment] = useState("");
 
   const fetchFeature = useCallback(async () => {
     try {
@@ -64,7 +72,6 @@ export default function FeatureEditPage() {
       setFeature(data);
       setName(data.name ?? "");
       setDescription(data.description ?? "");
-      setCategory(data.category ?? "");
       setNumber(data.number ?? "");
       setExternalLink(data.externalLink ?? "");
       setExternalThumbnail(data.externalThumbnail ?? "");
@@ -92,7 +99,6 @@ export default function FeatureEditPage() {
         body: JSON.stringify({
           name,
           description,
-          category,
           number: number === "" ? null : number,
           externalLink: externalLink || null,
           externalThumbnail: externalThumbnail || null,
@@ -122,26 +128,30 @@ export default function FeatureEditPage() {
     }
   }
 
-  async function handleSearchItems() {
-    if (!searchQuery.trim()) return;
-    setSearching(true);
-
-    try {
-      const endpoint =
-        newItemType === "Track" ? "/api/tracks" : "/api/records";
-      const res = await fetch(
-        `${endpoint}?query=${encodeURIComponent(searchQuery)}`
-      );
-      if (!res.ok) throw new Error("Search failed");
-      const data = await res.json();
-      const items = Array.isArray(data) ? data : data.data ?? [];
-      setSearchResults(items);
-    } catch {
+  useEffect(() => {
+    if (!searchQuery.trim()) {
       setSearchResults([]);
-    } finally {
-      setSearching(false);
+      return;
     }
-  }
+    setSearching(true);
+    const timer = setTimeout(async () => {
+      try {
+        const endpoint =
+          newItemType === "Track" ? "/api/tracks" : "/api/records";
+        const res = await fetch(
+          `${endpoint}?query=${encodeURIComponent(searchQuery)}`
+        );
+        if (!res.ok) throw new Error("Search failed");
+        const data = await res.json();
+        setSearchResults(Array.isArray(data) ? data : data.data ?? []);
+      } catch {
+        setSearchResults([]);
+      } finally {
+        setSearching(false);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery, newItemType]);
 
   async function handleAddItem(itemId: string) {
     try {
@@ -156,14 +166,13 @@ export default function FeatureEditPage() {
           itemId: parseInt(itemId),
           itemType: newItemType,
           number: nextNumber,
-          comment: newItemComment || null,
+          comment: null,
         }),
       });
       if (!res.ok) throw new Error("Failed to add item");
       setShowAddModal(false);
       setSearchQuery("");
       setSearchResults([]);
-      setNewItemComment("");
       await fetchFeature();
     } catch {
       setError("アイテムの追加に失敗しました");
@@ -193,10 +202,10 @@ export default function FeatureEditPage() {
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-4">
         <Link
-          href={`/${bar}/features/${id}`}
+          href={`/${bar}/admin`}
           className="text-sm text-zinc-400 hover:text-white hover:underline"
         >
-          &larr; 詳細に戻る
+          &larr; Admin
         </Link>
       </div>
 
@@ -211,6 +220,20 @@ export default function FeatureEditPage() {
       )}
 
       <form onSubmit={handleSave} className="mb-8 space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-zinc-300">
+            番号
+          </label>
+          <input
+            type="number"
+            value={number}
+            onChange={(e) =>
+              setNumber(e.target.value === "" ? "" : parseInt(e.target.value))
+            }
+            className={inputClass}
+          />
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-zinc-300">
             名前
@@ -231,57 +254,6 @@ export default function FeatureEditPage() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
-            className={inputClass}
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-zinc-300">
-              カテゴリ
-            </label>
-            <input
-              type="text"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className={inputClass}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-zinc-300">
-              番号
-            </label>
-            <input
-              type="number"
-              value={number}
-              onChange={(e) =>
-                setNumber(e.target.value === "" ? "" : parseInt(e.target.value))
-              }
-              className={inputClass}
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-zinc-300">
-            外部リンク
-          </label>
-          <input
-            type="url"
-            value={externalLink}
-            onChange={(e) => setExternalLink(e.target.value)}
-            className={inputClass}
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-zinc-300">
-            外部サムネイル URL
-          </label>
-          <input
-            type="url"
-            value={externalThumbnail}
-            onChange={(e) => setExternalThumbnail(e.target.value)}
             className={inputClass}
           />
         </div>
@@ -333,27 +305,40 @@ export default function FeatureEditPage() {
                 key={item.id}
                 className="flex items-center justify-between rounded-lg border border-zinc-700 p-4"
               >
-                <div>
-                  <span className="mr-2 text-sm text-zinc-500">
-                    #{item.number}
-                  </span>
-                  <span className="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400">
-                    {item.itemType}
-                  </span>
-                  {item.itemData && (
-                    <span className="ml-2 text-white">
-                      {item.itemData.name ?? ""}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-zinc-500">
+                      #{item.number}
                     </span>
-                  )}
-                  {item.comment && (
-                    <p className="mt-1 text-sm text-zinc-400 italic">
-                      {item.comment}
-                    </p>
+                    <span className="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400">
+                      {item.itemType}
+                    </span>
+                  </div>
+                  {item.itemData && (
+                    <div className="mt-1">
+                      <p className="truncate text-sm text-white">
+                        {item.itemData.name ?? ""}
+                      </p>
+                      <p className="truncate text-xs text-zinc-500">
+                        {item.itemData.artist?.name ?? "—"}
+                      </p>
+                      <p className="truncate text-xs text-zinc-500">
+                        {item.itemType === "Track" && item.itemData.album
+                          ? item.itemData.album.name ?? "—"
+                          : ""}
+                        {item.itemType === "Record" && item.itemData.owner
+                          ? item.itemData.owner.name ?? "—"
+                          : ""}
+                      </p>
+                      <p className="text-xs text-zinc-500">
+                        {item.itemData._count?.likes ?? 0} likes
+                      </p>
+                    </div>
                   )}
                 </div>
                 <button
                   onClick={() => handleDeleteItem(item.id)}
-                  className="text-sm text-red-400 hover:text-red-300"
+                  className="ml-4 shrink-0 text-sm text-red-400 hover:text-red-300"
                 >
                   削除
                 </button>
@@ -364,8 +349,8 @@ export default function FeatureEditPage() {
       </div>
 
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-full max-w-lg rounded-lg border border-zinc-700 bg-zinc-900 p-6 shadow-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4">
+          <div className="w-full max-w-3xl rounded-lg border border-zinc-700 bg-zinc-900 p-6 shadow-xl">
             <h3 className="mb-4 text-lg font-semibold text-white">
               アイテム追加
             </h3>
@@ -390,55 +375,41 @@ export default function FeatureEditPage() {
               <label className="block text-sm font-medium text-zinc-300">
                 検索
               </label>
-              <div className="mt-1 flex gap-2">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleSearchItems();
-                    }
-                  }}
-                  placeholder={`${newItemType}名で検索...`}
-                  className="block w-full rounded-md border border-zinc-600 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-                <button
-                  onClick={handleSearchItems}
-                  disabled={searching}
-                  className="rounded-md bg-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-600 disabled:opacity-50"
-                >
-                  検索
-                </button>
-              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={`${newItemType}名で検索...`}
+                className="mt-1 block w-full rounded-md border border-zinc-600 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+              {searching && (
+                <p className="mt-1 text-xs text-zinc-500">検索中...</p>
+              )}
             </div>
 
             {searchResults.length > 0 && (
-              <div className="mb-4 max-h-48 overflow-y-auto rounded border border-zinc-700">
+              <div className="mb-4 max-h-96 overflow-y-auto rounded border border-zinc-700">
                 {searchResults.map((result) => (
                   <button
                     key={result.id}
                     onClick={() => handleAddItem(result.id)}
-                    className="block w-full px-4 py-2 text-left text-sm text-zinc-200 hover:bg-zinc-800"
+                    className="block w-full border-b border-zinc-800 px-4 py-3 text-left last:border-b-0 hover:bg-zinc-800"
                   >
-                    {result.name ?? "Untitled"}
+                    <p className="text-sm text-zinc-200">
+                      {result.name ?? "Untitled"}
+                    </p>
+                    <p className="text-xs text-zinc-500">
+                      {result.artist?.name ?? "-"}
+                      {result.album?.name ? ` / ${result.album.name}` : ""}
+                      {result.owner?.name ? ` / ${result.owner.name}` : ""}
+                    </p>
+                    <p className="text-xs text-zinc-500">
+                      {result._count?.likes ?? 0} likes
+                    </p>
                   </button>
                 ))}
               </div>
             )}
-
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-zinc-300">
-                コメント (任意)
-              </label>
-              <input
-                type="text"
-                value={newItemComment}
-                onChange={(e) => setNewItemComment(e.target.value)}
-                className={inputClass}
-              />
-            </div>
 
             <div className="flex justify-end gap-2">
               <button
@@ -446,7 +417,6 @@ export default function FeatureEditPage() {
                   setShowAddModal(false);
                   setSearchQuery("");
                   setSearchResults([]);
-                  setNewItemComment("");
                 }}
                 className="rounded-md border border-zinc-600 px-4 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-800"
               >
