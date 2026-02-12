@@ -313,7 +313,7 @@ export default async function BarPage({
               href={`https://menu.spincoaster.com/${bar}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between rounded-full h-16 border border-zinc-600 pl-10 pr-0 text-sm font-medium"
+              className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
             >
               <span>Drink Menu</span>
               <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
@@ -323,7 +323,7 @@ export default async function BarPage({
             </a>
             <Link
               href={`/${bar}/records/artists`}
-              className="flex items-center justify-between rounded-full h-16 border border-zinc-600 pl-10 pr-0 text-sm font-medium"
+              className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
             >
               <span>View All Record</span>
               <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
@@ -333,7 +333,7 @@ export default async function BarPage({
             </Link>
             <Link
               href={`/${bar}/tracks/artists`}
-              className="flex items-center justify-between rounded-full h-16 border border-zinc-600 pl-10 pr-0 text-sm font-medium"
+              className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
             >
               <span>View All Hi-Res</span>
               <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
