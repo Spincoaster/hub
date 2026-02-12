@@ -71,19 +71,14 @@ export default async function ArtistTracksPage({
           <span>/</span>
           <BackLink label="All Hi-Res List" href={`/${bar}/tracks/artists`} />
         </nav>
-        <h1 className="mt-2 text-5xl font-normal tracking-tight md:text-7xl">
+        <h1 className="mt-2 text-4xl font-normal tracking-tight">
           {artist.name}
         </h1>
         <p className="mt-2 text-sm text-white">[ Hi-Res Tracks ]</p>
       </div>
 
       <div className="flex flex-col">
-        <div className="flex border-b border-zinc-700 py-2 text-xs font-semibold text-white">
-          <span className="w-2/5">Artists</span>
-          <span className="w-2/5">Albums</span>
-          <span className="w-1/5" />
-        </div>
-        <RecordList items={items} likeMap={likeMap} likeCounts={likeCounts} />
+        <RecordList items={items} likeMap={likeMap} likeCounts={likeCounts} singleColumn />
         {items.length === 0 && (
           <p className="py-8 text-center text-white">No tracks found.</p>
         )}

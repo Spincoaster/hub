@@ -18,10 +18,12 @@ export function RecordList({
   items,
   likeMap: initialLikeMap,
   likeCounts: initialLikeCounts,
+  singleColumn,
 }: {
   items: RecordItem[];
   likeMap?: Record<string, string>;
   likeCounts?: Record<string, number>;
+  singleColumn?: boolean;
 }) {
   const [popupItemId, setPopupItemId] = useState<string | null>(null);
   const [likeMap, setLikeMap] = useState<Record<string, string>>(
@@ -128,14 +130,18 @@ export function RecordList({
           <button
             key={item.id}
             onClick={() => setPopupItemId(item.id)}
-            className="group flex w-full items-stretch border-b border-zinc-600 text-left transition-colors hover:bg-zinc-900/50"
+            className="group flex w-full items-stretch border-b border-zinc-600 first:border-t text-left transition-colors hover:bg-zinc-900/50"
           >
-            <span className="flex w-4/5 flex-col md:flex-row md:items-stretch">
-              <span className="truncate pt-5 pl-2 pr-4 text-sm md:flex md:w-1/2 md:items-center md:py-5">{item.name}</span>
-              <span className="hidden w-px self-stretch bg-zinc-600 md:block" />
-              <span className="truncate pb-5 pl-2 text-sm text-zinc-400 md:flex md:w-1/2 md:items-center md:py-5 md:pl-4">
-                {item.type === "Hi-Res" ? `${item.albumName} / ${item.artistName}` : item.artistName}
-              </span>
+            <span className={`flex ${singleColumn ? "w-4/5" : "w-4/5 flex-col md:flex-row md:items-stretch"}`}>
+              <span className={`truncate pl-2 pr-4 text-sm ${singleColumn ? "flex items-center py-5" : "pt-5 md:flex md:w-1/2 md:items-center md:py-5"}`}>{item.name}</span>
+              {!singleColumn && (
+                <>
+                  <span className="hidden w-px self-stretch bg-zinc-600 md:block" />
+                  <span className="truncate pb-5 pl-2 text-sm text-zinc-400 md:flex md:w-1/2 md:items-center md:py-5 md:pl-4">
+                    {item.type === "Hi-Res" ? `${item.albumName} / ${item.artistName}` : item.artistName}
+                  </span>
+                </>
+              )}
             </span>
             <span className="flex w-1/5 items-center justify-end gap-2 py-5 text-sm text-white">
               {likeable ? (
