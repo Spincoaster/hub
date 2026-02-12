@@ -28,6 +28,56 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
+interface ChangeEntry {
+  type: "created" | "updated" | "deleted";
+  name: string;
+  artist: string;
+  owner: string;
+  number: number;
+  fields?: string[];
+}
+
+function ChangeDetails({ changes }: { changes: ChangeEntry[] }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <details
+      open={open}
+      onToggle={(e) => setOpen((e.target as HTMLDetailsElement).open)}
+    >
+      <summary className="cursor-pointer text-xs text-zinc-500 hover:text-zinc-300">
+        Changes ({changes.length})
+      </summary>
+      <ul className="mt-1 max-h-60 space-y-0.5 overflow-y-auto text-xs text-zinc-400">
+        {changes.map((c, i) => (
+          <li key={i} className="flex items-start gap-1.5">
+            <span
+              className={
+                c.type === "created"
+                  ? "text-green-400"
+                  : c.type === "deleted"
+                    ? "text-red-400"
+                    : "text-yellow-400"
+              }
+            >
+              {c.type === "created" ? "+" : c.type === "deleted" ? "−" : "~"}
+            </span>
+            <span>
+              #{c.number} {c.name}
+              {c.artist ? ` / ${c.artist}` : ""}
+              {c.owner ? ` (${c.owner})` : ""}
+              {c.fields && c.fields.length > 0 && (
+                <span className="ml-1 text-zinc-600">
+                  [{c.fields.join(", ")}]
+                </span>
+              )}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </details>
+  );
+}
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString("ja-JP", {
     timeZone: "Asia/Tokyo",
@@ -89,19 +139,31 @@ export function SyncStatus({
             )}
           </div>
           {parsedResult && (
-            <div className="text-sm text-zinc-400">
-              {parsedResult.sheetRows != null && (
-                <span className="mr-4">
-                  Rows: {String(parsedResult.sheetRows)}
-                </span>
-              )}
-              {parsedResult.created != null && (
-                <span className="mr-4">
-                  Created: {String(parsedResult.created)}
-                </span>
-              )}
-              {parsedResult.updated != null && (
-                <span>Updated: {String(parsedResult.updated)}</span>
+            <div className="space-y-2">
+              <div className="text-sm text-zinc-400">
+                {parsedResult.sheetRows != null && (
+                  <span className="mr-4">
+                    Rows: {String(parsedResult.sheetRows)}
+                  </span>
+                )}
+                {parsedResult.created != null && (
+                  <span className="mr-4">
+                    Created: {String(parsedResult.created)}
+                  </span>
+                )}
+                {parsedResult.updated != null && (
+                  <span className="mr-4">
+                    Updated: {String(parsedResult.updated)}
+                  </span>
+                )}
+                {parsedResult.deleted != null && (
+                  <span>
+                    Deleted: {String(parsedResult.deleted)}
+                  </span>
+                )}
+              </div>
+              {Array.isArray(parsedResult.changes) && parsedResult.changes.length > 0 && (
+                <ChangeDetails changes={parsedResult.changes as ChangeEntry[]} />
               )}
             </div>
           )}

@@ -182,6 +182,15 @@ async function failLock(jobId: bigint, error: string): Promise<void> {
   });
 }
 
+interface ChangeEntry {
+  type: "created" | "updated" | "deleted";
+  name: string;
+  artist: string;
+  owner: string;
+  number: number;
+  fields?: string[];
+}
+
 async function syncBar(config: SheetConfig, accessToken: string) {
   const sheetData = await fetchSheetData(config.sheetName, accessToken);
   const rows = parseRows(sheetData, config);
@@ -232,22 +241,28 @@ async function syncBar(config: SheetConfig, accessToken: string) {
     }
   }
 
-  // Load existing records for this bar
+  // Load existing records for this bar (full fields for diff comparison)
   const existingRecords = await prisma.record.findMany({
     where: { bar: config.bar },
-    select: { id: true, location: true, number: true },
+    include: { artist: { select: { name: true } }, owner: { select: { name: true } } },
   });
-  const recordMap = new Map<string, bigint>();
+  const recordMap = new Map<string, (typeof existingRecords)[number]>();
   for (const r of existingRecords) {
     const key = `${r.location ?? ""}:${r.number}`;
-    recordMap.set(key, r.id);
+    recordMap.set(key, r);
   }
 
   let created = 0;
   let updated = 0;
+  const changes: ChangeEntry[] = [];
+
+  // Track which keys exist in the sheet
+  const sheetKeys = new Set<string>();
 
   for (const row of rows) {
     const key = `${row.location}:${row.number}`;
+    sheetKeys.add(key);
+
     const artistId = row.artistName
       ? (artistMap.get(row.artistName) ?? null)
       : null;
@@ -265,14 +280,59 @@ async function syncBar(config: SheetConfig, accessToken: string) {
       bar: row.bar,
     };
 
-    const existingId = recordMap.get(key);
-    if (existingId) {
-      await prisma.record.update({ where: { id: existingId }, data });
-      updated++;
+    const existing = recordMap.get(key);
+    if (existing) {
+      // Compare fields to detect actual changes
+      const changedFields: string[] = [];
+      if (existing.name !== data.name) changedFields.push("name");
+      if ((existing.location ?? null) !== data.location) changedFields.push("location");
+      if (existing.comment !== data.comment) changedFields.push("comment");
+      if (existing.artistId !== data.artistId) changedFields.push("artistId");
+      if (existing.ownerId !== data.ownerId) changedFields.push("ownerId");
+
+      if (changedFields.length > 0) {
+        await prisma.record.update({ where: { id: existing.id }, data });
+        updated++;
+        changes.push({
+          type: "updated",
+          name: row.title,
+          artist: row.artistName,
+          owner: row.ownerName,
+          number: row.number,
+          fields: changedFields,
+        });
+      }
     } else {
-      const newRecord = await prisma.record.create({ data });
-      recordMap.set(key, newRecord.id);
+      await prisma.record.create({ data });
       created++;
+      changes.push({
+        type: "created",
+        name: row.title,
+        artist: row.artistName,
+        owner: row.ownerName,
+        number: row.number,
+      });
+    }
+  }
+
+  // Delete records that no longer exist in the sheet
+  const toDelete = existingRecords.filter((r) => {
+    const key = `${r.location ?? ""}:${r.number}`;
+    return !sheetKeys.has(key);
+  });
+
+  if (toDelete.length > 0) {
+    await prisma.record.deleteMany({
+      where: { id: { in: toDelete.map((r) => r.id) } },
+    });
+    for (const r of toDelete) {
+      changes.push({
+        type: "deleted",
+        name: r.name ?? "",
+        artist: r.artist?.name ?? "",
+        owner: r.owner?.name ?? "",
+        number: r.number ?? 0,
+      });
     }
   }
 
@@ -280,8 +340,10 @@ async function syncBar(config: SheetConfig, accessToken: string) {
     sheetRows: rows.length,
     created,
     updated,
+    deleted: toDelete.length,
     newArtists: artistNames.length - existingArtists.length,
     newOwners: ownerNames.length - existingOwners.length,
+    changes,
   };
 }
 

@@ -135,6 +135,7 @@ model Record {
   owner  Owner?  @relation(fields: [ownerId], references: [id])
   likes  Like[]
 
+  @@unique([bar, location, number])
   @@map("records")
 }
 
