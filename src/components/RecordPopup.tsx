@@ -1,20 +1,26 @@
 "use client";
 
 export type PopupData = {
+  id: string;
   name: string;
   artistName: string;
   number: number | null;
+  likeCount: number;
   type: "Record" | "Hi-Res";
   ownerName?: string;
   location?: string;
+  isLiked?: boolean;
+  likeId?: string;
 };
 
 export function RecordPopup({
   data,
   onClose,
+  onToggleLike,
 }: {
   data: PopupData;
   onClose: () => void;
+  onToggleLike?: () => void;
 }) {
   return (
     <div
@@ -29,12 +35,34 @@ export function RecordPopup({
         <div className="mb-4 flex items-start justify-between">
           <div>
             <h2 className="text-3xl font-medium">{data.name}</h2>
-            <p className="mt-1 text-lg text-zinc-300">
+            <p className="mt-1 text-lg text-white">
               by {data.artistName}
             </p>
           </div>
-          {data.number != null && (
-            <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
+            {onToggleLike ? (
+              <button onClick={onToggleLike} className="cursor-pointer">
+                {data.isLiked ? (
+                  <svg
+                    className="h-6 w-6 text-red-500"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                ) : (
+                  <svg
+                    className="h-6 w-6 text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                )}
+              </button>
+            ) : (
               <svg
                 className="h-6 w-6 text-red-500"
                 viewBox="0 0 24 24"
@@ -42,11 +70,11 @@ export function RecordPopup({
               >
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
-              <span className="text-2xl font-bold text-red-500">
-                {data.number}
-              </span>
-            </div>
-          )}
+            )}
+            <span className="text-2xl font-bold text-red-500">
+              {data.likeCount}
+            </span>
+          </div>
         </div>
 
         {/* Badge */}
@@ -60,7 +88,7 @@ export function RecordPopup({
         <div className="mb-4 border-t border-zinc-700" />
 
         {/* Request message */}
-        <div className="mb-6 space-y-2 text-sm leading-relaxed text-zinc-300">
+        <div className="mb-6 space-y-2 text-sm leading-relaxed text-white">
           {data.type === "Record" ? (
             <>
               <p>

@@ -25,7 +25,7 @@ function SectionHeader({
       <h2 className="text-2xl font-bold">{title}</h2>
       <Link
         href={viewAllHref}
-        className="text-sm text-zinc-400 underline transition-colors hover:text-white"
+        className="text-sm text-white underline transition-colors hover:text-white"
       >
         [ {viewAllLabel} &gt; ]
       </Link>
@@ -35,7 +35,7 @@ function SectionHeader({
 
 function TableHeader() {
   return (
-    <div className="flex border-b border-zinc-700 py-2 text-xs font-semibold text-zinc-400">
+    <div className="flex border-b border-zinc-700 py-2 text-xs font-semibold text-white">
       <span className="w-2/5">Artists</span>
       <span className="w-2/5">Albums</span>
       <span className="w-1/5" />
@@ -275,23 +275,23 @@ export default async function BarPage({
     <div>
       {/* Hero */}
       <section className="mb-16">
-        <div className="flex items-start justify-between">
-          <h1 className="text-5xl font-bold tracking-wider md:text-6xl">
+        <div className="flex items-center justify-between">
+          <h1 className="text-7xl font-normal tracking-normal md:text-8xl">
             MUSIC LIST
           </h1>
-          <span className="text-2xl font-light tracking-wide md:text-3xl">
+          <span className="text-2xl font-normal tracking-wide md:text-3xl">
             {capitalize(bar)}
           </span>
         </div>
 
         <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div className="text-sm leading-relaxed text-zinc-300">
+          <div className="text-sm leading-relaxed text-white">
             <p>There&apos;s a 900yen cover charge per person,</p>
             <p>and the following are complimentary.</p>
-            <p className="mt-2 text-zinc-400">
+            <p className="mt-2 text-white">
               当店は900円のカバーチャージをいただいております。以下はサービスです。
             </p>
-            <ul className="mt-3 text-zinc-300">
+            <ul className="mt-3 text-white">
               <li>・Snacks on the table　テーブルスナック</li>
               <li>・1 Song Request　1曲リクエスト</li>
             </ul>
@@ -352,7 +352,7 @@ export default async function BarPage({
             {session && (
               <Link
                 href={`/${bar}/features/${section.id}/edit`}
-                className="text-sm text-zinc-400 underline transition-colors hover:text-white"
+                className="text-sm text-white underline transition-colors hover:text-white"
               >
                 [ edit &gt; ]
               </Link>

@@ -12,7 +12,7 @@ function capitalize(str: string) {
 
 function TableHeader() {
   return (
-    <div className="flex border-b border-zinc-700 py-2 text-xs font-semibold text-zinc-400">
+    <div className="flex border-b border-zinc-700 py-2 text-xs font-semibold text-white">
       <span className="w-2/5">Artists</span>
       <span className="w-2/5">Albums</span>
       <span className="w-1/5" />
@@ -90,7 +90,7 @@ export default async function TrackTop100Page({
       <div className="mb-8">
         <Link
           href={`/${bar}`}
-          className="text-sm text-zinc-400 hover:text-white hover:underline"
+          className="text-sm text-white hover:text-white hover:underline"
         >
           &larr; {capitalize(bar)} TOP
         </Link>

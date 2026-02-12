@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Cabin, Geist_Mono } from "next/font/google";
+import { Montserrat, Geist_Mono } from "next/font/google";
 import NoiseBackground from "@/components/NoiseBackground";
 import "./globals.css";
 
-const cabin = Cabin({
-  variable: "--font-cabin",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
 });
 
@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body
-        className={`${cabin.variable} ${geistMono.variable} antialiased`}
+        className={`${montserrat.className} ${geistMono.variable} antialiased`}
       >
         <NoiseBackground />
         {children}
