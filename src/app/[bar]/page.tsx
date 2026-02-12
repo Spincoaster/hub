@@ -275,7 +275,7 @@ export default async function BarPage({
   return (
     <div>
       {/* Hero */}
-      <section className="mb-16">
+      <section className="mb-24">
         <div className="flex items-center justify-between">
           <h1 className="text-7xl font-normal tracking-normal md:text-8xl">
             MUSIC LIST
