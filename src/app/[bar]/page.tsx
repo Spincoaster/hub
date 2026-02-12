@@ -368,7 +368,7 @@ export default async function BarPage({
           viewAllLabel="View All Hi-res"
         />
         <TableHeader columns={["Title", "Album / Artist"]} />
-        <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} showAlbum />
+        <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} />
       </section>
 
       {/* Dynamic Feature Sections */}
