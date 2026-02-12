@@ -303,8 +303,8 @@ export default async function BarPage({
               当店は900円のカバーチャージをいただいております。以下はサービスです。
             </p>
             <ul className="mt-6 text-white">
-              <li className="flex"><span className="w-1/2">・<span className="font-semibold">Snacks on the table</span></span><span className="w-1/2">テーブルスナック</span></li>
-              <li className="flex"><span className="w-1/2">・<span className="font-semibold">1 Song Request</span></span><span className="w-1/2">1曲リクエスト</span></li>
+              <li className="flex flex-col md:flex-row"><span className="md:w-1/2">・<span className="font-semibold">Snacks on the table</span></span><span className="ml-3 md:ml-0 md:w-1/2">テーブルスナック</span></li>
+              <li className="flex flex-col md:flex-row"><span className="md:w-1/2">・<span className="font-semibold">1 Song Request</span></span><span className="ml-3 md:ml-0 md:w-1/2">1曲リクエスト</span></li>
             </ul>
           </div>
 
