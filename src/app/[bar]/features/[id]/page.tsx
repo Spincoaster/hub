@@ -6,6 +6,7 @@ import { auth } from "@/lib/auth";
 import { getSessionId } from "@/lib/session";
 import { DeleteFeatureButton } from "@/components/admin/DeleteFeatureButton";
 import { RecordList } from "@/components/RecordList";
+import { PageRefresh } from "@/components/PageRefresh";
 
 type Params = Promise<{ bar: string; id: string }>;
 
@@ -148,6 +149,7 @@ export default async function FeatureDetailPage({
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
+      <PageRefresh />
       <div className="mb-4">
         <Link
           href={`/${bar}/admin`}

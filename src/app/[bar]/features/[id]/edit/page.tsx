@@ -3,6 +3,21 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface FeatureItem {
   id: string;
@@ -40,6 +55,101 @@ interface SearchResult {
   _count?: { likes: number };
 }
 
+function GripIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="text-zinc-500"
+    >
+      <circle cx="9" cy="6" r="1.5" />
+      <circle cx="15" cy="6" r="1.5" />
+      <circle cx="9" cy="12" r="1.5" />
+      <circle cx="15" cy="12" r="1.5" />
+      <circle cx="9" cy="18" r="1.5" />
+      <circle cx="15" cy="18" r="1.5" />
+    </svg>
+  );
+}
+
+function SortableItem({
+  item,
+  onDelete,
+}: {
+  item: FeatureItem;
+  onDelete: (id: string) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-center justify-between rounded-lg border border-zinc-700 p-4 ${isDragging ? "opacity-50" : ""}`}
+    >
+      <button
+        type="button"
+        className="mr-3 shrink-0 cursor-grab touch-none active:cursor-grabbing"
+        {...attributes}
+        {...listeners}
+      >
+        <GripIcon />
+      </button>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-zinc-500">#{item.number}</span>
+          <span className="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400">
+            {item.itemType}
+          </span>
+        </div>
+        {item.itemData && (
+          <div className="mt-1">
+            <p className="truncate text-sm text-white">
+              {item.itemData.name ?? ""}
+            </p>
+            <p className="truncate text-xs text-zinc-500">
+              {item.itemData.artist?.name ?? "—"}
+            </p>
+            <p className="truncate text-xs text-zinc-500">
+              {item.itemType === "Track" && item.itemData.album
+                ? item.itemData.album.name ?? "—"
+                : ""}
+              {item.itemType === "Record" && item.itemData.owner
+                ? item.itemData.owner.name ?? "—"
+                : ""}
+            </p>
+            <p className="text-xs text-zinc-500">
+              {item.itemData._count?.likes ?? 0} likes
+            </p>
+          </div>
+        )}
+      </div>
+      <button
+        type="button"
+        onClick={() => onDelete(item.id)}
+        className="ml-4 shrink-0 text-sm text-red-400 hover:text-red-300"
+      >
+        削除
+      </button>
+    </div>
+  );
+}
+
 export default function FeatureEditPage() {
   const params = useParams();
   const router = useRouter();
@@ -57,6 +167,10 @@ export default function FeatureEditPage() {
   const [externalLink, setExternalLink] = useState("");
   const [externalThumbnail, setExternalThumbnail] = useState("");
   const [barValue, setBarValue] = useState<number | "">("");
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+  );
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [newItemType, setNewItemType] = useState<"Track" | "Record">("Track");
@@ -152,6 +266,33 @@ export default function FeatureEditPage() {
     }, 300);
     return () => clearTimeout(timer);
   }, [searchQuery, newItemType]);
+
+  async function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id || !feature) return;
+
+    const oldIndex = feature.featureItems.findIndex((i) => i.id === active.id);
+    const newIndex = feature.featureItems.findIndex((i) => i.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    const reordered = arrayMove(feature.featureItems, oldIndex, newIndex).map(
+      (item, idx) => ({ ...item, number: idx + 1 })
+    );
+    setFeature({ ...feature, featureItems: reordered });
+
+    try {
+      await fetch("/api/feature-items/reorder", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: reordered.map((item) => ({ id: item.id, number: item.number })),
+        }),
+      });
+    } catch {
+      setError("並び替えの保存に失敗しました");
+      await fetchFeature();
+    }
+  }
 
   async function handleAddItem(itemId: string) {
     try {
@@ -299,52 +440,26 @@ export default function FeatureEditPage() {
         {feature.featureItems.length === 0 ? (
           <p className="text-zinc-500">アイテムがありません。</p>
         ) : (
-          <div className="space-y-3">
-            {feature.featureItems.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center justify-between rounded-lg border border-zinc-700 p-4"
-              >
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-zinc-500">
-                      #{item.number}
-                    </span>
-                    <span className="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400">
-                      {item.itemType}
-                    </span>
-                  </div>
-                  {item.itemData && (
-                    <div className="mt-1">
-                      <p className="truncate text-sm text-white">
-                        {item.itemData.name ?? ""}
-                      </p>
-                      <p className="truncate text-xs text-zinc-500">
-                        {item.itemData.artist?.name ?? "—"}
-                      </p>
-                      <p className="truncate text-xs text-zinc-500">
-                        {item.itemType === "Track" && item.itemData.album
-                          ? item.itemData.album.name ?? "—"
-                          : ""}
-                        {item.itemType === "Record" && item.itemData.owner
-                          ? item.itemData.owner.name ?? "—"
-                          : ""}
-                      </p>
-                      <p className="text-xs text-zinc-500">
-                        {item.itemData._count?.likes ?? 0} likes
-                      </p>
-                    </div>
-                  )}
-                </div>
-                <button
-                  onClick={() => handleDeleteItem(item.id)}
-                  className="ml-4 shrink-0 text-sm text-red-400 hover:text-red-300"
-                >
-                  削除
-                </button>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={feature.featureItems.map((i) => i.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="space-y-3">
+                {feature.featureItems.map((item) => (
+                  <SortableItem
+                    key={item.id}
+                    item={item}
+                    onDelete={handleDeleteItem}
+                  />
+                ))}
               </div>
-            ))}
-          </div>
+            </SortableContext>
+          </DndContext>
         )}
       </div>
 
