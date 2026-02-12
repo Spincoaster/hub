@@ -28,11 +28,16 @@ export default async function RecordArtistsPage({
 
   return (
     <div className="mx-auto max-w-5xl px-4">
-      <div className="mb-6">
-        <h1 className="text-5xl font-normal tracking-tight md:text-7xl">
+      <div className="-mt-8 mb-6">
+        <Link
+          href={`/${bar}`}
+          className="text-sm text-zinc-400 hover:text-white"
+        >
+          &larr; Top
+        </Link>
+        <h1 className="mt-2 text-5xl font-normal tracking-tight md:text-7xl">
           All Record List
         </h1>
-
       </div>
 
       <div className="mb-8">
