@@ -22,8 +22,8 @@ function SectionHeader({
   viewAllLabel: string;
 }) {
   return (
-    <div className="mb-2 flex items-end justify-between">
-      <h2 className="text-2xl font-bold">{title}</h2>
+    <div className="mb-4 flex items-end justify-between">
+      <h2 className="text-3xl font-bold">{title}</h2>
       <Link
         href={viewAllHref}
         className="text-sm text-white underline transition-colors hover:text-white"
@@ -34,11 +34,19 @@ function SectionHeader({
   );
 }
 
-function TableHeader() {
+function TableHeader({ columns }: { columns?: string[] }) {
+  const cols = columns ?? ["Title", "Artist"];
   return (
-    <div className="flex border-b border-zinc-700 py-2 text-xs font-semibold text-white">
-      <span className="w-2/5">Artists</span>
-      <span className="w-2/5">Albums</span>
+    <div className="hidden items-stretch border-b border-zinc-600 text-xs font-semibold text-white md:flex">
+      <span className="flex w-4/5 items-stretch">
+        {cols.map((col, i) => (
+          <span key={col} className={`flex w-1/2 items-center py-2 ${i === 0 ? "pl-2 pr-4" : "pl-4"}`}>{col}</span>
+        )).reduce<React.ReactNode[]>((acc, el, i) => {
+          if (i > 0) acc.push(<span key={`sep-${i}`} className="w-px self-stretch bg-zinc-600" />);
+          acc.push(el);
+          return acc;
+        }, [])}
+      </span>
       <span className="w-1/5" />
     </div>
   );
@@ -303,7 +311,7 @@ export default async function BarPage({
           <div className="flex flex-col gap-6">
             <Link
               href={`/${bar}/records/artists`}
-              className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
+              className="flex items-center justify-between rounded-full h-16 border border-zinc-600 pl-10 pr-0 text-sm font-medium"
             >
               <span>View All Record</span>
               <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
@@ -313,7 +321,7 @@ export default async function BarPage({
             </Link>
             <Link
               href={`/${bar}/tracks/artists`}
-              className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
+              className="flex items-center justify-between rounded-full h-16 border border-zinc-600 pl-10 pr-0 text-sm font-medium"
             >
               <span>View All Hi-Res</span>
               <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
@@ -325,7 +333,7 @@ export default async function BarPage({
         </div>
       </section>
 
-      <hr className="mb-16 border-zinc-700" />
+      <hr className="mb-12 border-zinc-600" />
 
       {/* Record TOP 100 */}
       <section className="mx-auto mb-16 max-w-5xl px-4">
@@ -338,7 +346,7 @@ export default async function BarPage({
         <RecordList items={recordItems} likeMap={likeMap} likeCounts={likeCounts} />
       </section>
 
-      <hr className="mb-16 border-zinc-700" />
+      <hr className="mb-12 border-zinc-600" />
 
       {/* Hi-Res TOP 100 */}
       <section className="mx-auto mb-16 max-w-5xl px-4">
@@ -347,14 +355,14 @@ export default async function BarPage({
           viewAllHref={`/${bar}/tracks/top100`}
           viewAllLabel="View All Hi-res"
         />
-        <TableHeader />
-        <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} />
+        <TableHeader columns={["Title", "Album / Artist"]} />
+        <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} showAlbum />
       </section>
 
       {/* Dynamic Feature Sections */}
       {featureSections.map((section, idx) => (
         <section key={idx} className="mb-16">
-          <hr className="mb-16 border-zinc-700" />
+          <hr className="mb-12 border-zinc-600" />
           <div className="mx-auto max-w-5xl px-4">
             <div className="mb-2 flex items-end justify-between">
               <h2 className="text-2xl font-bold">{section.name}</h2>
