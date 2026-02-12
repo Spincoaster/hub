@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
+import Link from "next/link";
 import { RecordList } from "@/components/RecordList";
+import { BackLink } from "@/components/BackLink";
 import { getSessionId } from "@/lib/session";
 
 export default async function ArtistRecordsPage({
@@ -73,8 +75,13 @@ export default async function ArtistRecordsPage({
 
   return (
     <div className="mx-auto max-w-5xl px-4">
-      <div className="mb-6">
-        <h1 className="text-5xl font-light tracking-tight md:text-7xl">
+      <div className="-mt-8 mb-6">
+        <nav className="flex items-center gap-1 text-sm text-zinc-400">
+          <Link href={`/${bar}`} className="hover:text-white">Top</Link>
+          <span>/</span>
+          <BackLink label="All Record List" href={`/${bar}/records/artists`} />
+        </nav>
+        <h1 className="mt-2 text-5xl font-normal tracking-tight md:text-7xl">
           {artist.name}
         </h1>
         <p className="mt-2 text-sm text-white">[ Records ]</p>
