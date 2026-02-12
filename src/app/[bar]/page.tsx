@@ -326,7 +326,7 @@ export default async function BarPage({
       <section className="mb-16">
         <SectionHeader
           title="Record TOP 100"
-          viewAllHref={`/${bar}/records`}
+          viewAllHref={`/${bar}/records/top100`}
           viewAllLabel="View All Record"
         />
         <TableHeader />
@@ -337,7 +337,7 @@ export default async function BarPage({
       <section className="mb-16">
         <SectionHeader
           title="Hi-Res TOP 100"
-          viewAllHref={`/${bar}/tracks`}
+          viewAllHref={`/${bar}/tracks/top100`}
           viewAllLabel="View All Hi-res"
         />
         <TableHeader />

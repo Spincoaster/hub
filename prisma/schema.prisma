@@ -169,5 +169,7 @@ model Like {
   @@unique([sessionId, recordId])
   @@unique([sessionId, trackId])
   @@index([sessionId])
+  @@index([recordId])
+  @@index([trackId])
   @@map("likes")
 }
