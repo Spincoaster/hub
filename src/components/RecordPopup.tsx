@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 export type PopupData = {
   id: string;
   name: string;
@@ -22,13 +24,28 @@ export function RecordPopup({
   onClose: () => void;
   onToggleLike?: () => void;
 }) {
+  useEffect(() => {
+    const prevent = (e: Event) => e.preventDefault();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("wheel", prevent, { passive: false });
+    window.addEventListener("touchmove", prevent, { passive: false });
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("wheel", prevent);
+      window.removeEventListener("touchmove", prevent);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
       onClick={onClose}
     >
       <div
-        className="mx-4 w-full max-w-xl border border-white bg-zinc-950/5 p-6 backdrop-blur-[4px]"
+        className="mx-4 w-full max-w-xl border border-white bg-zinc-950/5 px-22 py-10 backdrop-blur-[4px]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
