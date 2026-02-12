@@ -352,7 +352,7 @@ export default async function BarPage({
         <SectionHeader
           title="Record TOP 100"
           viewAllHref={`/${bar}/records/top100`}
-          viewAllLabel="View All Record"
+          viewAllLabel="View All"
         />
         <TableHeader />
         <RecordList items={recordItems} likeMap={likeMap} likeCounts={likeCounts} />
@@ -365,7 +365,7 @@ export default async function BarPage({
         <SectionHeader
           title="Hi-Res TOP 100"
           viewAllHref={`/${bar}/tracks/top100`}
-          viewAllLabel="View All Hi-res"
+          viewAllLabel="View All"
         />
         <TableHeader columns={["Title", "Album / Artist"]} />
         <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} />
