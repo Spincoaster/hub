@@ -43,7 +43,7 @@ export default async function ArtistAlbumsPage({
             href={`/${bar}/albums/${Number(album.id)}/tracks`}
             className="group flex items-center justify-between border-b border-zinc-700 first:border-t py-4 transition-colors hover:bg-white/5"
           >
-            <span className="text-white">{album.name}</span>
+            <span className="truncate text-white">{album.name}</span>
             <svg
               className="h-5 w-5 shrink-0 text-zinc-500 transition-colors group-hover:text-white"
               viewBox="0 0 24 24"
