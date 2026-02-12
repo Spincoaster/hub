@@ -283,7 +283,7 @@ export default async function BarPage({
   return (
     <div>
       {/* Hero */}
-      <section className="mx-auto mb-24 max-w-5xl px-4">
+      <section className="mx-auto mb-16 max-w-5xl px-4 md:mb-24">
         <div className="flex flex-col gap-4 md:flex-row md:gap-0 md:items-center md:justify-between">
           <h1 className="text-6xl font-normal tracking-normal md:text-8xl">
             MUSIC LIST
@@ -293,7 +293,7 @@ export default async function BarPage({
           </span>
         </div>
 
-        <div className="mt-12 flex flex-col gap-16 md:flex-row md:gap-6 md:items-end md:justify-between">
+        <div className="mt-12 flex flex-col gap-10 md:flex-row md:gap-6 md:items-end md:justify-between">
           <div className="space-y-2 text-base leading-relaxed text-white">
             <div className="font-semibold leading-relaxed">
               <p>There&apos;s a 900yen cover charge per person,</p>
