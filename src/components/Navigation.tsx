@@ -4,25 +4,24 @@ import { NavMenu } from "@/components/NavMenu";
 
 const navigationMenus: Record<string, { href: string; label: string; external: boolean }[]> = {
   shinjuku: [
+    { href: "/shinjuku", label: "Top", external: false },
     { href: "https://menu.spincoaster.com/shinjuku", label: "Drink Menu", external: true },
-    { href: "/shinjuku/records", label: "Record TOP 100", external: false },
-    { href: "/shinjuku/tracks", label: "Hi-Res TOP 100", external: false },
-    { href: "/shinjuku/features", label: "Recommend", external: false },
-    { href: "/shinjuku/new-arrivals", label: "New Arrival", external: false },
+    { href: "/shinjuku/records/artists", label: "All Record List", external: false },
+    { href: "/shinjuku/tracks/artists", label: "All Hi-Res List", external: false },
+    { href: "/shinjuku/records/top100", label: "Record TOP 100", external: false },
+    { href: "/shinjuku/tracks/top100", label: "Hi-Res TOP 100", external: false },
   ],
   ebisu: [
+    { href: "/ebisu", label: "Top", external: false },
     { href: "https://menu.spincoaster.com/ebisu", label: "Drink Menu", external: true },
-    { href: "/ebisu/records", label: "Record TOP 100", external: false },
-    { href: "/ebisu/tracks", label: "Hi-Res TOP 100", external: false },
-    { href: "/ebisu/features", label: "Recommend", external: false },
-    { href: "/ebisu/new-arrivals", label: "New Arrival", external: false },
+    { href: "/ebisu/records/artists", label: "All Record List", external: false },
+    { href: "/ebisu/records/top100", label: "Record TOP 100", external: false },
   ],
   kagurazaka: [
+    { href: "/kagurazaka", label: "Top", external: false },
     { href: "https://menu.spincoaster.com/kagurazaka", label: "Drink Menu", external: true },
-    { href: "/kagurazaka/records", label: "Record TOP 100", external: false },
-    { href: "/kagurazaka/tracks", label: "Hi-Res TOP 100", external: false },
-    { href: "/kagurazaka/features", label: "Recommend", external: false },
-    { href: "/kagurazaka/new-arrivals", label: "New Arrival", external: false },
+    { href: "/kagurazaka/records/artists", label: "All Record List", external: false },
+    { href: "/kagurazaka/records/top100", label: "Record TOP 100", external: false },
   ],
   default: [
     { href: "/shinjuku", label: "SHINJUKU", external: false },
