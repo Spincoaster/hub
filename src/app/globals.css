@@ -25,12 +25,3 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
-
-.search-fade-in {
-  animation: searchFadeIn 0.3s ease-out;
-}
-
-@keyframes searchFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
