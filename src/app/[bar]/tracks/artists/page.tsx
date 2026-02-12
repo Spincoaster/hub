@@ -11,16 +11,14 @@ export default async function TrackArtistsPage({
   searchParams: Promise<{ has_prefix?: string }>;
 }) {
   const { bar } = await params;
-  const { has_prefix: hasPrefix } = await searchParams;
+  const { has_prefix } = await searchParams;
+  const hasPrefix = has_prefix ?? "a";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {
     tracks: { some: {} },
+    ...buildPrefixFilter(hasPrefix),
   };
-
-  if (hasPrefix) {
-    Object.assign(where, buildPrefixFilter(hasPrefix));
-  }
 
   const artists = await prisma.artist.findMany({
     where,
