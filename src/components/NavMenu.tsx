@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const NoiseBackground = dynamic(() => import("@/components/NoiseBackground"), { ssr: false });
 
 type MenuItem = {
   href: string;
@@ -12,7 +15,7 @@ type MenuItem = {
 function ArrowIcon() {
   return (
     <svg
-      className="h-5 w-5 shrink-0 rounded-full border border-zinc-600 p-0.5 text-zinc-400"
+      className="h-7 w-7 shrink-0 rounded-full border border-white p-0.5 text-white"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -72,8 +75,8 @@ export function NavMenu({
 
       {/* Bar label in header row when open */}
       {open && barLabel && (
-        <div className="absolute left-4 top-0 flex h-14 items-center">
-          <span className="rounded-full bg-white px-4 py-1 text-sm font-medium text-black">
+        <div className="absolute left-0 top-0 flex h-28 items-center">
+          <span className="inline-block w-64 rounded-r-full bg-white px-4 py-1 text-center text-base font-semibold text-black">
             {barLabel}
           </span>
         </div>
@@ -81,8 +84,9 @@ export function NavMenu({
 
       {/* Menu dropdown */}
       {open && (
-        <div className="absolute inset-x-0 top-14 z-50 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm">
-          <div className="flex flex-col">
+        <div className="absolute inset-x-0 top-28 z-50 h-screen overflow-hidden bg-[#0a0a0a]">
+          <NoiseBackground className="pointer-events-none absolute inset-0 h-full w-full" />
+          <div className="relative mt-2 flex flex-col border-t border-white">
             {menuItems.map((item) => {
               const content = (
                 <>
@@ -98,7 +102,7 @@ export function NavMenu({
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center border-b border-zinc-800 px-6 py-4 text-sm text-white transition-colors hover:bg-zinc-900"
+                  className="flex items-center border-b border-white px-6 py-5 text-base text-white transition-colors hover:bg-zinc-900"
                   onClick={() => setOpen(false)}
                 >
                   {content}
@@ -107,7 +111,7 @@ export function NavMenu({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex items-center border-b border-zinc-800 px-6 py-4 text-sm text-white transition-colors hover:bg-zinc-900"
+                  className="flex items-center border-b border-white px-6 py-5 text-base text-white transition-colors hover:bg-zinc-900"
                   onClick={() => setOpen(false)}
                 >
                   {content}

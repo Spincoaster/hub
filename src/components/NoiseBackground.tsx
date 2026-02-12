@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-export default function NoiseBackground() {
+export default function NoiseBackground({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function NoiseBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="pointer-events-none fixed inset-0 -z-10 h-full w-full"
+      className={className ?? "pointer-events-none fixed inset-0 -z-10 h-full w-full"}
       style={{ imageRendering: "auto" }}
     />
   );
