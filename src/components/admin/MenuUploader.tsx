@@ -2,8 +2,16 @@
 
 import { useState, useRef } from "react";
 
+function formatSize(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 export function MenuUploader({ bar }: { bar: string }) {
   const [uploading, setUploading] = useState(false);
+  const [fileName, setFileName] = useState("");
+  const [fileSize, setFileSize] = useState(0);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
@@ -56,6 +64,8 @@ export function MenuUploader({ bar }: { bar: string }) {
 
       setStatus("アップロード完了");
       if (fileRef.current) fileRef.current.value = "";
+      setFileName("");
+      setFileSize(0);
     } catch (err) {
       setError(err instanceof Error ? err.message : "アップロードに失敗しました");
       setStatus("");
@@ -84,11 +94,26 @@ export function MenuUploader({ bar }: { bar: string }) {
           type="file"
           accept=".pdf"
           disabled={uploading}
-          className="text-sm text-zinc-300 file:mr-3 file:rounded-md file:border-0 file:bg-zinc-700 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-zinc-600 disabled:opacity-50"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            setFileName(f?.name ?? "");
+            setFileSize(f?.size ?? 0);
+          }}
+          className="hidden"
         />
         <button
-          onClick={handleUpload}
+          onClick={() => fileRef.current?.click()}
           disabled={uploading}
+          className="rounded-md border border-zinc-600 bg-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-600 disabled:opacity-50"
+        >
+          ファイルを選択
+        </button>
+        <span className="text-sm text-zinc-400">
+          {fileName ? `${fileName} (${formatSize(fileSize)})` : "ファイルが選択されていません"}
+        </span>
+        <button
+          onClick={handleUpload}
+          disabled={uploading || !fileName}
           className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
           {uploading ? "処理中..." : "アップロード"}
