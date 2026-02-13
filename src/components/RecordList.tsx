@@ -111,6 +111,7 @@ export function RecordList({
         id: popupItem.id,
         name: popupItem.name,
         artistName: popupItem.artistName,
+        albumName: popupItem.albumName,
         number: popupItem.number,
         likeCount: likeCounts[popupItem.id] ?? 0,
         type: popupItem.type,

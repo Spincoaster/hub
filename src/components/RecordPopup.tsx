@@ -7,6 +7,7 @@ export type PopupData = {
   id: string;
   name: string;
   artistName: string;
+  albumName?: string;
   number: number | null;
   likeCount: number;
   type: "Record" | "Hi-Res";
@@ -105,6 +106,9 @@ export function RecordPopup({
         <div className="mb-4 flex items-start justify-between md:gap-8">
           <div>
             <h2 className="text-3xl font-medium">{data.name}</h2>
+            {data.albumName && (
+              <p className="mt-1 text-lg text-white">{data.albumName}</p>
+            )}
             <p className="mt-1 text-lg text-white">
               by {data.artistName}
             </p>
