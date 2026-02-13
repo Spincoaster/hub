@@ -23,7 +23,7 @@ function SectionHeader({
   viewAllLabel: string;
 }) {
   return (
-    <div className="mb-4 flex items-end justify-between">
+    <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
       <h2 className="text-3xl font-bold">{title}</h2>
       <Link
         href={viewAllHref}
