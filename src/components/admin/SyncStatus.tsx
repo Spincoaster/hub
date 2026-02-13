@@ -191,7 +191,7 @@ export function SyncStatus({
         disabled={syncing}
         className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {syncing ? "Syncing..." : "Sync Now"}
+        {syncing ? "同期中..." : "同期スタート"}
       </button>
     </div>
   );

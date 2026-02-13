@@ -25,15 +25,6 @@ export function FeatureManager({
 
   return (
     <div>
-      <div className="mb-4 flex justify-end">
-        <button
-          onClick={() => router.push(`/${bar}/features/new`)}
-          className="rounded-md bg-blue-600 px-4 py-4 text-sm font-medium text-white hover:bg-blue-700"
-        >
-          新規作成
-        </button>
-      </div>
-
       {initialFeatures.length === 0 ? (
         <p className="text-sm text-zinc-500">フィーチャーがありません。</p>
       ) : (

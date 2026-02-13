@@ -51,12 +51,12 @@ export default async function AdminPage({
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="mb-8 text-2xl font-bold text-white">
+      <h1 className="mb-8 text-3xl font-bold text-white">
         {BAR_LABELS[bar] ?? bar} 管理画面
       </h1>
 
       <section className="mb-12">
-        <h2 className="mb-4 text-xl font-semibold text-white">
+        <h2 className="mb-4 text-2xl font-semibold text-white">
           レコードリスト同期
         </h2>
         <p className="mb-3 text-sm text-zinc-400">
@@ -78,7 +78,15 @@ export default async function AdminPage({
       </section>
 
       <section>
-        <h2 className="mb-4 text-xl font-semibold text-white">特集</h2>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-2xl font-semibold text-white">特集</h2>
+          <a
+            href={`/${bar}/features/new`}
+            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          >
+            新規作成
+          </a>
+        </div>
         <p className="mb-3 text-sm text-zinc-400">
           トップページの下部に自由に特集リストを追加できます。番号順に並びます。
         </p>
