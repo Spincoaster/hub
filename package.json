@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && tsx scripts/generate-labels.ts && next build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate"
@@ -36,6 +36,7 @@
     "eslint-config-next": "16.1.6",
     "mysql2": "^3.16.3",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
