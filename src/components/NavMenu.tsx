@@ -118,12 +118,12 @@ export function NavMenu({
 
       {/* Menu dropdown */}
       {mounted && (
-      <div className={`absolute inset-x-0 top-28 z-50 h-screen overflow-hidden bg-[#0a0a0a] transition-all duration-500 ease-in-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+      <div className={`absolute inset-x-0 top-28 z-50 h-screen overflow-hidden bg-[#0a0a0a] transition-all duration-300 ease-in-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
         <NoiseBackground className="pointer-events-none absolute inset-0 h-full w-full" />
         <div className="relative mt-20 flex flex-col border-t border-white md:mt-0">
           {menuItems.map((item, i) => {
-            const itemStyle = {
-              transition: "opacity 500ms ease-out, transform 500ms ease-out",
+            const itemStyle: React.CSSProperties = {
+              transition: "opacity 400ms ease-out, transform 400ms ease-out",
               transitionDelay: `${i * 80}ms`,
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(-8px)",
@@ -166,7 +166,7 @@ export function NavMenu({
                 href={adminHref}
                 className="flex items-center border-b border-white py-5 pl-6 pr-6 text-base text-white transition-colors hover:bg-zinc-900 md:pl-18"
                 style={{
-                  transition: "opacity 500ms ease-out, transform 500ms ease-out",
+                  transition: "opacity 400ms ease-out, transform 400ms ease-out",
                   transitionDelay: `${menuItems.length * 80}ms`,
                   opacity: visible ? 1 : 0,
                   transform: visible ? "translateY(0)" : "translateY(-8px)",
@@ -182,7 +182,7 @@ export function NavMenu({
                 href="/"
                 className="flex items-center border-b border-white py-5 pl-6 pr-6 text-base text-white transition-colors hover:bg-zinc-900 md:pl-18"
                 style={{
-                  transition: "opacity 500ms ease-out, transform 500ms ease-out",
+                  transition: "opacity 400ms ease-out, transform 400ms ease-out",
                   transitionDelay: `${(menuItems.length + 1) * 80}ms`,
                   opacity: visible ? 1 : 0,
                   transform: visible ? "translateY(0)" : "translateY(-8px)",
