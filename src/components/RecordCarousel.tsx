@@ -48,6 +48,7 @@ export function RecordCarousel({
   const [padLeft, setPadLeft] = useState(16);
   const [pageWidth, setPageWidth] = useState(0);
 
+  const measured = pageWidth > 0;
   const likeable = initialLikeMap !== undefined;
   const pages = chunk(items, 5);
 
@@ -181,7 +182,7 @@ export function RecordCarousel({
 
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto snap-x snap-mandatory"
+        className={`flex gap-4 overflow-x-auto snap-x snap-mandatory transition-opacity duration-500 ${measured ? "opacity-100" : "opacity-0"}`}
         style={{
           scrollbarWidth: "none",
           scrollPaddingInlineStart: padLeft,
@@ -280,7 +281,7 @@ export function RecordCarousel({
       </div>
 
       {pages.length > 1 && (
-        <div className="mt-6 flex justify-center gap-2">
+        <div className={`mt-6 flex justify-center gap-2 transition-opacity duration-500 ${measured ? "opacity-100" : "opacity-0"}`}>
           {pages.map((_, i) => (
             <button
               key={i}
