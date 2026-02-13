@@ -102,7 +102,7 @@ export function RecordPopup({
         </div>
 
         {/* Header */}
-        <div className="mb-4 flex items-start justify-between">
+        <div className="mb-4 flex items-start justify-between md:gap-8">
           <div>
             <h2 className="text-3xl font-medium">{data.name}</h2>
             <p className="mt-1 text-lg text-white">
