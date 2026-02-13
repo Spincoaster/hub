@@ -5,6 +5,8 @@ import { RecordList } from "@/components/RecordList";
 import { RecordCarousel } from "@/components/RecordCarousel";
 import { getSessionId } from "@/lib/session";
 import { RightUpArrow } from "@/components/icons/RightUpArrow";
+import { AnimatedText } from "@/components/AnimatedText";
+import { FadeIn } from "@/components/FadeIn";
 import { SITE_NAME, NAV, TOP_PAGE, TABLE } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
@@ -286,62 +288,76 @@ export default async function BarPage({
       <section className="mx-auto mb-16 max-w-7xl px-4">
         <div className="flex flex-col gap-4 md:flex-row md:gap-0 md:items-center md:justify-between">
           <h1 className="text-6xl font-normal tracking-normal md:text-8xl">
-            {SITE_NAME}
+            <AnimatedText text={SITE_NAME} />
           </h1>
-          <span className="text-2xl font-normal tracking-wide md:text-3xl">
-            {capitalize(bar)}
-          </span>
+          <FadeIn delayMs={400}>
+            <span className="text-2xl font-normal tracking-wide md:text-3xl">
+              {capitalize(bar)}
+            </span>
+          </FadeIn>
         </div>
 
         <div className="mt-12 flex flex-col gap-10 md:flex-row md:gap-6 md:items-start md:justify-between">
           <div className="space-y-2 text-base leading-relaxed text-white">
-            <div className="font-semibold leading-relaxed">
-              <p>{TOP_PAGE.coverChargeEn1}</p>
-              <p>{TOP_PAGE.coverChargeEn2}</p>
-            </div>
-            <p className="mt-4 text-white">
-              {TOP_PAGE.coverChargeJa}
-            </p>
-            <ul className="mt-6 text-white">
-              <li className="flex flex-col md:flex-row"><span className="md:w-1/2">・<span className="font-semibold">{TOP_PAGE.snacksEn}</span></span><span className="ml-3 md:ml-0 md:w-1/2">{TOP_PAGE.snacksJa}</span></li>
-              <li className="flex flex-col md:flex-row"><span className="md:w-1/2">・<span className="font-semibold">{TOP_PAGE.songRequestEn}</span></span><span className="ml-3 md:ml-0 md:w-1/2">{TOP_PAGE.songRequestJa}</span></li>
-            </ul>
+            <FadeIn delayMs={400}>
+              <div className="font-semibold leading-relaxed">
+                <p>{TOP_PAGE.coverChargeEn1}</p>
+                <p>{TOP_PAGE.coverChargeEn2}</p>
+              </div>
+            </FadeIn>
+            <FadeIn delayMs={500}>
+              <p className="mt-4 text-white">
+                {TOP_PAGE.coverChargeJa}
+              </p>
+            </FadeIn>
+            <FadeIn delayMs={600}>
+              <ul className="mt-6 text-white">
+                <li className="flex flex-col md:flex-row"><span className="md:w-1/2">・<span className="font-semibold">{TOP_PAGE.snacksEn}</span></span><span className="ml-3 md:ml-0 md:w-1/2">{TOP_PAGE.snacksJa}</span></li>
+                <li className="flex flex-col md:flex-row"><span className="md:w-1/2">・<span className="font-semibold">{TOP_PAGE.songRequestEn}</span></span><span className="ml-3 md:ml-0 md:w-1/2">{TOP_PAGE.songRequestJa}</span></li>
+              </ul>
+            </FadeIn>
           </div>
 
           <div className="flex flex-col gap-6">
-            <a
-              href={`https://menu.spincoaster.com/${bar}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
-            >
-              <span>{NAV.drinkMenu}</span>
-              <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
-                <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
-                <RightUpArrow className="relative h-2.5 w-2.5" />
-              </span>
-            </a>
-            <Link
-              href={`/${bar}/records/artists`}
-              className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
-            >
-              <span>{TOP_PAGE.viewAllRecords}</span>
-              <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
-                <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
-                <RightUpArrow className="relative h-2.5 w-2.5" />
-              </span>
-            </Link>
-            {bar === "shinjuku" && (
-              <Link
-                href={`/${bar}/hi-res/artists`}
+            <FadeIn delayMs={500}>
+              <a
+                href={`https://menu.spincoaster.com/${bar}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
               >
-                <span>{TOP_PAGE.viewAllHiRes}</span>
+                <span>{NAV.drinkMenu}</span>
+                <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
+                  <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
+                  <RightUpArrow className="relative h-2.5 w-2.5" />
+                </span>
+              </a>
+            </FadeIn>
+            <FadeIn delayMs={600}>
+              <Link
+                href={`/${bar}/records/artists`}
+                className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
+              >
+                <span>{TOP_PAGE.viewAllRecords}</span>
                 <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
                   <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
                   <RightUpArrow className="relative h-2.5 w-2.5" />
                 </span>
               </Link>
+            </FadeIn>
+            {bar === "shinjuku" && (
+              <FadeIn delayMs={700}>
+                <Link
+                  href={`/${bar}/hi-res/artists`}
+                  className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
+                >
+                  <span>{TOP_PAGE.viewAllHiRes}</span>
+                  <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
+                    <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
+                    <RightUpArrow className="relative h-2.5 w-2.5" />
+                  </span>
+                </Link>
+              </FadeIn>
             )}
           </div>
         </div>
