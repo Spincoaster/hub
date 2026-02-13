@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
@@ -10,6 +11,10 @@ import { FadeIn } from "@/components/FadeIn";
 import { SITE_NAME, NAV, TOP_PAGE, TABLE } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  robots: { index: true, follow: true },
+};
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);

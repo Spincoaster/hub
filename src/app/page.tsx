@@ -1,6 +1,11 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { SITE_NAME, BAR_NAMES } from "@/lib/labels";
+
+export const metadata: Metadata = {
+  robots: { index: true, follow: true },
+};
 
 const shops = [
   { slug: "shinjuku", label: BAR_NAMES.shinjuku },

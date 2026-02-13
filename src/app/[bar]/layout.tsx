@@ -15,8 +15,12 @@ export async function generateMetadata({
   params: Promise<{ bar: string }>;
 }): Promise<Metadata> {
   const { bar } = await params;
+  const title = `Spincoaster Music Bar ${capitalize(bar)}`;
   return {
-    title: `Spincoaster Music Bar ${capitalize(bar)}`,
+    title,
+    openGraph: {
+      title,
+    },
   };
 }
 
