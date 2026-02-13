@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 
@@ -40,6 +40,24 @@ export function NavMenu({
   adminHref?: string;
 }) {
 
+  const [mounted, setMounted] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
+
+  useEffect(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (open) {
+      setMounted(true);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setVisible(true));
+      });
+    } else {
+      setVisible(false);
+      timeoutRef.current = setTimeout(() => setMounted(false), 500);
+    }
+    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
     const prevent = (e: Event) => e.preventDefault();
@@ -63,7 +81,7 @@ export function NavMenu({
           <line
             x1="0" y1="19.35" x2="52" y2="19.35"
             stroke="#fff" strokeMiterlimit={10} strokeWidth={5}
-            className="transition-transform duration-300 ease-in-out"
+            className="transition-transform duration-500 ease-in-out"
             style={{
               transformOrigin: "26px 19.35px",
               transform: open ? "rotate(33deg)" : "translateY(-16.85px)",
@@ -73,14 +91,14 @@ export function NavMenu({
           <line
             x1="0" y1="19.35" x2="52" y2="19.35"
             stroke="#fff" strokeMiterlimit={10} strokeWidth={5}
-            className="transition-opacity duration-300 ease-in-out"
+            className="transition-opacity duration-500 ease-in-out"
             style={{ opacity: open ? 0 : 1 }}
           />
           {/* Bottom line */}
           <line
             x1="0" y1="19.35" x2="52" y2="19.35"
             stroke="#fff" strokeMiterlimit={10} strokeWidth={5}
-            className="transition-transform duration-300 ease-in-out"
+            className="transition-transform duration-500 ease-in-out"
             style={{
               transformOrigin: "26px 19.35px",
               transform: open ? "rotate(-33deg)" : "translateY(16.85px)",
@@ -90,8 +108,8 @@ export function NavMenu({
       </button>
 
       {/* Bar label in header row when open */}
-      {open && barLabel && (
-        <div className="absolute left-0 top-0 z-[60] flex h-64 items-center md:h-28">
+      {mounted && barLabel && (
+        <div className={`absolute left-0 top-0 z-[60] flex h-64 items-center transition-opacity duration-500 md:h-28 ${visible ? "opacity-100" : "opacity-0"}`}>
           <span className="inline-block w-52 rounded-r-full bg-white px-4 py-1 text-center text-base font-semibold text-black md:w-64">
             {barLabel}
           </span>
@@ -99,8 +117,8 @@ export function NavMenu({
       )}
 
       {/* Menu dropdown */}
-      {open && (
-      <div className="absolute inset-x-0 top-28 z-50 h-screen overflow-hidden bg-[#0a0a0a]">
+      {mounted && (
+      <div className={`absolute inset-x-0 top-28 z-50 h-screen overflow-hidden bg-[#0a0a0a] transition-all duration-500 ease-in-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
         <NoiseBackground className="pointer-events-none absolute inset-0 h-full w-full" />
         <div className="relative mt-20 flex flex-col border-t border-white md:mt-0">
           {menuItems.map((item) => {
