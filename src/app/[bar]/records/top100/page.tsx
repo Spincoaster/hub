@@ -102,7 +102,7 @@ export default async function RecordTop100Page({
         </Link>
       </div>
 
-      <h1 className="mb-6 text-3xl font-bold">Record TOP 100</h1>
+      <h1 className="mb-6 text-3xl font-bold">Popular Records</h1>
 
       <TableHeader />
       <RecordList items={recordItems} likeMap={likeMap} likeCounts={likeCounts} />

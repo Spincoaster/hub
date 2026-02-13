@@ -347,10 +347,10 @@ export default async function BarPage({
 
       <hr className="mb-12 border-zinc-600" />
 
-      {/* Record TOP 100 */}
+      {/* Popular Records */}
       <section className="mx-auto mb-16 max-w-5xl px-4">
         <SectionHeader
-          title="Record TOP 100"
+          title="Popular Records"
           viewAllHref={`/${bar}/records/top100`}
           viewAllLabel="View All"
         />
@@ -362,10 +362,10 @@ export default async function BarPage({
         <>
           <hr className="mb-12 border-zinc-600" />
 
-          {/* Hi-Res TOP 100 */}
+          {/* Popular Hi-Res */}
           <section className="mx-auto mb-16 max-w-5xl px-4">
             <SectionHeader
-              title="Hi-Res TOP 100"
+              title="Popular Hi-Res"
               viewAllHref={`/${bar}/tracks/top100`}
               viewAllLabel="View All"
             />

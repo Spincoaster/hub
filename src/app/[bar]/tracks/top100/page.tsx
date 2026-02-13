@@ -96,7 +96,7 @@ export default async function TrackTop100Page({
         </Link>
       </div>
 
-      <h1 className="mb-6 text-3xl font-bold">Hi-Res TOP 100</h1>
+      <h1 className="mb-6 text-3xl font-bold">Popular Hi-Res</h1>
 
       <TableHeader />
       <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} />
