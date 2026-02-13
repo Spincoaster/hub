@@ -5,6 +5,7 @@ import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
 import { auth } from "@/lib/auth";
 import { SyncStatus, type SyncJob } from "@/components/admin/SyncStatus";
 import { FeatureManager, type Feature } from "@/components/admin/FeatureManager";
+import { MenuUploader } from "@/components/admin/MenuUploader";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +55,16 @@ export default async function AdminPage({
       <h1 className="mb-8 text-3xl font-bold text-white">
         {BAR_LABELS[bar] ?? bar} 管理画面
       </h1>
+
+      <section className="mb-12">
+        <h2 className="mb-4 text-2xl font-semibold text-white">
+          ドリンクメニュー管理
+        </h2>
+        <p className="mb-3 text-sm text-zinc-400">
+          ドリンクメニューのPDFをアップロードします。アップロード後にCloudFrontキャッシュが自動で無効化されます。
+        </p>
+        <MenuUploader bar={bar} />
+      </section>
 
       <section className="mb-12">
         <h2 className="mb-4 text-2xl font-semibold text-white">
