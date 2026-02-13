@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
 import { RecordList } from "@/components/RecordList";
+import { RecordCarousel } from "@/components/RecordCarousel";
 import { getSessionId } from "@/lib/session";
 import { RightUpArrow } from "@/components/icons/RightUpArrow";
 import { SITE_NAME, NAV, TOP_PAGE, TABLE } from "@/lib/labels";
@@ -71,14 +72,14 @@ export default async function BarPage({
         },
         _count: { recordId: true },
         orderBy: { _count: { recordId: "desc" } },
-        take: 5,
+        take: 20,
       }),
       prisma.like.groupBy({
         by: ["trackId"],
         where: { trackId: { not: null } },
         _count: { trackId: true },
         orderBy: { _count: { trackId: "desc" } },
-        take: 5,
+        take: 20,
       }),
       prisma.feature.findMany({
         where: { bar: barValue },
@@ -349,14 +350,15 @@ export default async function BarPage({
       <hr className="mb-12 border-zinc-600" />
 
       {/* Popular Records */}
-      <section className="mx-auto mb-16 max-w-7xl px-4">
-        <SectionHeader
-          title={NAV.popularRecords}
-          viewAllHref={`/${bar}/records/popular`}
-          viewAllLabel={TOP_PAGE.viewAll}
-        />
-        <TableHeader />
-        <RecordList items={recordItems} likeMap={likeMap} likeCounts={likeCounts} />
+      <section className="mb-16">
+        <div className="mx-auto max-w-7xl px-4">
+          <SectionHeader
+            title={NAV.popularRecords}
+            viewAllHref={`/${bar}/records/popular`}
+            viewAllLabel={TOP_PAGE.viewAll}
+          />
+        </div>
+        <RecordCarousel items={recordItems} likeMap={likeMap} likeCounts={likeCounts} columns={[TABLE.title, TABLE.artist]} />
       </section>
 
       {bar === "shinjuku" && (
@@ -364,14 +366,15 @@ export default async function BarPage({
           <hr className="mb-12 border-zinc-600" />
 
           {/* Popular Hi-Res */}
-          <section className="mx-auto mb-16 max-w-7xl px-4">
-            <SectionHeader
-              title={NAV.popularHiRes}
-              viewAllHref={`/${bar}/hi-res/popular`}
-              viewAllLabel={TOP_PAGE.viewAll}
-            />
-            <TableHeader columns={[TABLE.title, TABLE.albumArtist]} />
-            <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} />
+          <section className="mb-16">
+            <div className="mx-auto max-w-7xl px-4">
+              <SectionHeader
+                title={NAV.popularHiRes}
+                viewAllHref={`/${bar}/hi-res/popular`}
+                viewAllLabel={TOP_PAGE.viewAll}
+              />
+            </div>
+            <RecordCarousel items={trackItems} likeMap={likeMap} likeCounts={likeCounts} columns={[TABLE.title, TABLE.albumArtist]} />
           </section>
         </>
       )}
