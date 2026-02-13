@@ -191,7 +191,7 @@ export default function FeatureEditPage() {
       setExternalThumbnail(data.externalThumbnail ?? "");
       setBarValue(data.bar ?? "");
     } catch {
-      setError("フィーチャーの取得に失敗しました");
+      setError("特集の取得に失敗しました");
     } finally {
       setLoading(false);
     }
@@ -331,7 +331,7 @@ export default function FeatureEditPage() {
   if (!feature) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-red-400">フィーチャーが見つかりません</p>
+        <p className="text-red-400">特集が見つかりません</p>
       </div>
     );
   }
@@ -351,7 +351,7 @@ export default function FeatureEditPage() {
       </div>
 
       <h1 className="mb-6 text-2xl font-bold text-white">
-        フィーチャー編集
+        特集 編集
       </h1>
 
       {error && (

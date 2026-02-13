@@ -26,7 +26,7 @@ export function FeatureManager({
   return (
     <div>
       {initialFeatures.length === 0 ? (
-        <p className="text-sm text-zinc-500">フィーチャーがありません。</p>
+        <p className="text-sm text-zinc-500">特集がありません。</p>
       ) : (
         <div className="overflow-hidden rounded-lg border border-zinc-700">
           <table className="w-full text-sm">

@@ -58,7 +58,7 @@ export default function FeatureNewPage() {
       </div>
 
       <h1 className="mb-6 text-2xl font-bold text-white">
-        フィーチャー新規作成
+        特集 新規作成
       </h1>
 
       {error && (

@@ -6,7 +6,7 @@ export function DeleteFeatureButton({ id, bar }: { id: string; bar: string }) {
   const router = useRouter();
 
   async function handleDelete() {
-    if (!confirm("このフィーチャーを削除しますか？")) return;
+    if (!confirm("この特集を削除しますか？")) return;
     try {
       const res = await fetch(`/api/features/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete");

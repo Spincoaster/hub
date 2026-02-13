@@ -92,7 +92,7 @@ export default async function AdminPage({
 
       <section>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-2xl font-semibold text-white">特集</h2>
+          <h2 className="text-2xl font-semibold text-white">特集管理</h2>
           <a
             href={`/${bar}/features/new`}
             className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
