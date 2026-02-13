@@ -61,7 +61,7 @@ export default async function ArtistsPage({
 
       <table className="w-full border-collapse">
         <thead>
-          <tr className="border-b bg-gray-50 text-left text-sm text-gray-600">
+          <tr className="border-b border-zinc-700 text-left text-sm text-zinc-400">
             <th className="px-4 py-2">Name</th>
             <th className="px-4 py-2">Phonetic Name</th>
             {session && <th className="px-4 py-2">Actions</th>}
@@ -69,23 +69,23 @@ export default async function ArtistsPage({
         </thead>
         <tbody>
           {artists.map((artist) => (
-            <tr key={Number(artist.id)} className="border-b hover:bg-gray-50">
+            <tr key={Number(artist.id)} className="group border-b border-zinc-800 hover:bg-white/5">
               <td className="px-4 py-2">
                 <Link
                   href={`/${bar}/artists/${Number(artist.id)}`}
-                  className="text-blue-600 hover:underline"
+                  className="text-white group-hover:text-red-400 hover:underline"
                 >
                   {artist.name}
                 </Link>
               </td>
-              <td className="px-4 py-2 text-sm text-gray-600">
+              <td className="px-4 py-2 text-sm text-zinc-400 group-hover:text-red-400">
                 {artist.phoneticName}
               </td>
               {session && (
                 <td className="flex gap-2 px-4 py-2">
                   <Link
                     href={`/${bar}/artists/${Number(artist.id)}/edit`}
-                    className="text-sm text-blue-600 hover:text-blue-800"
+                    className="text-sm text-zinc-400 hover:text-white"
                   >
                     Edit
                   </Link>
@@ -100,7 +100,7 @@ export default async function ArtistsPage({
             <tr>
               <td
                 colSpan={session ? 3 : 2}
-                className="px-4 py-8 text-center text-gray-500"
+                className="px-4 py-8 text-center text-zinc-500"
               >
                 No artists found.
               </td>

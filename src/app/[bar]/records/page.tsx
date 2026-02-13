@@ -71,7 +71,7 @@ export default async function RecordsPage({
             }
             className="group flex items-center justify-between border-b border-zinc-700 py-4 transition-colors hover:bg-white/5"
           >
-            <span className="text-white">
+            <span className="text-white group-hover:text-red-400">
               {record.artist?.name || record.name}
             </span>
             <svg

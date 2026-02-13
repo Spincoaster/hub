@@ -56,7 +56,7 @@ export default async function ArtistDetailPage({
           <h2 className="mb-2 text-lg font-semibold">Records</h2>
           <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b bg-gray-50 text-left text-sm text-gray-600">
+              <tr className="border-b border-zinc-700 text-left text-sm text-zinc-400">
                 <th className="px-4 py-2">Name</th>
                 <th className="px-4 py-2">Owner</th>
                 <th className="px-4 py-2">Location</th>
@@ -66,20 +66,20 @@ export default async function ArtistDetailPage({
               {artist.records.map((record) => (
                 <tr
                   key={Number(record.id)}
-                  className="border-b hover:bg-gray-50"
+                  className="group border-b border-zinc-800 hover:bg-white/5"
                 >
                   <td className="px-4 py-2">
                     <Link
                       href={`/${bar}/records/${Number(record.id)}/edit`}
-                      className="text-blue-600 hover:underline"
+                      className="text-white group-hover:text-red-400 hover:underline"
                     >
                       {record.name}
                     </Link>
                   </td>
-                  <td className="px-4 py-2 text-sm text-gray-600">
+                  <td className="px-4 py-2 text-sm text-zinc-400 group-hover:text-red-400">
                     {record.owner?.name || "-"}
                   </td>
-                  <td className="px-4 py-2 text-sm text-gray-600">
+                  <td className="px-4 py-2 text-sm text-zinc-400 group-hover:text-red-400">
                     {record.location || "-"}
                   </td>
                 </tr>
@@ -94,7 +94,7 @@ export default async function ArtistDetailPage({
           <h2 className="mb-2 text-lg font-semibold">Albums</h2>
           <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b bg-gray-50 text-left text-sm text-gray-600">
+              <tr className="border-b border-zinc-700 text-left text-sm text-zinc-400">
                 <th className="px-4 py-2">Name</th>
                 <th className="px-4 py-2">Phonetic Name</th>
               </tr>
@@ -103,17 +103,17 @@ export default async function ArtistDetailPage({
               {artist.albums.map((album) => (
                 <tr
                   key={Number(album.id)}
-                  className="border-b hover:bg-gray-50"
+                  className="group border-b border-zinc-800 hover:bg-white/5"
                 >
                   <td className="px-4 py-2">
                     <Link
                       href={`/${bar}/albums/${Number(album.id)}/edit`}
-                      className="text-blue-600 hover:underline"
+                      className="text-white group-hover:text-red-400 hover:underline"
                     >
                       {album.name}
                     </Link>
                   </td>
-                  <td className="px-4 py-2 text-sm text-gray-600">
+                  <td className="px-4 py-2 text-sm text-zinc-400 group-hover:text-red-400">
                     {album.phoneticName || "-"}
                   </td>
                 </tr>
@@ -128,7 +128,7 @@ export default async function ArtistDetailPage({
           <h2 className="mb-2 text-lg font-semibold">Tracks</h2>
           <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b bg-gray-50 text-left text-sm text-gray-600">
+              <tr className="border-b border-zinc-700 text-left text-sm text-zinc-400">
                 <th className="px-4 py-2">Name</th>
                 <th className="px-4 py-2">Album</th>
                 <th className="px-4 py-2">Number</th>
@@ -138,20 +138,20 @@ export default async function ArtistDetailPage({
               {artist.tracks.map((track) => (
                 <tr
                   key={Number(track.id)}
-                  className="border-b hover:bg-gray-50"
+                  className="group border-b border-zinc-800 hover:bg-white/5"
                 >
                   <td className="px-4 py-2">
                     <Link
                       href={`/${bar}/tracks/${Number(track.id)}/edit`}
-                      className="text-blue-600 hover:underline"
+                      className="text-white group-hover:text-red-400 hover:underline"
                     >
                       {track.name}
                     </Link>
                   </td>
-                  <td className="px-4 py-2 text-sm text-gray-600">
+                  <td className="px-4 py-2 text-sm text-zinc-400 group-hover:text-red-400">
                     {track.album?.name || "-"}
                   </td>
-                  <td className="px-4 py-2 text-sm text-gray-600">
+                  <td className="px-4 py-2 text-sm text-zinc-400 group-hover:text-red-400">
                     {track.number ?? "-"}
                   </td>
                 </tr>

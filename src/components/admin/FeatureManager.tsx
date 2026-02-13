@@ -42,7 +42,7 @@ export function FeatureManager({
               {initialFeatures.map((f) => (
                 <tr
                   key={f.id}
-                  className="cursor-pointer border-b border-zinc-800 hover:bg-zinc-800/30"
+                  className="cursor-pointer border-b border-zinc-800 hover:bg-zinc-800/30 hover:text-red-400"
                   onClick={() => router.push(`/${bar}/features/${f.id}`)}
                 >
                   <td className="px-4 py-4 text-zinc-500">

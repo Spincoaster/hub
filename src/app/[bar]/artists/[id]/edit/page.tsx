@@ -50,7 +50,7 @@ export default function EditArtistPage() {
   }
 
   if (!artist) {
-    return <div className="py-8 text-center text-gray-500">Loading...</div>;
+    return <div className="py-8 text-center text-zinc-500">Loading...</div>;
   }
 
   return (

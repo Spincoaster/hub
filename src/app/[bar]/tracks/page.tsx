@@ -50,7 +50,7 @@ export default async function TracksPage({
 
       <table className="w-full border-collapse">
         <thead>
-          <tr className="border-b bg-gray-50 text-left text-sm text-gray-600">
+          <tr className="border-b border-zinc-700 text-left text-sm text-zinc-400">
             <th className="px-4 py-2">Name</th>
             <th className="px-4 py-2">Artist</th>
             <th className="px-4 py-2">Album</th>
@@ -60,13 +60,13 @@ export default async function TracksPage({
         </thead>
         <tbody>
           {tracks.map((track) => (
-            <tr key={Number(track.id)} className="border-b hover:bg-gray-50">
-              <td className="px-4 py-2">{track.name}</td>
-              <td className="px-4 py-2 text-sm text-gray-600">
+            <tr key={Number(track.id)} className="group border-b border-zinc-800 hover:bg-white/5">
+              <td className="px-4 py-2 group-hover:text-red-400">{track.name}</td>
+              <td className="px-4 py-2 text-sm text-zinc-400 group-hover:text-red-400">
                 {track.artist ? (
                   <Link
                     href={`/${bar}/artists/${Number(track.artist.id)}`}
-                    className="text-blue-600 hover:underline"
+                    className="text-white group-hover:text-red-400 hover:underline"
                   >
                     {track.artist.name}
                   </Link>
@@ -74,17 +74,17 @@ export default async function TracksPage({
                   "-"
                 )}
               </td>
-              <td className="px-4 py-2 text-sm text-gray-600">
+              <td className="px-4 py-2 text-sm text-zinc-400 group-hover:text-red-400">
                 {track.album?.name || "-"}
               </td>
-              <td className="px-4 py-2 text-sm text-gray-600">
+              <td className="px-4 py-2 text-sm text-zinc-400 group-hover:text-red-400">
                 {track.number ?? "-"}
               </td>
               {session && (
                 <td className="flex gap-2 px-4 py-2">
                   <Link
                     href={`/${bar}/tracks/${Number(track.id)}/edit`}
-                    className="text-sm text-blue-600 hover:text-blue-800"
+                    className="text-sm text-zinc-400 hover:text-white"
                   >
                     Edit
                   </Link>
@@ -99,7 +99,7 @@ export default async function TracksPage({
             <tr>
               <td
                 colSpan={session ? 5 : 4}
-                className="px-4 py-8 text-center text-gray-500"
+                className="px-4 py-8 text-center text-zinc-500"
               >
                 No tracks found.
               </td>

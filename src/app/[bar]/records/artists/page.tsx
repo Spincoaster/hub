@@ -56,7 +56,7 @@ export default async function RecordArtistsPage({
             href={`/${bar}/artists/${Number(artist.id)}/records`}
             className="group flex items-center justify-between border-b border-zinc-700 py-4 text-white transition-colors hover:bg-white/5"
           >
-            <span className="truncate text-sm text-white">{artist.name}</span>
+            <span className="truncate text-sm text-white group-hover:text-red-400">{artist.name}</span>
             <svg
               className="h-5 w-5 shrink-0 text-zinc-500 transition-colors group-hover:text-white"
               viewBox="0 0 24 24"

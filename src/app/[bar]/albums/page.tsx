@@ -50,7 +50,7 @@ export default async function AlbumsPage({
 
       <table className="w-full border-collapse">
         <thead>
-          <tr className="border-b bg-gray-50 text-left text-sm text-gray-600">
+          <tr className="border-b border-zinc-700 text-left text-sm text-zinc-400">
             <th className="px-4 py-2">Name</th>
             <th className="px-4 py-2">Artist</th>
             <th className="px-4 py-2">Phonetic Name</th>
@@ -59,13 +59,13 @@ export default async function AlbumsPage({
         </thead>
         <tbody>
           {albums.map((album) => (
-            <tr key={Number(album.id)} className="border-b hover:bg-gray-50">
-              <td className="px-4 py-2">{album.name}</td>
-              <td className="px-4 py-2 text-sm text-gray-600">
+            <tr key={Number(album.id)} className="group border-b border-zinc-800 hover:bg-white/5">
+              <td className="px-4 py-2 group-hover:text-red-400">{album.name}</td>
+              <td className="px-4 py-2 text-sm text-zinc-400 group-hover:text-red-400">
                 {album.artist ? (
                   <Link
                     href={`/${bar}/artists/${Number(album.artist.id)}`}
-                    className="text-blue-600 hover:underline"
+                    className="text-white group-hover:text-red-400 hover:underline"
                   >
                     {album.artist.name}
                   </Link>
@@ -73,14 +73,14 @@ export default async function AlbumsPage({
                   "-"
                 )}
               </td>
-              <td className="px-4 py-2 text-sm text-gray-600">
+              <td className="px-4 py-2 text-sm text-zinc-400 group-hover:text-red-400">
                 {album.phoneticName || "-"}
               </td>
               {session && (
                 <td className="flex gap-2 px-4 py-2">
                   <Link
                     href={`/${bar}/albums/${Number(album.id)}/edit`}
-                    className="text-sm text-blue-600 hover:text-blue-800"
+                    className="text-sm text-zinc-400 hover:text-white"
                   >
                     Edit
                   </Link>
@@ -95,7 +95,7 @@ export default async function AlbumsPage({
             <tr>
               <td
                 colSpan={session ? 4 : 3}
-                className="px-4 py-8 text-center text-gray-500"
+                className="px-4 py-8 text-center text-zinc-500"
               >
                 No albums found.
               </td>

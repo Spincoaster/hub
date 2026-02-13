@@ -134,11 +134,11 @@ export function RecordList({
             className="group flex w-full items-stretch border-b border-zinc-600 first:border-t md:first:border-t-0 text-left transition-colors hover:bg-zinc-900/50"
           >
             <span className={`flex min-w-0 ${singleColumn ? "w-4/5" : "w-4/5 flex-col md:flex-row md:items-stretch"}`}>
-              <span className={`min-w-0 truncate pl-2 pr-4 text-sm ${singleColumn ? "py-5 leading-[1.4]" : "pt-5 md:flex md:w-1/2 md:items-center md:py-5"}`}>{item.name}</span>
+              <span className={`min-w-0 truncate pl-2 pr-4 text-sm group-hover:text-red-400 ${singleColumn ? "py-5 leading-[1.4]" : "pt-5 md:flex md:w-1/2 md:items-center md:py-5"}`}>{item.name}</span>
               {!singleColumn && (
                 <>
                   <span className="hidden w-px self-stretch bg-zinc-600 md:block" />
-                  <span className="min-w-0 truncate pb-5 pl-2 text-sm text-zinc-400 md:flex md:w-1/2 md:items-center md:py-5 md:pl-4">
+                  <span className="min-w-0 truncate pb-5 pl-2 text-sm text-zinc-400 group-hover:text-red-400 md:flex md:w-1/2 md:items-center md:py-5 md:pl-4">
                     {item.type === "Hi-Res" ? `${item.albumName} / ${item.artistName}` : item.artistName}
                   </span>
                 </>
