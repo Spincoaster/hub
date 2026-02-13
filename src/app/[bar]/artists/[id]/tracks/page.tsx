@@ -69,7 +69,7 @@ export default async function ArtistTracksPage({
         <nav className="flex min-w-0 items-center gap-1 text-sm text-zinc-400">
           <Link href={`/${bar}`} className="shrink-0 hover:text-white">Top</Link>
           <span className="shrink-0">/</span>
-          <BackLink label="All Hi-Res List" href={`/${bar}/tracks/artists`} className="truncate" />
+          <BackLink label="All Hi-Res List" href={`/${bar}/hi-res/artists`} className="truncate" />
         </nav>
         <h1 className="mt-2 text-4xl font-normal tracking-tight">
           {artist.name}

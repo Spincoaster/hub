@@ -43,7 +43,7 @@ export default async function TrackArtistsPage({
 
       <div className="mb-8">
         <InitialLetterPagination
-          basePath={`/${bar}/tracks/artists`}
+          basePath={`/${bar}/hi-res/artists`}
           currentPrefix={hasPrefix}
         />
       </div>

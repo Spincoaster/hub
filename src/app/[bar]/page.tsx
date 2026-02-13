@@ -332,7 +332,7 @@ export default async function BarPage({
             </Link>
             {bar === "shinjuku" && (
               <Link
-                href={`/${bar}/tracks/artists`}
+                href={`/${bar}/hi-res/artists`}
                 className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
               >
                 <span>{TOP_PAGE.viewAllHiRes}</span>
@@ -352,7 +352,7 @@ export default async function BarPage({
       <section className="mx-auto mb-16 max-w-7xl px-4">
         <SectionHeader
           title={NAV.popularRecords}
-          viewAllHref={`/${bar}/records/top100`}
+          viewAllHref={`/${bar}/records/popular`}
           viewAllLabel={TOP_PAGE.viewAll}
         />
         <TableHeader />
@@ -367,7 +367,7 @@ export default async function BarPage({
           <section className="mx-auto mb-16 max-w-7xl px-4">
             <SectionHeader
               title={NAV.popularHiRes}
-              viewAllHref={`/${bar}/tracks/top100`}
+              viewAllHref={`/${bar}/hi-res/popular`}
               viewAllLabel={TOP_PAGE.viewAll}
             />
             <TableHeader columns={[TABLE.title, TABLE.albumArtist]} />

@@ -28,7 +28,7 @@ export default async function ArtistAlbumsPage({
         <nav className="flex items-center gap-1 text-sm text-zinc-400">
           <Link href={`/${bar}`} className="hover:text-white">Top</Link>
           <span>/</span>
-          <BackLink label="All Hi-Res List" href={`/${bar}/tracks/artists`} />
+          <BackLink label="All Hi-Res List" href={`/${bar}/hi-res/artists`} />
         </nav>
         <h1 className="mt-2 text-4xl font-normal tracking-tight">
           {artist.name}

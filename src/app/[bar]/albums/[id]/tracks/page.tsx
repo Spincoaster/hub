@@ -70,7 +70,7 @@ export default async function AlbumTracksPage({
         <nav className="flex min-w-0 items-center gap-1 text-sm text-zinc-400">
           <Link href={`/${bar}`} className="shrink-0 hover:text-white">Top</Link>
           <span className="shrink-0">/</span>
-          <Link href={`/${bar}/tracks/artists`} className="shrink-0 hover:text-white">All Hi-Res List</Link>
+          <Link href={`/${bar}/hi-res/artists`} className="shrink-0 hover:text-white">All Hi-Res List</Link>
           <span className="shrink-0">/</span>
           <BackLink label={album.artist?.name ?? "Albums"} href={`/${bar}/artists/${Number(album.artistId)}/albums`} className="truncate" />
         </nav>
