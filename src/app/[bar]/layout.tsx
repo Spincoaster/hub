@@ -38,7 +38,7 @@ export default async function BarLayout({
   return (
     <div className="min-h-screen text-white">
       <Navigation bar={bar} isAdmin={!!session} />
-      <main className="py-8">{children}</main>
+      <main className="pt-7 pb-4 md:py-8">{children}</main>
     </div>
   );
 }
