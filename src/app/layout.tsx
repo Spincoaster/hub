@@ -51,6 +51,9 @@ export const metadata: Metadata = {
     index: false,
     follow: true,
   },
+  other: {
+    google: "notranslate",
+  },
 };
 
 export default function RootLayout({
@@ -59,7 +62,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
+    <html lang="ja" translate="no" className="notranslate">
       <head>
         <GoogleAnalytics />
       </head>
