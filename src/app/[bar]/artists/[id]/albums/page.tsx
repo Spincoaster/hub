@@ -23,7 +23,7 @@ export default async function ArtistAlbumsPage({
   if (!artist) notFound();
 
   return (
-    <div className="mx-auto max-w-5xl px-4">
+    <div className="mx-auto max-w-7xl px-4">
       <div className="-mt-8 mb-6">
         <nav className="flex items-center gap-1 text-sm text-zinc-400">
           <Link href={`/${bar}`} className="hover:text-white">Top</Link>

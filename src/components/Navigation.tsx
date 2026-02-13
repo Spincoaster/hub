@@ -54,7 +54,7 @@ export function Navigation({ bar, isAdmin }: { bar?: string; isAdmin?: boolean }
 
   return (
     <nav className="relative z-50 bg-zinc-950/80 backdrop-blur-sm">
-      <div className="mx-auto flex h-28 max-w-5xl items-center justify-between px-4">
+      <div className="mx-auto flex h-28 max-w-7xl items-center justify-between px-4">
         {/* Left spacer */}
         <div className="w-24" />
 

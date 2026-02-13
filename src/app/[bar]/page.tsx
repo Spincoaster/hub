@@ -282,7 +282,7 @@ export default async function BarPage({
   return (
     <div>
       {/* Hero */}
-      <section className="mx-auto mb-16 max-w-5xl px-4">
+      <section className="mx-auto mb-16 max-w-7xl px-4">
         <div className="flex flex-col gap-4 md:flex-row md:gap-0 md:items-center md:justify-between">
           <h1 className="text-6xl font-normal tracking-normal md:text-8xl">
             {SITE_NAME}
@@ -349,7 +349,7 @@ export default async function BarPage({
       <hr className="mb-12 border-zinc-600" />
 
       {/* Popular Records */}
-      <section className="mx-auto mb-16 max-w-5xl px-4">
+      <section className="mx-auto mb-16 max-w-7xl px-4">
         <SectionHeader
           title={NAV.popularRecords}
           viewAllHref={`/${bar}/records/top100`}
@@ -364,7 +364,7 @@ export default async function BarPage({
           <hr className="mb-12 border-zinc-600" />
 
           {/* Popular Hi-Res */}
-          <section className="mx-auto mb-16 max-w-5xl px-4">
+          <section className="mx-auto mb-16 max-w-7xl px-4">
             <SectionHeader
               title={NAV.popularHiRes}
               viewAllHref={`/${bar}/tracks/top100`}
@@ -380,7 +380,7 @@ export default async function BarPage({
       {featureSections.map((section, idx) => (
         <section key={idx} className="mb-16">
           <hr className="mb-12 border-zinc-600" />
-          <div className="mx-auto max-w-5xl px-4">
+          <div className="mx-auto max-w-7xl px-4">
             <div className="mb-2 flex items-end justify-between">
               <h2 className="text-2xl font-bold">{section.name}</h2>
             </div>

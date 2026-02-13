@@ -27,7 +27,7 @@ export function Message({ type, text }: MessageProps) {
 
   return (
     <div
-      className={`mx-auto mt-4 max-w-5xl rounded border px-4 py-3 text-sm ${colors[type]}`}
+      className={`mx-auto mt-4 max-w-7xl rounded border px-4 py-3 text-sm ${colors[type]}`}
     >
       <div className="flex items-center justify-between">
         <span>{text}</span>

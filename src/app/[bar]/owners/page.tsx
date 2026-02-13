@@ -16,7 +16,7 @@ export default async function OwnersPage({
   });
 
   return (
-    <div className="mx-auto max-w-5xl px-4">
+    <div className="mx-auto max-w-7xl px-4">
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Owners</h1>
         {session && (

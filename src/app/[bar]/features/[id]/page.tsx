@@ -148,7 +148,7 @@ export default async function FeatureDetailPage({
   const serialized = serializeBigInt(feature);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
+    <div className="mx-auto max-w-7xl px-4 py-8">
       <PageRefresh />
       <div className="mb-4">
         <Link

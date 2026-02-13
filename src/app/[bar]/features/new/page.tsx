@@ -59,7 +59,7 @@ export default function FeatureNewPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
+    <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="mb-4">
         <Link
           href={`/${bar}/admin`}

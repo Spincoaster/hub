@@ -72,7 +72,7 @@ export function SearchBar({ bar, onOpen }: { bar?: string; onOpen?: () => void }
             opacity: show ? 1 : 0,
           }}
         >
-          <form onSubmit={handleSubmit} className="flex w-full max-w-5xl items-center gap-4 bg-white py-3 pl-4 pr-6">
+          <form onSubmit={handleSubmit} className="flex w-full max-w-7xl items-center gap-4 bg-white py-3 pl-4 pr-6">
             <img src="/search.svg" alt="Search" className="h-6 w-6 brightness-0" />
             <div className="h-8 w-px bg-black" />
             <input

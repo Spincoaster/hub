@@ -28,7 +28,7 @@ export default async function RecordArtistsPage({
   });
 
   return (
-    <div className="mx-auto max-w-5xl px-4">
+    <div className="mx-auto max-w-7xl px-4">
       <div className="-mt-8 mb-6">
         <Link
           href={`/${bar}`}

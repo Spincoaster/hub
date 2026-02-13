@@ -103,7 +103,7 @@ export default function SearchPage() {
   }));
 
   return (
-    <div className="mx-auto max-w-5xl px-4">
+    <div className="mx-auto max-w-7xl px-4">
       {/* Header */}
       <div className="mb-2">
         <h1 className="text-3xl font-normal tracking-tight md:text-5xl">

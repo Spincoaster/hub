@@ -29,7 +29,7 @@ export default async function LabelsPage({
   })) as LabelRow[];
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
+    <div className="mx-auto max-w-6xl px-4 py-8">
       <Link
         href={`/${bar}/admin`}
         className="text-sm text-zinc-400 hover:text-white"

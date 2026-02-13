@@ -51,7 +51,7 @@ export default async function AdminPage({
   const spreadsheetUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit#gid=${sheetConfig?.gid ?? "0"}`;
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
+    <div className="mx-auto max-w-6xl px-4 py-8">
       <h1 className="mb-8 text-3xl font-bold text-white">
         {BAR_LABELS[bar] ?? bar} 管理画面
       </h1>
