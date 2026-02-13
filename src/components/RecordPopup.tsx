@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { POPUP } from "@/lib/labels";
 
 export type PopupData = {
@@ -16,6 +16,8 @@ export type PopupData = {
   likeId?: string;
 };
 
+const ANIMATION_DURATION = 200;
+
 export function RecordPopup({
   data,
   onClose,
@@ -25,10 +27,22 @@ export function RecordPopup({
   onClose: () => void;
   onToggleLike?: () => void;
 }) {
+  const [visible, setVisible] = useState(false);
+
+  const handleClose = useCallback(() => {
+    setVisible(false);
+    setTimeout(onClose, ANIMATION_DURATION);
+  }, [onClose]);
+
+  useEffect(() => {
+    // Trigger enter animation on next frame
+    requestAnimationFrame(() => setVisible(true));
+  }, []);
+
   useEffect(() => {
     const prevent = (e: Event) => e.preventDefault();
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") handleClose();
     };
     window.addEventListener("wheel", prevent, { passive: false });
     window.addEventListener("touchmove", prevent, { passive: false });
@@ -38,15 +52,15 @@ export function RecordPopup({
       window.removeEventListener("touchmove", prevent);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onClose]);
+  }, [handleClose]);
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
-      onClick={onClose}
+      className={`fixed inset-0 z-50 flex items-center justify-center transition-colors duration-200 ${visible ? "bg-black/60" : "bg-black/0"}`}
+      onClick={handleClose}
     >
       <div
-        className="mx-4 w-full max-w-xl border border-white bg-zinc-950/5 px-6 pt-4 pb-10 md:w-fit md:min-w-xl md:max-w-6xl md:px-22 md:pt-10 backdrop-blur-[4px]"
+        className={`mx-4 w-full max-w-xl border border-white bg-zinc-950/5 px-6 pt-4 pb-10 md:w-fit md:min-w-xl md:max-w-6xl md:px-22 md:pt-10 backdrop-blur-[4px] transition-all duration-200 ${visible ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Like (SP: top-right, Desktop: inline with title) */}
@@ -164,7 +178,7 @@ export function RecordPopup({
             )}
           </div>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="flex h-16 w-full items-center justify-between rounded-full border border-white bg-black pl-10 pr-0 text-lg font-medium text-white md:w-auto md:gap-12 md:justify-start"
           >
             <span>{POPUP.close}</span>
