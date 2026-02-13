@@ -279,7 +279,7 @@ export default async function BarPage({
         ownerName: item.itemType === "Record" ? (item.itemData!.owner?.name ?? undefined) : undefined,
         location: item.itemType === "Record" ? ((item.itemData as { location?: string }).location ?? undefined) : undefined,
       }));
-    return { id: f.id as string, name: f.name as string, items };
+    return { id: f.id as string, name: f.name as string, description: (f.description as string | null) ?? null, items };
   });
 
   return (
@@ -400,9 +400,12 @@ export default async function BarPage({
         <section key={idx} className="mb-16">
           <hr className="mb-12 border-zinc-600" />
           <div className="mx-auto max-w-7xl px-4">
-            <div className="mb-2 flex items-end justify-between">
-              <h2 className="text-2xl font-bold">{section.name}</h2>
+            <div className="mb-4 flex items-end justify-between">
+              <h2 className="text-3xl font-bold">{section.name}</h2>
             </div>
+            {section.description && (
+              <p className="mb-4 text-sm text-zinc-400">{section.description}</p>
+            )}
             <TableHeader />
             <RecordList items={section.items} likeMap={likeMap} likeCounts={likeCounts} />
           </div>
