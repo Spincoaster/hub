@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { BAR_VALUES, buildPrefixFilter } from "@/lib/utils";
 import InitialLetterPagination from "@/components/InitialLetterPagination";
+import { NAV, SEARCH } from "@/lib/labels";
 
 export default async function RecordArtistsPage({
   params,
@@ -36,7 +37,7 @@ export default async function RecordArtistsPage({
           &larr; Top
         </Link>
         <h1 className="mt-2 text-5xl font-normal tracking-tight md:text-7xl">
-          All Record List
+          {NAV.allRecords}
         </h1>
       </div>
 
@@ -68,7 +69,7 @@ export default async function RecordArtistsPage({
           </Link>
         ))}
         {artists.length === 0 && (
-          <p className="py-8 text-center text-zinc-500">No artists found.</p>
+          <p className="py-8 text-center text-zinc-500">{SEARCH.noArtists}</p>
         )}
       </div>
     </div>

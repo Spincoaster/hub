@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useEffect, useCallback } from "react";
+import { SEARCH } from "@/lib/labels";
 
 const LETTERS = "abcdefghijklmnopqrstuvwxyz".split("");
 
@@ -110,7 +111,7 @@ export default function InitialLetterPagination({
 
   return (
     <div>
-      <p className="mb-2 text-sm text-white">[ Artist ]</p>
+      <p className="mb-2 text-sm text-white">{SEARCH.artistLabel}</p>
       <div className="overflow-hidden bg-white">
         <div
           ref={scrollRef}
@@ -125,7 +126,7 @@ export default function InitialLetterPagination({
                   : "text-black"
               }`}
             >
-              All
+              {SEARCH.all}
             </Link>
           )}
           {LETTERS.map((letter) => (

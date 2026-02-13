@@ -5,32 +5,33 @@ import Link from "next/link";
 import Image from "next/image";
 import { NavMenu } from "@/components/NavMenu";
 import { SearchBar } from "@/components/SearchBar";
+import { BAR_NAMES, NAV } from "@/lib/labels";
 
 const navigationMenus: Record<string, { href: string; label: string; external: boolean }[]> = {
   shinjuku: [
-    { href: "/shinjuku", label: "Top", external: false },
-    { href: "https://menu.spincoaster.com/shinjuku", label: "Drink Menu", external: true },
-    { href: "/shinjuku/records/artists", label: "All Record List", external: false },
-    { href: "/shinjuku/tracks/artists", label: "All Hi-Res List", external: false },
-    { href: "/shinjuku/records/top100", label: "Popular Records", external: false },
-    { href: "/shinjuku/tracks/top100", label: "Popular Hi-Res", external: false },
+    { href: "/shinjuku", label: NAV.top, external: false },
+    { href: "https://menu.spincoaster.com/shinjuku", label: NAV.drinkMenu, external: true },
+    { href: "/shinjuku/records/artists", label: NAV.allRecords, external: false },
+    { href: "/shinjuku/tracks/artists", label: NAV.allHiRes, external: false },
+    { href: "/shinjuku/records/top100", label: NAV.popularRecords, external: false },
+    { href: "/shinjuku/tracks/top100", label: NAV.popularHiRes, external: false },
   ],
   ebisu: [
-    { href: "/ebisu", label: "Top", external: false },
-    { href: "https://menu.spincoaster.com/ebisu", label: "Drink Menu", external: true },
-    { href: "/ebisu/records/artists", label: "All Record List", external: false },
-    { href: "/ebisu/records/top100", label: "Popular Records", external: false },
+    { href: "/ebisu", label: NAV.top, external: false },
+    { href: "https://menu.spincoaster.com/ebisu", label: NAV.drinkMenu, external: true },
+    { href: "/ebisu/records/artists", label: NAV.allRecords, external: false },
+    { href: "/ebisu/records/top100", label: NAV.popularRecords, external: false },
   ],
   kagurazaka: [
-    { href: "/kagurazaka", label: "Top", external: false },
-    { href: "https://menu.spincoaster.com/kagurazaka", label: "Drink Menu", external: true },
-    { href: "/kagurazaka/records/artists", label: "All Record List", external: false },
-    { href: "/kagurazaka/records/top100", label: "Popular Records", external: false },
+    { href: "/kagurazaka", label: NAV.top, external: false },
+    { href: "https://menu.spincoaster.com/kagurazaka", label: NAV.drinkMenu, external: true },
+    { href: "/kagurazaka/records/artists", label: NAV.allRecords, external: false },
+    { href: "/kagurazaka/records/top100", label: NAV.popularRecords, external: false },
   ],
   default: [
-    { href: "/shinjuku", label: "SHINJUKU", external: false },
-    { href: "/ebisu", label: "EBISU", external: false },
-    { href: "/kagurazaka", label: "KAGURAZAKA", external: false },
+    { href: "/shinjuku", label: BAR_NAMES.shinjuku, external: false },
+    { href: "/ebisu", label: BAR_NAMES.ebisu, external: false },
+    { href: "/kagurazaka", label: BAR_NAMES.kagurazaka, external: false },
   ],
 };
 

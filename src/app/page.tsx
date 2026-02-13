@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import { SITE_NAME, BAR_NAMES } from "@/lib/labels";
 
 const shops = [
-  { slug: "shinjuku", label: "SHINJUKU" },
-  { slug: "ebisu", label: "EBISU" },
-  { slug: "kagurazaka", label: "KAGURAZAKA" },
+  { slug: "shinjuku", label: BAR_NAMES.shinjuku },
+  { slug: "ebisu", label: BAR_NAMES.ebisu },
+  { slug: "kagurazaka", label: BAR_NAMES.kagurazaka },
 ];
 
 export default function Home() {
@@ -19,7 +20,7 @@ export default function Home() {
         priority
       />
       <h1 className="mb-12 text-center text-4xl font-bold tracking-wider text-zinc-100">
-        MUSIC LIST
+        {SITE_NAME}
       </h1>
       <div className="flex w-full max-w-sm flex-col gap-4">
         {shops.map((shop) => (

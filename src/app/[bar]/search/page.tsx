@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { RecordList } from "@/components/RecordList";
+import { TABLE, SEARCH } from "@/lib/labels";
 
 interface SearchRecord {
   id: string;
@@ -114,17 +115,17 @@ export default function SearchPage() {
       </div>
 
       {loading ? (
-        <p className="mt-12 text-zinc-400">Searching...</p>
+        <p className="mt-12 text-zinc-400">{SEARCH.searching}</p>
       ) : (
         <>
           {/* Records */}
           <section className="mt-8">
-            <p className="mb-4 text-sm text-white">[ Record ]</p>
+            <p className="mb-4 text-sm text-white">[ {SEARCH.record} ]</p>
             {recordItems.length === 0 ? (
-              <p className="text-zinc-400">No results found.</p>
+              <p className="text-zinc-400">{SEARCH.noResults}</p>
             ) : (
               <>
-                <TableHeader columns={["Title", "Artist"]} />
+                <TableHeader columns={[TABLE.title, TABLE.artist]} />
                 <div className="border-t border-zinc-600 md:border-t-0">
                   <RecordList items={recordItems} likeMap={likeMap} likeCounts={likeCounts} />
                 </div>
@@ -135,12 +136,12 @@ export default function SearchPage() {
           {/* Hi-Res */}
           {hasHiRes && (
             <section className="mt-12">
-              <p className="mb-4 text-sm text-white">[ Hi-Res ]</p>
+              <p className="mb-4 text-sm text-white">[ {SEARCH.hiRes} ]</p>
               {trackItems.length === 0 ? (
-                <p className="text-zinc-400">No results found.</p>
+                <p className="text-zinc-400">{SEARCH.noResults}</p>
               ) : (
                 <>
-                  <TableHeader columns={["Title", "Album / Artist"]} />
+                  <TableHeader columns={[TABLE.title, TABLE.albumArtist]} />
                   <div className="border-t border-zinc-600 md:border-t-0">
                     <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} />
                   </div>

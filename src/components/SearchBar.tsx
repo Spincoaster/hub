@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { SEARCH } from "@/lib/labels";
 
 export function SearchBar({ bar, onOpen }: { bar?: string; onOpen?: () => void }) {
   const [visible, setVisible] = useState(false);
@@ -79,7 +80,7 @@ export function SearchBar({ bar, onOpen }: { bar?: string; onOpen?: () => void }
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search"
+              placeholder={SEARCH.placeholder}
               className="min-w-0 flex-1 bg-transparent text-2xl font-medium text-black placeholder-zinc-400 outline-none"
             />
             <button

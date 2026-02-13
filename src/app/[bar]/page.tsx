@@ -4,6 +4,7 @@ import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
 import { RecordList } from "@/components/RecordList";
 import { getSessionId } from "@/lib/session";
 import { RightUpArrow } from "@/components/icons/RightUpArrow";
+import { SITE_NAME, NAV, TOP_PAGE, TABLE } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +35,7 @@ function SectionHeader({
 }
 
 function TableHeader({ columns }: { columns?: string[] }) {
-  const cols = columns ?? ["Title", "Artist"];
+  const cols = columns ?? [TABLE.title, TABLE.artist];
   return (
     <div className="hidden items-stretch border-b border-zinc-600 text-xs font-semibold text-white md:flex">
       <span className="flex w-4/5 items-stretch">
@@ -284,7 +285,7 @@ export default async function BarPage({
       <section className="mx-auto mb-16 max-w-5xl px-4">
         <div className="flex flex-col gap-4 md:flex-row md:gap-0 md:items-center md:justify-between">
           <h1 className="text-6xl font-normal tracking-normal md:text-8xl">
-            MUSIC LIST
+            {SITE_NAME}
           </h1>
           <span className="text-2xl font-normal tracking-wide md:text-3xl">
             {capitalize(bar)}
@@ -294,15 +295,15 @@ export default async function BarPage({
         <div className="mt-12 flex flex-col gap-10 md:flex-row md:gap-6 md:items-start md:justify-between">
           <div className="space-y-2 text-base leading-relaxed text-white">
             <div className="font-semibold leading-relaxed">
-              <p>There&apos;s a 900yen cover charge per person,</p>
-              <p>and the following are complimentary.</p>
+              <p>{TOP_PAGE.coverChargeEn1}</p>
+              <p>{TOP_PAGE.coverChargeEn2}</p>
             </div>
             <p className="mt-4 text-white">
-              当店は900円のカバーチャージをいただいております。以下はサービスです。
+              {TOP_PAGE.coverChargeJa}
             </p>
             <ul className="mt-6 text-white">
-              <li className="flex flex-col md:flex-row"><span className="md:w-1/2">・<span className="font-semibold">Snacks on the table</span></span><span className="ml-3 md:ml-0 md:w-1/2">テーブルスナック</span></li>
-              <li className="flex flex-col md:flex-row"><span className="md:w-1/2">・<span className="font-semibold">1 Song Request</span></span><span className="ml-3 md:ml-0 md:w-1/2">1曲リクエスト</span></li>
+              <li className="flex flex-col md:flex-row"><span className="md:w-1/2">・<span className="font-semibold">{TOP_PAGE.snacksEn}</span></span><span className="ml-3 md:ml-0 md:w-1/2">{TOP_PAGE.snacksJa}</span></li>
+              <li className="flex flex-col md:flex-row"><span className="md:w-1/2">・<span className="font-semibold">{TOP_PAGE.songRequestEn}</span></span><span className="ml-3 md:ml-0 md:w-1/2">{TOP_PAGE.songRequestJa}</span></li>
             </ul>
           </div>
 
@@ -313,7 +314,7 @@ export default async function BarPage({
               rel="noopener noreferrer"
               className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
             >
-              <span>Drink Menu</span>
+              <span>{NAV.drinkMenu}</span>
               <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
                 <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
                 <RightUpArrow className="relative h-2.5 w-2.5" />
@@ -323,7 +324,7 @@ export default async function BarPage({
               href={`/${bar}/records/artists`}
               className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
             >
-              <span>View All Record</span>
+              <span>{TOP_PAGE.viewAllRecords}</span>
               <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
                 <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
                 <RightUpArrow className="relative h-2.5 w-2.5" />
@@ -334,7 +335,7 @@ export default async function BarPage({
                 href={`/${bar}/tracks/artists`}
                 className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium"
               >
-                <span>View All Hi-Res</span>
+                <span>{TOP_PAGE.viewAllHiRes}</span>
                 <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
                   <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
                   <RightUpArrow className="relative h-2.5 w-2.5" />
@@ -350,9 +351,9 @@ export default async function BarPage({
       {/* Popular Records */}
       <section className="mx-auto mb-16 max-w-5xl px-4">
         <SectionHeader
-          title="Popular Records"
+          title={NAV.popularRecords}
           viewAllHref={`/${bar}/records/top100`}
-          viewAllLabel="View All"
+          viewAllLabel={TOP_PAGE.viewAll}
         />
         <TableHeader />
         <RecordList items={recordItems} likeMap={likeMap} likeCounts={likeCounts} />
@@ -365,11 +366,11 @@ export default async function BarPage({
           {/* Popular Hi-Res */}
           <section className="mx-auto mb-16 max-w-5xl px-4">
             <SectionHeader
-              title="Popular Hi-Res"
+              title={NAV.popularHiRes}
               viewAllHref={`/${bar}/tracks/top100`}
-              viewAllLabel="View All"
+              viewAllLabel={TOP_PAGE.viewAll}
             />
-            <TableHeader columns={["Title", "Album / Artist"]} />
+            <TableHeader columns={[TABLE.title, TABLE.albumArtist]} />
             <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} />
           </section>
         </>

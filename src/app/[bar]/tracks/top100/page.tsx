@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { serializeBigInt } from "@/lib/utils";
 import { RecordList } from "@/components/RecordList";
 import { getSessionId } from "@/lib/session";
+import { NAV, TABLE } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
 
@@ -13,8 +14,8 @@ function capitalize(str: string) {
 function TableHeader() {
   return (
     <div className="flex border-b border-zinc-700 py-2 text-xs font-semibold text-white">
-      <span className="w-2/5">Artists</span>
-      <span className="w-2/5">Albums</span>
+      <span className="w-2/5">{TABLE.artists}</span>
+      <span className="w-2/5">{TABLE.albums}</span>
       <span className="w-1/5" />
     </div>
   );
@@ -96,7 +97,7 @@ export default async function TrackTop100Page({
         </Link>
       </div>
 
-      <h1 className="mb-6 text-3xl font-bold">Popular Hi-Res</h1>
+      <h1 className="mb-6 text-3xl font-bold">{NAV.popularHiRes}</h1>
 
       <TableHeader />
       <RecordList items={trackItems} likeMap={likeMap} likeCounts={likeCounts} />

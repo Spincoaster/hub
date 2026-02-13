@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { POPUP } from "@/lib/labels";
 
 export type PopupData = {
   id: string;
@@ -107,21 +108,21 @@ export function RecordPopup({
           {data.type === "Record" ? (
             <>
               <div className="space-y-0.5">
-                <p>To request a track from this record, please show this screen to our staff.</p>
-                <p>We will bring the record to you so you can choose one track.</p>
+                <p>{POPUP.recordRequestEn1}</p>
+                <p>{POPUP.recordRequestEn2}</p>
               </div>
               <div className="mt-3 space-y-0.5">
-                <p>このレコードからリクエストする場合はこの画面をスタッフにご提示ください。</p>
-                <p>レコードをお持ちしますのでそこから１曲お選びいただけます。</p>
+                <p>{POPUP.recordRequestJa1}</p>
+                <p>{POPUP.recordRequestJa2}</p>
               </div>
             </>
           ) : (
             <>
               <div className="space-y-0.5">
-                <p>To request this track, please show this screen to our staff.</p>
+                <p>{POPUP.trackRequestEn}</p>
               </div>
               <div className="mt-3 space-y-0.5">
-                <p>このトラックをリクエストする場合はこの画面をスタッフにご提示ください。</p>
+                <p>{POPUP.trackRequestJa}</p>
               </div>
             </>
           )}
@@ -142,7 +143,7 @@ export function RecordPopup({
             onClick={onClose}
             className="flex h-16 items-center gap-12 rounded-full border border-white bg-black pl-10 pr-0 text-lg font-medium text-white"
           >
-            <span>Close</span>
+            <span>{POPUP.close}</span>
             <span className="relative flex h-[62px] w-[62px] shrink-0 items-center justify-center">
               <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
               <svg
