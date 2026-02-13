@@ -7,10 +7,6 @@ import { NAV, TABLE } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
 
-function capitalize(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
 function TableHeader() {
   return (
     <div className="flex border-b border-zinc-700 py-2 text-xs font-semibold text-white">
@@ -93,7 +89,7 @@ export default async function TrackTop100Page({
           href={`/${bar}`}
           className="text-sm text-white hover:text-white hover:underline"
         >
-          &larr; {capitalize(bar)} TOP
+          &larr; Top
         </Link>
       </div>
 
