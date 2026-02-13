@@ -280,7 +280,7 @@ export function RecordCarousel({
       </div>
 
       {pages.length > 1 && (
-        <div className="mt-4 flex justify-center gap-2">
+        <div className="mt-6 flex justify-center gap-2">
           {pages.map((_, i) => (
             <button
               key={i}
