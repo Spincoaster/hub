@@ -59,7 +59,7 @@ export function Navigation({ bar, isAdmin }: { bar?: string; isAdmin?: boolean }
         <div className="w-24" />
 
         {/* Center: Logo */}
-        <Link href={homeHref} className="-ml-4 flex items-center">
+        <Link href={homeHref} className="-ml-8 flex items-center">
           <Image
             src="/spin_logo.png"
             alt="Spincoaster"
