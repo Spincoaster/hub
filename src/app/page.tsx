@@ -10,19 +10,19 @@ const shops = [
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-4">
+    <div className="flex h-dvh flex-col items-center justify-center px-4">
       <Image
         src="/bar_logo.png"
         alt="SPINCOASTER MUSIC BAR"
         width={300}
         height={100}
-        className="mb-8"
+        className="mb-6 w-[200px] md:w-[300px]"
         priority
       />
-      <h1 className="mb-12 text-center text-4xl font-bold tracking-wider text-zinc-100">
+      <h1 className="mb-8 text-center text-3xl font-bold tracking-wider text-zinc-100 md:mb-12 md:text-4xl">
         {SITE_NAME}
       </h1>
-      <div className="flex w-full max-w-sm flex-col gap-4">
+      <div className="flex w-full max-w-sm flex-col gap-3 md:gap-4">
         {shops.map((shop) => (
           <Link
             key={shop.slug}
