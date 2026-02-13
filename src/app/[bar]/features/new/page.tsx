@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { BAR_VALUES } from "@/lib/utils";
@@ -19,6 +19,18 @@ export default function FeatureNewPage() {
   const [number, setNumber] = useState<number | "">("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/features")
+      .then((res) => (res.ok ? res.json() : {}))
+      .then((grouped) => {
+        const all = Object.values(grouped).flat() as { number?: number | null; bar?: number | null }[];
+        const filtered = all.filter((f) => f.bar === barValue);
+        const max = Math.max(0, ...filtered.map((f) => f.number ?? 0));
+        setNumber(max + 1);
+      })
+      .catch(() => {});
+  }, [barValue]);
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -74,6 +86,7 @@ export default function FeatureNewPage() {
           </label>
           <input
             type="number"
+            required
             value={number}
             onChange={(e) =>
               setNumber(e.target.value === "" ? "" : parseInt(e.target.value))
