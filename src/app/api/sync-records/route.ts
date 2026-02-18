@@ -320,7 +320,7 @@ async function syncBar(config: SheetConfig, accessToken: string) {
         for (const f of changedFields) {
           const oldVal = (existing as Record<string, unknown>)[f];
           const newVal = (data as Record<string, unknown>)[f];
-          console.log(`[sync]   ${f}: ${JSON.stringify(oldVal)} → ${JSON.stringify(newVal)}`);
+          console.log(`[sync]   ${f}: ${String(oldVal)} → ${String(newVal)}`);
         }
         await prisma.record.update({ where: { id: existing.id }, data });
         updated++;
