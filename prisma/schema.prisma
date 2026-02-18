@@ -145,6 +145,7 @@ model Track {
   phoneticName String?  @map("phonetic_name")
   furigana     String?
   number       Int?
+  bar          Int?
   artistId     BigInt?  @map("artist_id")
   albumId      BigInt?  @map("album_id")
   createdAt    DateTime @default(now()) @map("created_at")

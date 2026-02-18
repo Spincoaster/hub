@@ -15,8 +15,13 @@ export async function GET(request: NextRequest) {
   }
 
   const hasTracks = searchParams.get("hasTracks");
+  const hasTracksBar = searchParams.get("hasTracksBar");
   if (hasTracks === "true") {
-    where.tracks = { some: {} };
+    if (hasTracksBar && BAR_VALUES[hasTracksBar] !== undefined) {
+      where.tracks = { some: { bar: BAR_VALUES[hasTracksBar] } };
+    } else {
+      where.tracks = { some: {} };
+    }
   }
 
   const query = searchParams.get("query");

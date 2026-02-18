@@ -88,6 +88,7 @@ export default function NewTrackPage() {
           phoneticName: phoneticName || null,
           furigana: furigana || null,
           number: number === "" ? null : number,
+          bar,
           artistId: artistId || null,
           albumId: albumId || null,
         }),

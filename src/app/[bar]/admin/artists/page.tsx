@@ -39,6 +39,7 @@ export default function AdminArtistsPage() {
         params.set("bar", bar);
       } else {
         params.set("hasTracks", "true");
+        params.set("hasTracksBar", bar);
       }
       if (q.trim()) params.set("query", q.trim());
       const res = await fetch(`/api/artists?${params}`);

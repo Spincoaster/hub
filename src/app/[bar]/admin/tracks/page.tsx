@@ -34,7 +34,7 @@ export default function AdminTracksPage() {
   const search = useCallback(async (q: string, p: number) => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ page: String(p), limit: String(PAGE_SIZE) });
+      const params = new URLSearchParams({ page: String(p), limit: String(PAGE_SIZE), bar });
       if (q.trim()) params.set("query", q.trim());
       if (artistId) params.set("artistId", artistId);
       if (albumId) params.set("albumId", albumId);
@@ -48,7 +48,7 @@ export default function AdminTracksPage() {
     } finally {
       setLoading(false);
     }
-  }, [artistId, albumId]);
+  }, [bar, artistId, albumId]);
 
   useEffect(() => {
     search(query, page);

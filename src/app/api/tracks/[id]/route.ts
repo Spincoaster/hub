@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { serializeBigInt } from "@/lib/utils";
+import { serializeBigInt, BAR_VALUES } from "@/lib/utils";
 
 export async function GET(
   _request: NextRequest,
@@ -33,6 +33,7 @@ export async function PUT(
       phoneticName: body.phoneticName,
       furigana: body.furigana,
       number: body.number,
+      bar: body.bar !== undefined ? (BAR_VALUES[body.bar] ?? body.bar) : undefined,
       artistId: body.artistId ? BigInt(body.artistId) : undefined,
       albumId: body.albumId ? BigInt(body.albumId) : undefined,
     },

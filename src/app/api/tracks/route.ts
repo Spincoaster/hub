@@ -1,17 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { serializeBigInt, buildPrefixFilter } from "@/lib/utils";
+import { serializeBigInt, BAR_VALUES, buildPrefixFilter } from "@/lib/utils";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const hasPrefix = searchParams.get("has_prefix");
   const query = searchParams.get("query");
+  const bar = searchParams.get("bar");
   const artistId = searchParams.get("artistId");
   const albumId = searchParams.get("albumId");
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
 
+  if (bar && BAR_VALUES[bar] !== undefined) {
+    where.bar = BAR_VALUES[bar];
+  }
   if (artistId) {
     where.artistId = BigInt(artistId);
   }
@@ -59,6 +63,7 @@ export async function POST(request: NextRequest) {
       phoneticName: body.phoneticName,
       furigana: body.furigana,
       number: body.number,
+      bar: body.bar !== undefined ? (BAR_VALUES[body.bar] ?? body.bar) : null,
       artistId: body.artistId ? BigInt(body.artistId) : null,
       albumId: body.albumId ? BigInt(body.albumId) : null,
     },
