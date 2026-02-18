@@ -30,7 +30,7 @@ export default async function RecordArtistsPage({
 
   return (
     <div className="mx-auto max-w-7xl px-4">
-      <div className="-mt-8 mb-6">
+      <div className="mb-6">
         <h1 className="mt-2 text-5xl font-normal tracking-tight md:text-7xl">
           {NAV.allRecords}
         </h1>

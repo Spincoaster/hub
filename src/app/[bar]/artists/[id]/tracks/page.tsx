@@ -63,7 +63,7 @@ export default async function ArtistTracksPage({
 
   return (
     <div className="mx-auto max-w-7xl px-4">
-      <div className="-mt-8 mb-6">
+      <div className="mb-6">
         <h1 className="mt-2 text-4xl font-normal tracking-tight">
           {artist.name}
         </h1>
