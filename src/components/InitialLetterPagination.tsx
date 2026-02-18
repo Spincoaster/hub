@@ -142,6 +142,16 @@ export default function InitialLetterPagination({
               {letter.toUpperCase()}
             </Link>
           ))}
+          <Link
+            href={`${basePath}?has_prefix=%23`}
+            className={`flex h-10 w-10 shrink-0 items-center justify-center text-3xl font-normal ${
+              currentPrefix === "#"
+                ? "rounded-full bg-black text-white"
+                : "text-black"
+            }`}
+          >
+            #
+          </Link>
         </div>
       </div>
       <div

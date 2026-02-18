@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { BAR_VALUES, buildPrefixFilter } from "@/lib/utils";
+import { BAR_VALUES, buildPrefixFilter, sortAlphaFirst } from "@/lib/utils";
 import InitialLetterPagination from "@/components/InitialLetterPagination";
 import { NAV, SEARCH } from "@/lib/labels";
 
@@ -21,11 +21,12 @@ export default async function RecordArtistsPage({
     ...(hasPrefix ? buildPrefixFilter(hasPrefix) : {}),
   };
 
-  const artists = await prisma.artist.findMany({
+  const rawArtists = await prisma.artist.findMany({
     where,
     orderBy: { name: "asc" },
     take: 500,
   });
+  const artists = hasPrefix ? rawArtists : sortAlphaFirst(rawArtists, (a) => a.phoneticName ?? a.name);
 
   return (
     <div className="mx-auto max-w-7xl px-4">
