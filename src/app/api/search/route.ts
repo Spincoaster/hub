@@ -13,16 +13,32 @@ export async function GET(request: NextRequest) {
 
   const barValue = bar && bar in BAR_VALUES ? BAR_VALUES[bar] : undefined;
 
+  const terms = query.split(/\s+/).filter(Boolean);
+
+  const recordTermFilter = terms.map((term) => ({
+    OR: [
+      { name: { contains: term, mode: "insensitive" as const } },
+      { artist: { name: { contains: term, mode: "insensitive" as const } } },
+      { artist: { phoneticName: { contains: term, mode: "insensitive" as const } } },
+      { artist: { furigana: { contains: term, mode: "insensitive" as const } } },
+    ],
+  }));
+
+  const trackTermFilter = terms.map((term) => ({
+    OR: [
+      { name: { contains: term, mode: "insensitive" as const } },
+      { artist: { name: { contains: term, mode: "insensitive" as const } } },
+      { artist: { phoneticName: { contains: term, mode: "insensitive" as const } } },
+      { artist: { furigana: { contains: term, mode: "insensitive" as const } } },
+      { album: { name: { contains: term, mode: "insensitive" as const } } },
+    ],
+  }));
+
   const [records, tracks] = await Promise.all([
     prisma.record.findMany({
       where: {
         ...(barValue !== undefined ? { bar: barValue } : {}),
-        OR: [
-          { name: { contains: query, mode: "insensitive" } },
-          { artist: { name: { contains: query, mode: "insensitive" } } },
-          { artist: { phoneticName: { contains: query, mode: "insensitive" } } },
-          { artist: { furigana: { contains: query, mode: "insensitive" } } },
-        ],
+        AND: recordTermFilter,
       },
       include: { artist: true, owner: true },
       orderBy: { name: "asc" },
@@ -30,13 +46,7 @@ export async function GET(request: NextRequest) {
     }),
     prisma.track.findMany({
       where: {
-        OR: [
-          { name: { contains: query, mode: "insensitive" } },
-          { artist: { name: { contains: query, mode: "insensitive" } } },
-          { artist: { phoneticName: { contains: query, mode: "insensitive" } } },
-          { artist: { furigana: { contains: query, mode: "insensitive" } } },
-          { album: { name: { contains: query, mode: "insensitive" } } },
-        ],
+        AND: trackTermFilter,
       },
       include: { artist: true, album: true },
       orderBy: { name: "asc" },

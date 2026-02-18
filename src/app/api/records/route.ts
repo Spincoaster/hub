@@ -25,10 +25,13 @@ export async function GET(request: NextRequest) {
   }
 
   if (query) {
-    where.OR = [
-      { name: { contains: query, mode: "insensitive" } },
-      { artist: { name: { contains: query, mode: "insensitive" } } },
-    ];
+    const terms = query.split(/\s+/).filter(Boolean);
+    where.AND = terms.map((term: string) => ({
+      OR: [
+        { name: { contains: term, mode: "insensitive" } },
+        { artist: { name: { contains: term, mode: "insensitive" } } },
+      ],
+    }));
   }
 
   const records = await prisma.record.findMany({
