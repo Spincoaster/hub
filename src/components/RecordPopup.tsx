@@ -115,7 +115,7 @@ export function RecordPopup({
                 <p>{POPUP.recordRequestEn1}</p>
                 <p>{POPUP.recordRequestEn2}</p>
               </div>
-              <div className="mt-3 space-y-0.5">
+              <div className="mt-3 space-y-0.5 text-xs">
                 <p>{POPUP.recordRequestJa1}</p>
                 <p>{POPUP.recordRequestJa2}</p>
               </div>
@@ -125,7 +125,7 @@ export function RecordPopup({
               <div className="space-y-0.5">
                 <p>{POPUP.trackRequestEn}</p>
               </div>
-              <div className="mt-3 space-y-0.5">
+              <div className="mt-3 space-y-0.5 text-xs">
                 <p>{POPUP.trackRequestJa}</p>
               </div>
             </>
