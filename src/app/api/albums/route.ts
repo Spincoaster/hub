@@ -8,17 +8,43 @@ export async function GET(request: NextRequest) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
+  const query = searchParams.get("query");
+  const artistId = searchParams.get("artistId");
+
+  if (artistId) {
+    where.artistId = BigInt(artistId);
+  }
+
   if (hasPrefix) {
     Object.assign(where, buildPrefixFilter(hasPrefix));
   }
 
-  const albums = await prisma.album.findMany({
-    where,
-    include: { artist: true },
-    orderBy: { name: "asc" },
-  });
+  if (query) {
+    const terms = query.split(/\s+/).filter(Boolean);
+    where.AND = terms.map((term: string) => ({
+      OR: [
+        { name: { contains: term, mode: "insensitive" } },
+        { artist: { name: { contains: term, mode: "insensitive" } } },
+      ],
+    }));
+  }
 
-  return NextResponse.json(serializeBigInt(albums));
+  const page = parseInt(searchParams.get("page") ?? "1", 10);
+  const limit = parseInt(searchParams.get("limit") ?? "300", 10);
+  const skip = (page - 1) * limit;
+
+  const [albums, total] = await Promise.all([
+    prisma.album.findMany({
+      where,
+      include: { artist: true, _count: { select: { tracks: true } } },
+      orderBy: { name: "asc" },
+      take: limit,
+      skip,
+    }),
+    prisma.album.count({ where }),
+  ]);
+
+  return NextResponse.json(serializeBigInt({ data: albums, total, page, limit }));
 }
 
 export async function POST(request: NextRequest) {

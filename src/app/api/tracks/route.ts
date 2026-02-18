@@ -6,9 +6,18 @@ export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const hasPrefix = searchParams.get("has_prefix");
   const query = searchParams.get("query");
+  const artistId = searchParams.get("artistId");
+  const albumId = searchParams.get("albumId");
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
+
+  if (artistId) {
+    where.artistId = BigInt(artistId);
+  }
+  if (albumId) {
+    where.albumId = BigInt(albumId);
+  }
   if (hasPrefix) {
     Object.assign(where, buildPrefixFilter(hasPrefix));
   }
@@ -23,14 +32,22 @@ export async function GET(request: NextRequest) {
     }));
   }
 
-  const tracks = await prisma.track.findMany({
-    where,
-    include: { artist: true, album: true, _count: { select: { likes: true } } },
-    orderBy: { name: "asc" },
-    take: 500,
-  });
+  const page = parseInt(searchParams.get("page") ?? "1", 10);
+  const limit = parseInt(searchParams.get("limit") ?? "500", 10);
+  const skip = (page - 1) * limit;
 
-  return NextResponse.json(serializeBigInt(tracks));
+  const [tracks, total] = await Promise.all([
+    prisma.track.findMany({
+      where,
+      include: { artist: true, album: true, _count: { select: { likes: true } } },
+      orderBy: { name: "asc" },
+      take: limit,
+      skip,
+    }),
+    prisma.track.count({ where }),
+  ]);
+
+  return NextResponse.json(serializeBigInt({ data: tracks, total, page, limit }));
 }
 
 export async function POST(request: NextRequest) {

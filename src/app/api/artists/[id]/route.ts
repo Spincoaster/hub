@@ -10,7 +10,7 @@ export async function GET(
   const artist = await prisma.artist.findUnique({
     where: { id: BigInt(id) },
     include: {
-      albums: true,
+      albums: { include: { _count: { select: { tracks: true } } } },
       records: { include: { owner: true } },
       tracks: { include: { album: true } },
     },

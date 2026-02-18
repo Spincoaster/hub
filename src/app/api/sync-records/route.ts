@@ -108,6 +108,10 @@ async function fetchSheetData(
   return (data.values as string[][]) ?? [];
 }
 
+function cleanCell(value: string | undefined): string {
+  return (value ?? "").replace(/[\r\n\t]+/g, "").trim();
+}
+
 function parseRows(rows: string[][], config: SheetConfig): RowData[] {
   const result: RowData[] = [];
 
@@ -116,8 +120,8 @@ function parseRows(rows: string[][], config: SheetConfig): RowData[] {
     const row = rows[i];
     if (!row || row.length < config.minCols) continue;
 
-    const title = row[config.titleCol]?.trim();
-    const numberStr = row[config.numberCol]?.trim();
+    const title = cleanCell(row[config.titleCol]);
+    const numberStr = cleanCell(row[config.numberCol]);
 
     if (!title || !numberStr) continue;
 
@@ -125,12 +129,12 @@ function parseRows(rows: string[][], config: SheetConfig): RowData[] {
     if (isNaN(number)) continue;
 
     result.push({
-      location: row[config.locationCol]?.trim() || "",
+      location: cleanCell(row[config.locationCol]),
       number,
-      ownerName: row[config.ownerCol]?.trim() || "",
+      ownerName: cleanCell(row[config.ownerCol]),
       title,
-      artistName: row[config.artistCol]?.trim() || "",
-      comment: row[config.commentCol]?.trim() || "",
+      artistName: cleanCell(row[config.artistCol]),
+      comment: cleanCell(row[config.commentCol]),
       bar: config.bar,
     });
   }
@@ -197,49 +201,68 @@ async function syncBar(config: SheetConfig, accessToken: string) {
   const rows = parseRows(sheetData, config);
   console.log(`[sync] Parsed ${rows.length} rows from sheet`);
 
-  // Collect unique artist and owner names
-  const artistNames = [
-    ...new Set(rows.map((r) => r.artistName).filter(Boolean)),
-  ];
-  const ownerNames = [
-    ...new Set(rows.map((r) => r.ownerName).filter(Boolean)),
-  ];
+  // Collect unique artist and owner names (case-insensitive dedup)
+  const artistNamesMap = new Map<string, string>();
+  for (const r of rows) {
+    if (r.artistName) {
+      const key = r.artistName.toLowerCase();
+      if (!artistNamesMap.has(key)) artistNamesMap.set(key, r.artistName);
+    }
+  }
+  const artistNames = [...artistNamesMap.values()];
 
-  // Load existing artists (group by name, take first match)
+  const ownerNamesMap = new Map<string, string>();
+  for (const r of rows) {
+    if (r.ownerName) {
+      const key = r.ownerName.toLowerCase();
+      if (!ownerNamesMap.has(key)) ownerNamesMap.set(key, r.ownerName);
+    }
+  }
+  const ownerNames = [...ownerNamesMap.values()];
+
+  // Load existing artists (case-insensitive match, keyed by lowercase name)
   const existingArtists = await prisma.artist.findMany({
-    where: { name: { in: artistNames } },
+    where: { name: { in: artistNames, mode: "insensitive" } },
   });
   const artistMap = new Map<string, bigint>();
   for (const a of existingArtists) {
-    if (a.name && !artistMap.has(a.name)) {
-      artistMap.set(a.name, a.id);
+    if (a.name) {
+      const key = a.name.toLowerCase();
+      if (!artistMap.has(key)) {
+        artistMap.set(key, a.id);
+      }
     }
   }
 
-  // Load existing owners
+  // Load existing owners (case-insensitive match)
   const existingOwners = await prisma.owner.findMany({
-    where: { name: { in: ownerNames } },
+    where: { name: { in: ownerNames, mode: "insensitive" } },
   });
   const ownerMap = new Map<string, bigint>();
   for (const o of existingOwners) {
-    if (o.name && !ownerMap.has(o.name)) {
-      ownerMap.set(o.name, o.id);
+    if (o.name) {
+      const key = o.name.toLowerCase();
+      if (!ownerMap.has(key)) {
+        ownerMap.set(key, o.id);
+      }
     }
   }
 
   // Create missing artists
   for (const name of artistNames) {
-    if (!artistMap.has(name)) {
+    const key = name.toLowerCase();
+    if (!artistMap.has(key)) {
       const artist = await prisma.artist.create({ data: { name } });
-      artistMap.set(name, artist.id);
+      artistMap.set(key, artist.id);
     }
   }
 
   // Create missing owners
   for (const name of ownerNames) {
-    if (!ownerMap.has(name)) {
+    const key = name.toLowerCase();
+    if (!ownerMap.has(key)) {
       const owner = await prisma.owner.create({ data: { name } });
-      ownerMap.set(name, owner.id);
+      ownerMap.set(key, owner.id);
     }
   }
 
@@ -289,10 +312,10 @@ async function syncBar(config: SheetConfig, accessToken: string) {
     const key = `${row.location}:${row.number}`;
 
     const artistId = row.artistName
-      ? (artistMap.get(row.artistName) ?? null)
+      ? (artistMap.get(row.artistName.toLowerCase()) ?? null)
       : null;
     const ownerId = row.ownerName
-      ? (ownerMap.get(row.ownerName) ?? null)
+      ? (ownerMap.get(row.ownerName.toLowerCase()) ?? null)
       : null;
 
     const data = {

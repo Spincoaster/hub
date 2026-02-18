@@ -20,8 +20,14 @@ export async function GET(request: NextRequest) {
     Object.assign(where, buildPrefixFilter(hasPrefix));
   }
 
+  const artistId = searchParams.get("artistId");
+
   if (ownerId) {
     where.ownerId = BigInt(ownerId);
+  }
+
+  if (artistId) {
+    where.artistId = BigInt(artistId);
   }
 
   if (query) {
@@ -34,14 +40,22 @@ export async function GET(request: NextRequest) {
     }));
   }
 
-  const records = await prisma.record.findMany({
-    where,
-    include: { owner: true, artist: true, _count: { select: { likes: true } } },
-    orderBy: { artist: { name: "asc" } },
-    take: 500,
-  });
+  const page = parseInt(searchParams.get("page") ?? "1", 10);
+  const limit = parseInt(searchParams.get("limit") ?? "500", 10);
+  const skip = (page - 1) * limit;
 
-  return NextResponse.json(serializeBigInt(records));
+  const [records, total] = await Promise.all([
+    prisma.record.findMany({
+      where,
+      include: { owner: true, artist: true, _count: { select: { likes: true } } },
+      orderBy: { artist: { name: "asc" } },
+      take: limit,
+      skip,
+    }),
+    prisma.record.count({ where }),
+  ]);
+
+  return NextResponse.json(serializeBigInt({ data: records, total, page, limit }));
 }
 
 export async function POST(request: NextRequest) {

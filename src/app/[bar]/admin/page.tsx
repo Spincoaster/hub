@@ -89,19 +89,60 @@ export default async function AdminPage({
       </section>
 
       <section className="mb-12">
-        <h2 className="mb-4 text-2xl font-semibold text-white">文言管理</h2>
+        <h2 className="mb-4 text-2xl font-semibold text-white">
+          Record 管理
+        </h2>
         <p className="mb-3 text-sm text-zinc-400">
-          サイト上に表示される文言を管理します。変更はデプロイ後に反映されます。
+          レコードのアーティスト情報を管理します。
         </p>
-        <Link
-          href={`/${bar}/admin/labels`}
-          className="inline-block rounded-md bg-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-600"
-        >
-          文言一覧を見る
-        </Link>
+        <div className="flex gap-3">
+          <Link
+            href={`/${bar}/admin/artists?context=records`}
+            className="inline-block rounded-md bg-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-600"
+          >
+            アーティスト一覧を見る
+          </Link>
+          <Link
+            href={`/${bar}/admin/records`}
+            className="inline-block rounded-md bg-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-600"
+          >
+            レコード一覧を見る
+          </Link>
+        </div>
       </section>
 
-      <section>
+      {bar === "shinjuku" && (
+        <section className="mb-12">
+          <h2 className="mb-4 text-2xl font-semibold text-white">
+            Hi-Res 管理
+          </h2>
+          <p className="mb-3 text-sm text-zinc-400">
+            Hi-Res トラックのアーティスト・アルバム・トラックを管理します。
+          </p>
+          <div className="flex gap-3">
+            <Link
+              href={`/${bar}/admin/artists?context=hires`}
+              className="inline-block rounded-md bg-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-600"
+            >
+              アーティスト一覧を見る
+            </Link>
+            <Link
+              href={`/${bar}/admin/albums`}
+              className="inline-block rounded-md bg-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-600"
+            >
+              アルバム一覧を見る
+            </Link>
+            <Link
+              href={`/${bar}/admin/tracks`}
+              className="inline-block rounded-md bg-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-600"
+            >
+              トラック一覧を見る
+            </Link>
+          </div>
+        </section>
+      )}
+
+      <section className="mb-12">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-2xl font-semibold text-white">特集管理</h2>
           <a
@@ -118,6 +159,19 @@ export default async function AdminPage({
           bar={bar}
           features={serializeBigInt(features) as unknown as Feature[]}
         />
+      </section>
+
+      <section>
+        <h2 className="mb-4 text-2xl font-semibold text-white">文言管理</h2>
+        <p className="mb-3 text-sm text-zinc-400">
+          サイト上に表示される文言を管理します。変更はデプロイ後に反映されます。
+        </p>
+        <Link
+          href={`/${bar}/admin/labels`}
+          className="inline-block rounded-md bg-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-600"
+        >
+          文言一覧を見る
+        </Link>
       </section>
     </div>
   );
