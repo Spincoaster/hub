@@ -25,7 +25,10 @@ export async function GET(request: NextRequest) {
   }
 
   if (query) {
-    where.name = { contains: query, mode: "insensitive" };
+    where.OR = [
+      { name: { contains: query, mode: "insensitive" } },
+      { artist: { name: { contains: query, mode: "insensitive" } } },
+    ];
   }
 
   const records = await prisma.record.findMany({

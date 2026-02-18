@@ -14,13 +14,17 @@ export async function GET(request: NextRequest) {
   }
 
   if (query) {
-    where.name = { contains: query, mode: "insensitive" };
+    where.OR = [
+      { name: { contains: query, mode: "insensitive" } },
+      { artist: { name: { contains: query, mode: "insensitive" } } },
+    ];
   }
 
   const tracks = await prisma.track.findMany({
     where,
     include: { artist: true, album: true, _count: { select: { likes: true } } },
     orderBy: { name: "asc" },
+    take: 500,
   });
 
   return NextResponse.json(serializeBigInt(tracks));
