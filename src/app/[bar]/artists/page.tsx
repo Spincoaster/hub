@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { BAR_VALUES, buildPrefixFilter } from "@/lib/utils";
 import InitialLetterPagination from "@/components/InitialLetterPagination";
 import DeleteButton from "@/components/DeleteButton";
+import { SEARCH } from "@/lib/labels";
 
 export default async function ArtistsPage({
   params,
@@ -54,6 +55,7 @@ export default async function ArtistsPage({
         )}
       </div>
 
+      <p className="mb-2 text-sm text-white">{SEARCH.artistLabel}</p>
       <InitialLetterPagination
         basePath={`/${bar}/artists`}
         currentPrefix={hasPrefix}

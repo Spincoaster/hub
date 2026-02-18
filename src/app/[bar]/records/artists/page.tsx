@@ -36,7 +36,8 @@ export default async function RecordArtistsPage({
         </h1>
       </div>
 
-      <div className="mb-8">
+      <p className="mb-2 text-sm text-white">{SEARCH.artistLabel}</p>
+      <div className="sticky top-0 z-40 mb-8 bg-black pt-1 pb-2">
         <InitialLetterPagination
           basePath={`/${bar}/records/artists`}
           currentPrefix={hasPrefix}

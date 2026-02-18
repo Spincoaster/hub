@@ -35,6 +35,7 @@ export default async function TrackArtistsPage({
         </h1>
       </div>
 
+      <p className="mb-2 text-sm text-white">{SEARCH.artistLabel}</p>
       <div className="mb-8">
         <InitialLetterPagination
           basePath={`/${bar}/hi-res/artists`}

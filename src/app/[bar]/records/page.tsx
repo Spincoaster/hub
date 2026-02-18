@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { BAR_VALUES, buildPrefixFilter } from "@/lib/utils";
 import InitialLetterPagination from "@/components/InitialLetterPagination";
+import { SEARCH } from "@/lib/labels";
 
 export default async function RecordsPage({
   params,
@@ -53,6 +54,7 @@ export default async function RecordsPage({
         )}
       </div>
 
+      <p className="mb-2 text-sm text-white">{SEARCH.artistLabel}</p>
       <div className="sticky top-0 z-10 mb-8 bg-black pb-2">
         <InitialLetterPagination
           basePath={`/${bar}/records`}
