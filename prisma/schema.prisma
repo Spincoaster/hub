@@ -29,7 +29,7 @@ model Album {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  artist Artist? @relation(fields: [artistId], references: [id])
+  artist Artist? @relation(fields: [artistId], references: [id], onDelete: Cascade)
   tracks Track[]
 
   @@map("albums")
@@ -131,7 +131,7 @@ model Record {
   updatedAt    DateTime @updatedAt @map("updated_at")
   bar          Int?
 
-  artist Artist? @relation(fields: [artistId], references: [id])
+  artist Artist? @relation(fields: [artistId], references: [id], onDelete: Cascade)
   owner  Owner?  @relation(fields: [ownerId], references: [id])
   likes  Like[]
 
@@ -151,8 +151,8 @@ model Track {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  artist Artist? @relation(fields: [artistId], references: [id])
-  album  Album?  @relation(fields: [albumId], references: [id])
+  artist Artist? @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  album  Album?  @relation(fields: [albumId], references: [id], onDelete: Cascade)
   likes  Like[]
 
   @@map("tracks")
