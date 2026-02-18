@@ -119,7 +119,7 @@ export default function InitialLetterPagination({
           {showAll && (
             <Link
               href={basePath}
-              className={`flex h-10 shrink-0 items-center justify-center px-3 text-lg font-normal ${
+              className={`flex h-10 shrink-0 items-center justify-center px-3 text-lg font-semibold ${
                 !currentPrefix
                   ? "rounded-full bg-black text-white"
                   : "text-black"
