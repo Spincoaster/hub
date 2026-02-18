@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { BackLink } from "@/components/BackLink";
 
 export default async function ArtistAlbumsPage({
   params,
@@ -25,11 +24,6 @@ export default async function ArtistAlbumsPage({
   return (
     <div className="mx-auto max-w-7xl px-4">
       <div className="-mt-8 mb-6">
-        <nav className="flex items-center gap-1 text-sm text-zinc-400">
-          <Link href={`/${bar}`} className="hover:text-white">Top</Link>
-          <span>/</span>
-          <BackLink label="All Hi-Res List" href={`/${bar}/hi-res/artists`} />
-        </nav>
         <h1 className="mt-2 text-4xl font-normal tracking-tight">
           {artist.name}
         </h1>

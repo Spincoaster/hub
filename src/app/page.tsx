@@ -24,8 +24,8 @@ export default function Home() {
         className="mb-6 w-[200px] md:w-[300px]"
         priority
       />
-      <h1 className="mb-8 text-center text-3xl font-bold tracking-wider text-zinc-100 md:mb-12 md:text-4xl">
-        {SITE_NAME}
+      <h1 className="mb-8 text-center text-3xl font-bold tracking-wider text-zinc-100 md:mb-12 md:text-4xl whitespace-pre-line">
+        {SITE_NAME.replace(" ", "\n")}
       </h1>
       <div className="flex w-full max-w-sm flex-col gap-3 md:gap-4">
         {shops.map((shop) => (

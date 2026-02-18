@@ -14,14 +14,14 @@ export const NAV = {
   allRecords: "All Record List",
   drinkMenu: "Drink Menu",
   popularHiRes: "Popular Hi-Res",
-  popularRecords: "Popular Records",
+  popularRecords: "Popular Record",
   top: "Top",
 } as const;
 
 export const TOP_PAGE = {
   coverChargeEn1: "There’s a 900yen cover charge per person,",
   coverChargeEn2: "and the following are complimentary.",
-  coverChargeJa: "当店は900円のカバーチャージをいただいております。以下はサービスです。",
+  coverChargeJa: "当店は900円のカバーチャージをいただいております。\n以下はサービスです。",
   snacksEn: "Snacks on the table",
   snacksJa: "テーブルスナック",
   songRequestEn: "1 Song Request",
@@ -33,9 +33,9 @@ export const TOP_PAGE = {
 
 export const TABLE = {
   albumArtist: "Album / Artist",
-  albums: "Albums",
+  albums: "Album",
   artist: "Artist",
-  artists: "Artists",
+  artists: "Artist",
   title: "Title",
 } as const;
 

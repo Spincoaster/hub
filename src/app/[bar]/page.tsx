@@ -46,7 +46,7 @@ function TableHeader({ columns }: { columns?: string[] }) {
   const cols = columns ?? [TABLE.title, TABLE.artist];
   return (
     <div className="hidden items-stretch border-b border-zinc-600 text-xs font-semibold text-white md:flex">
-      <span className="flex w-4/5 items-stretch">
+      <span className="flex min-w-0 flex-1 items-stretch">
         {cols.map((col, i) => (
           <span key={col} className={`flex w-1/2 items-center py-2 ${i === 0 ? "pl-2 pr-4" : "pl-4"}`}>{col}</span>
         )).reduce<React.ReactNode[]>((acc, el, i) => {
@@ -55,7 +55,7 @@ function TableHeader({ columns }: { columns?: string[] }) {
           return acc;
         }, [])}
       </span>
-      <span className="w-1/5" />
+      <span className="w-16 shrink-0 pr-2" />
     </div>
   );
 }
@@ -233,7 +233,7 @@ export default async function BarPage({
       id: String(r.id),
       name: r.name ?? "—",
       artistName: r.artist?.name ?? "—",
-      albumName: r.name ?? "—",
+      albumName: "",
       number: r.number,
       type: "Record" as const,
       ownerName: r.owner?.name ?? undefined,
@@ -278,7 +278,7 @@ export default async function BarPage({
         albumName:
           item.itemType === "Track"
             ? (item.itemData!.album?.name ?? "—")
-            : (item.itemData!.name ?? "—"),
+            : "",
         number: item.itemData!.number ?? null,
         type: (item.itemType === "Track" ? "Hi-Res" : "Record") as "Record" | "Hi-Res",
         ownerName: item.itemType === "Record" ? (item.itemData!.owner?.name ?? undefined) : undefined,
@@ -291,11 +291,11 @@ export default async function BarPage({
     <div>
       {/* Hero */}
       <section className="mx-auto mb-16 max-w-7xl px-4">
-        <div className="flex flex-col gap-4 md:flex-row md:gap-0 md:items-center md:justify-between">
-          <h1 className="text-6xl font-normal tracking-normal md:text-8xl">
-            <AnimatedText text={SITE_NAME} />
+        <div className="relative md:flex md:items-center md:justify-between">
+          <h1 className="text-7xl font-normal tracking-normal md:text-8xl">
+            <AnimatedText text={SITE_NAME.replace(" ", "\n")} />
           </h1>
-          <FadeIn delayMs={400}>
+          <FadeIn delayMs={400} className="absolute right-0 bottom-0 md:static">
             <span className="text-2xl font-normal tracking-wide md:text-3xl">
               {capitalize(bar)}
             </span>
@@ -311,14 +311,14 @@ export default async function BarPage({
               </div>
             </FadeIn>
             <FadeIn delayMs={500}>
-              <p className="mt-4 text-white">
+              <p className="mt-4 text-sm text-white whitespace-pre-line">
                 {TOP_PAGE.coverChargeJa}
               </p>
             </FadeIn>
             <FadeIn delayMs={600}>
-              <ul className="mt-6 text-white">
-                <li className="flex flex-col md:flex-row"><span className="md:w-1/2">・<span className="font-semibold">{TOP_PAGE.snacksEn}</span></span><span className="ml-3 md:ml-0 md:w-1/2">{TOP_PAGE.snacksJa}</span></li>
-                <li className="flex flex-col md:flex-row"><span className="md:w-1/2">・<span className="font-semibold">{TOP_PAGE.songRequestEn}</span></span><span className="ml-3 md:ml-0 md:w-1/2">{TOP_PAGE.songRequestJa}</span></li>
+              <ul className="mt-6 space-y-3 text-white">
+                <li className="flex flex-col md:flex-row md:items-center md:gap-6"><span className="font-semibold md:w-48">{TOP_PAGE.snacksEn}</span><span className="text-sm">{TOP_PAGE.snacksJa}</span></li>
+                <li className="flex flex-col md:flex-row md:items-center md:gap-6"><span className="font-semibold md:w-48">{TOP_PAGE.songRequestEn}</span><span className="text-sm">{TOP_PAGE.songRequestJa}</span></li>
               </ul>
             </FadeIn>
           </div>

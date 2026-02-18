@@ -134,23 +134,23 @@ export function RecordList({
             onClick={() => setPopupItemId(item.id)}
             className="group flex w-full items-stretch border-b border-zinc-600 first:border-t md:first:border-t-0 text-left transition-colors hover:bg-zinc-900/50"
           >
-            <span className={`flex min-w-0 ${singleColumn ? "w-4/5" : "w-4/5 flex-col md:flex-row md:items-stretch"}`}>
-              <span className={`min-w-0 truncate pl-2 pr-4 text-sm group-hover:text-red-400 ${singleColumn ? "py-5 leading-[1.4]" : "pt-5 md:flex md:w-1/2 md:items-center md:py-5"}`}>{item.name}</span>
+            <span className={`flex min-w-0 flex-1 ${singleColumn ? "" : "flex-col md:flex-row md:items-stretch"}`}>
+              <span className={`min-w-0 pl-2 pr-4 text-sm group-hover:text-red-400 ${singleColumn ? "py-5 leading-[1.4]" : "pt-5 md:flex md:w-1/2 md:items-center md:py-5"}`}><span className="block truncate">{item.name}</span></span>
               {!singleColumn && (
                 <>
                   <span className="hidden w-px self-stretch bg-zinc-600 md:block" />
-                  <span className="min-w-0 truncate pb-5 pl-2 text-sm text-zinc-400 group-hover:text-red-400 md:flex md:w-1/2 md:items-center md:py-5 md:pl-4">
-                    {item.type === "Hi-Res" ? `${item.albumName} / ${item.artistName}` : item.artistName}
+                  <span className="min-w-0 pb-5 pl-2 text-sm text-zinc-400 group-hover:text-red-400 md:flex md:w-1/2 md:items-center md:py-5 md:pl-4">
+                    <span className="block truncate">{item.type === "Hi-Res" ? `${item.albumName} / ${item.artistName}` : item.artistName}</span>
                   </span>
                 </>
               )}
             </span>
-            <span className="flex w-1/5 items-center justify-end gap-2 py-5 text-sm text-white">
+            <span className="flex w-24 shrink-0 items-center justify-end gap-1 py-5 pr-2 text-sm text-white">
               {likeable ? (
                 <>
                   {isLiked ? (
                     <svg
-                      className="h-3.5 w-3.5 text-red-500"
+                      className="h-3.5 w-3.5 shrink-0 text-red-500"
                       viewBox="0 0 24 24"
                       fill="currentColor"
                     >
@@ -158,7 +158,7 @@ export function RecordList({
                     </svg>
                   ) : (
                     <svg
-                      className="h-3.5 w-3.5"
+                      className="h-3.5 w-3.5 shrink-0"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -167,13 +167,13 @@ export function RecordList({
                       <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                     </svg>
                   )}
-                  <span>{count}</span>
+                  <span className="min-w-8 text-center">{count}</span>
                 </>
               ) : (
                 item.number != null && (
                   <>
                     <svg
-                      className="h-3.5 w-3.5"
+                      className="h-3.5 w-3.5 shrink-0"
                       viewBox="0 0 24 24"
                       fill="currentColor"
                     >
@@ -184,7 +184,7 @@ export function RecordList({
                 )
               )}
               <svg
-                className="ml-2 h-4 w-4 text-white"
+                className="ml-1 h-4 w-4 text-white"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"

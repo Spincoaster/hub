@@ -66,7 +66,7 @@ export function SearchBar({ bar, onOpen }: { bar?: string; onOpen?: () => void }
 
       {visible && (
         <div
-          className="absolute inset-x-0 top-0 z-[70] flex h-28 items-center justify-center px-4"
+          className="absolute inset-x-0 top-0 z-[70] flex h-20 items-center justify-center px-4 md:top-4"
           style={{
             transition: "opacity 0.3s ease-out",
             opacity: show ? 1 : 0,

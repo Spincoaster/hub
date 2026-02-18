@@ -53,7 +53,7 @@ export default async function RecordsPage({
         )}
       </div>
 
-      <div className="mb-8">
+      <div className="sticky top-0 z-10 mb-8 bg-black pb-2">
         <InitialLetterPagination
           basePath={`/${bar}/records`}
           currentPrefix={hasPrefix}

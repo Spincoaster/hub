@@ -25,7 +25,7 @@ interface SearchTrack {
 function TableHeader({ columns }: { columns: string[] }) {
   return (
     <div className="hidden items-stretch border-b border-zinc-600 text-xs font-semibold text-white md:flex">
-      <span className="flex w-4/5 items-stretch">
+      <span className="flex min-w-0 flex-1 items-stretch">
         {columns.map((col, i) => (
           <span key={col} className={`flex w-1/2 items-center py-2 ${i === 0 ? "pl-2 pr-4" : "pl-4"}`}>{col}</span>
         )).reduce<React.ReactNode[]>((acc, el, i) => {
@@ -34,7 +34,7 @@ function TableHeader({ columns }: { columns: string[] }) {
           return acc;
         }, [])}
       </span>
-      <span className="w-1/5" />
+      <span className="w-16 shrink-0 pr-2" />
     </div>
   );
 }
@@ -86,7 +86,7 @@ export default function SearchPage() {
     id: String(r.id),
     name: r.name ?? "—",
     artistName: r.artist?.name ?? "—",
-    albumName: r.name ?? "—",
+    albumName: "",
     number: r.number,
     type: "Record" as const,
     ownerName: r.owner?.name ?? undefined,
@@ -120,7 +120,9 @@ export default function SearchPage() {
         <>
           {/* Records */}
           <section className="mt-8">
-            <p className="mb-4 text-sm text-white">[ {SEARCH.record} ]</p>
+            <div className="mb-4">
+              <span className="rounded-full bg-white px-4 py-1 text-sm font-bold text-black">{SEARCH.record}</span>
+            </div>
             {recordItems.length === 0 ? (
               <p className="text-zinc-400">{SEARCH.noResults}</p>
             ) : (
@@ -136,7 +138,9 @@ export default function SearchPage() {
           {/* Hi-Res */}
           {hasHiRes && (
             <section className="mt-12">
-              <p className="mb-4 text-sm text-white">[ {SEARCH.hiRes} ]</p>
+              <div className="mb-4">
+                <span className="rounded-full bg-white px-4 py-1 text-sm font-bold text-black">{SEARCH.hiRes}</span>
+              </div>
               {trackItems.length === 0 ? (
                 <p className="text-zinc-400">{SEARCH.noResults}</p>
               ) : (

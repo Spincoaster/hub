@@ -1,8 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { serializeBigInt } from "@/lib/utils";
-import Link from "next/link";
-import { BackLink } from "@/components/BackLink";
 import { RecordList } from "@/components/RecordList";
 import { getSessionId } from "@/lib/session";
 
@@ -66,11 +64,6 @@ export default async function ArtistTracksPage({
   return (
     <div className="mx-auto max-w-7xl px-4">
       <div className="-mt-8 mb-6">
-        <nav className="flex min-w-0 items-center gap-1 text-sm text-zinc-400">
-          <Link href={`/${bar}`} className="shrink-0 hover:text-white">Top</Link>
-          <span className="shrink-0">/</span>
-          <BackLink label="All Hi-Res List" href={`/${bar}/hi-res/artists`} className="truncate" />
-        </nav>
         <h1 className="mt-2 text-4xl font-normal tracking-tight">
           {artist.name}
         </h1>

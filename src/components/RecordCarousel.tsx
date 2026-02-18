@@ -192,7 +192,7 @@ export function RecordCarousel({
         }}
       >
         {pages.map((page, pageIdx) => (
-          <div key={pageIdx} className="shrink-0 snap-start" style={{ width: pageWidth || "100%" }}>
+          <div key={pageIdx} className="shrink-0 snap-start snap-always" style={{ width: pageWidth || "100%" }}>
             <div className="hidden items-stretch border-b border-zinc-600 text-xs font-semibold text-white md:flex">
               <span className="flex w-4/5 items-stretch">
                 {(columns ?? ["Title", "Artist"]).map((col, i) => (
@@ -226,12 +226,12 @@ export function RecordCarousel({
                       </>
                     )}
                   </span>
-                  <span className="flex w-1/5 items-center justify-end gap-2 py-5 text-sm text-white">
+                  <span className="flex w-1/5 items-center justify-end gap-1 py-5 text-sm text-white">
                     {likeable ? (
                       <>
                         {isLiked ? (
                           <svg
-                            className="h-3.5 w-3.5 text-red-500"
+                            className="h-3.5 w-3.5 shrink-0 text-red-500"
                             viewBox="0 0 24 24"
                             fill="currentColor"
                           >
@@ -239,7 +239,7 @@ export function RecordCarousel({
                           </svg>
                         ) : (
                           <svg
-                            className="h-3.5 w-3.5"
+                            className="h-3.5 w-3.5 shrink-0"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
@@ -248,13 +248,13 @@ export function RecordCarousel({
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                           </svg>
                         )}
-                        <span>{count}</span>
+                        <span className="min-w-8 text-center">{count}</span>
                       </>
                     ) : (
                       item.number != null && (
                         <>
                           <svg
-                            className="h-3.5 w-3.5"
+                            className="h-3.5 w-3.5 shrink-0"
                             viewBox="0 0 24 24"
                             fill="currentColor"
                           >
@@ -265,7 +265,7 @@ export function RecordCarousel({
                       )
                     )}
                     <svg
-                      className="ml-2 h-4 w-4 text-white"
+                      className="ml-1 h-4 w-4 text-white"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"

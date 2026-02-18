@@ -64,44 +64,6 @@ export function RecordPopup({
         className={`mx-4 w-full max-w-xl border border-white bg-zinc-950/5 px-6 pt-4 pb-10 md:w-fit md:min-w-xl md:max-w-6xl md:px-22 md:pt-10 backdrop-blur-[4px] transition-all duration-200 ${visible ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Like (SP: top-right, Desktop: inline with title) */}
-        <div className="mb-0 flex items-center justify-end gap-2 md:hidden">
-          {onToggleLike ? (
-            <button onClick={onToggleLike} className="cursor-pointer">
-              {data.isLiked ? (
-                <svg
-                  className="h-6 w-6 text-red-500"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                </svg>
-              ) : (
-                <svg
-                  className="h-6 w-6 text-white"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                </svg>
-              )}
-            </button>
-          ) : (
-            <svg
-              className="h-6 w-6 text-red-500"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
-          )}
-          <span className={`text-2xl font-bold ${data.isLiked ? "text-red-500" : "text-white"}`}>
-            {data.likeCount}
-          </span>
-        </div>
-
         {/* Header */}
         <div className="mb-4 flex items-start justify-between md:gap-8">
           <div>
@@ -113,7 +75,7 @@ export function RecordPopup({
               by {data.artistName}
             </p>
           </div>
-          <div className="hidden items-center gap-2 md:flex">
+          <div className="flex items-center gap-2">
             {onToggleLike ? (
               <button onClick={onToggleLike} className="cursor-pointer">
                 {data.isLiked ? (
@@ -177,8 +139,10 @@ export function RecordPopup({
             {data.ownerName && (
               <p className="text-lg font-medium">{data.ownerName}</p>
             )}
-            {data.location && (
-              <p className="text-lg font-medium">{data.location}</p>
+            {(data.location || (data.type === "Record" && data.number != null)) && (
+              <p className="text-lg font-medium">
+                {[data.location, data.type === "Record" ? data.number : null].filter(Boolean).join("-")}
+              </p>
             )}
           </div>
           <button

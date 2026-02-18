@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
 import Link from "next/link";
 import { RecordList } from "@/components/RecordList";
-import { BackLink } from "@/components/BackLink";
 import { getSessionId } from "@/lib/session";
 
 export default async function ArtistRecordsPage({
@@ -39,7 +38,7 @@ export default async function ArtistRecordsPage({
     id: String(r.id),
     name: r.name ?? "—",
     artistName: artist.name ?? "—",
-    albumName: r.name ?? "—",
+    albumName: "",
     number: r.number,
     type: "Record" as const,
     ownerName: r.owner?.name ?? undefined,
@@ -76,11 +75,6 @@ export default async function ArtistRecordsPage({
   return (
     <div className="mx-auto max-w-7xl px-4">
       <div className="-mt-8 mb-6">
-        <nav className="flex min-w-0 items-center gap-1 text-sm text-zinc-400">
-          <Link href={`/${bar}`} className="shrink-0 hover:text-white">Top</Link>
-          <span className="shrink-0">/</span>
-          <BackLink label="All Record List" href={`/${bar}/records/artists`} className="truncate" />
-        </nav>
         <h1 className="mt-2 text-4xl font-normal tracking-tight">
           {artist.name}
         </h1>

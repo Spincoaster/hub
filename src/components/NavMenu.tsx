@@ -109,7 +109,7 @@ export function NavMenu({
 
       {/* Bar label in header row when open */}
       {mounted && barLabel && (
-        <div className={`absolute left-0 top-0 z-[60] flex h-64 items-center transition-opacity duration-500 md:h-28 ${visible ? "opacity-100" : "opacity-0"}`}>
+        <div className={`pointer-events-none absolute left-0 top-0 z-[60] flex h-64 items-center transition-opacity duration-500 md:h-28 ${visible ? "opacity-100" : "opacity-0"}`}>
           <span className="inline-block w-52 rounded-r-full bg-white px-4 py-1 text-center text-base font-semibold text-black md:w-64">
             {barLabel}
           </span>

@@ -30,12 +30,6 @@ export default async function TrackArtistsPage({
   return (
     <div className="mx-auto max-w-7xl px-4">
       <div className="-mt-8 mb-6">
-        <Link
-          href={`/${bar}`}
-          className="text-sm text-zinc-400 hover:text-white"
-        >
-          &larr; Top
-        </Link>
         <h1 className="mt-2 text-5xl font-normal tracking-tight md:text-7xl">
           {NAV.allHiRes}
         </h1>

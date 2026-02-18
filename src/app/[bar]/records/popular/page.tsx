@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
 import { RecordList } from "@/components/RecordList";
@@ -9,10 +8,13 @@ export const dynamic = "force-dynamic";
 
 function TableHeader() {
   return (
-    <div className="flex border-b border-zinc-700 py-2 text-xs font-semibold text-white">
-      <span className="w-2/5">{TABLE.artists}</span>
-      <span className="w-2/5">{TABLE.albums}</span>
-      <span className="w-1/5" />
+    <div className="hidden items-stretch border-b border-zinc-600 text-xs font-semibold text-white md:flex">
+      <span className="flex min-w-0 flex-1 items-stretch">
+        <span className="flex w-1/2 items-center py-2 pl-2 pr-4">{TABLE.title}</span>
+        <span className="w-px self-stretch bg-zinc-600" />
+        <span className="flex w-1/2 items-center py-2 pl-4">{TABLE.artist}</span>
+      </span>
+      <span className="w-16 shrink-0 pr-2" />
     </div>
   );
 }
@@ -81,7 +83,7 @@ export default async function RecordTop100Page({
       id: String(r.id),
       name: r.name ?? "—",
       artistName: r.artist?.name ?? "—",
-      albumName: r.name ?? "—",
+      albumName: "",
       number: r.number,
       type: "Record" as const,
       ownerName: r.owner?.name ?? undefined,
@@ -90,14 +92,6 @@ export default async function RecordTop100Page({
 
   return (
     <div className="mx-auto max-w-7xl px-4">
-      <div className="mb-8">
-        <Link
-          href={`/${bar}`}
-          className="text-sm text-white hover:text-white hover:underline"
-        >
-          &larr; Top
-        </Link>
-      </div>
 
       <h1 className="mb-6 text-3xl font-bold">{NAV.popularRecords}</h1>
 
