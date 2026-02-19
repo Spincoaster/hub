@@ -44,6 +44,7 @@ export function NavMenu({
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const closedByPopstate = useRef(false);
 
   useEffect(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -69,6 +70,27 @@ export function NavMenu({
       document.body.style.paddingRight = "";
     };
   }, [open]);
+
+  useEffect(() => {
+    if (open) {
+      history.pushState({ navMenuOpen: true }, "");
+      closedByPopstate.current = false;
+    } else if (!closedByPopstate.current) {
+      // Closed by button/link click — pop the state we pushed
+      if (history.state?.navMenuOpen) history.back();
+    }
+  }, [open]);
+
+  useEffect(() => {
+    const onPopState = () => {
+      if (open) {
+        closedByPopstate.current = true;
+        onToggle(false);
+      }
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [open, onToggle]);
 
   return (
     <>
