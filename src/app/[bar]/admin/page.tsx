@@ -159,7 +159,7 @@ export default async function AdminPage({
         />
       </section>
 
-      <section>
+      <section className="mb-12">
         <h2 className="mb-4 text-2xl font-semibold text-white">文言管理</h2>
         <p className="mb-3 text-sm text-zinc-400">
           サイト上に表示される文言を管理します。変更はデプロイ後に反映されます。
@@ -170,6 +170,29 @@ export default async function AdminPage({
         >
           文言一覧を見る
         </Link>
+      </section>
+
+      <section>
+        <h2 className="mb-4 text-2xl font-semibold text-white">
+          アカウント管理
+        </h2>
+        <p className="mb-3 text-sm text-zinc-400">
+          パスワードの変更や管理者ユーザーの追加・削除ができます。
+        </p>
+        <div className="flex gap-3">
+          <Link
+            href={`/${bar}/admin/account`}
+            className="inline-block rounded-md bg-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-600"
+          >
+            パスワード変更
+          </Link>
+          <Link
+            href={`/${bar}/admin/users`}
+            className="inline-block rounded-md bg-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-600"
+          >
+            ユーザー管理
+          </Link>
+        </div>
       </section>
     </div>
   );

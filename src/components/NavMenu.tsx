@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import dynamic from "next/dynamic";
 
 const NoiseBackground = dynamic(() => import("@/components/NoiseBackground"), { ssr: false });
@@ -194,6 +195,21 @@ export function NavMenu({
                   <ArrowIcon />
                 </span>
               </Link>
+              <button
+                className="flex items-center border-b border-white py-5 pl-6 pr-6 text-base text-white transition-colors hover:bg-zinc-900 md:pl-18 w-full"
+                style={{
+                  transition: "opacity 400ms ease-out, transform 400ms ease-out",
+                  transitionDelay: `${(menuItems.length + 2) * 80}ms`,
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? "translateY(0)" : "translateY(-8px)",
+                }}
+                onClick={() => signOut({ callbackUrl: "/login" })}
+              >
+                <span>Logout</span>
+                <span className="ml-8">
+                  <ArrowIcon />
+                </span>
+              </button>
             </>
           )}
         </div>
