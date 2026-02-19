@@ -39,7 +39,7 @@ export default function Home() {
         </FadeIn>
 
         {/* Bar buttons */}
-        <div className="flex w-full flex-col gap-4 pb-12 md:mt-14 md:max-w-[clamp(320px,30vw,540px)] md:gap-5 md:pb-0">
+        <div className="flex w-full flex-col gap-6 pb-12 md:mt-14 md:max-w-[clamp(320px,30vw,540px)] md:gap-5 md:pb-0">
           {shops.map((shop, i) => (
             <FadeIn key={shop.slug} delayMs={500 + i * 100}>
               <Link
