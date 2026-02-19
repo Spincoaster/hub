@@ -27,7 +27,53 @@ function ArrowIcon() {
   );
 }
 
-export function NavMenu({
+export function NavMenuButton({
+  open,
+  onToggle,
+}: {
+  open: boolean;
+  onToggle: (open: boolean) => void;
+}) {
+  return (
+    <button
+      onClick={() => onToggle(!open)}
+      className="p-1 hover:opacity-70"
+      aria-label="Toggle menu"
+    >
+      <svg className="h-4 w-5" viewBox="0 0 52 39" fill="none">
+        {/* Top line */}
+        <line
+          x1="0" y1="19.35" x2="52" y2="19.35"
+          stroke="#fff" strokeMiterlimit={10} strokeWidth={5}
+          className="transition-transform duration-500 ease-in-out"
+          style={{
+            transformOrigin: "26px 19.35px",
+            transform: open ? "rotate(33deg)" : "translateY(-16.85px)",
+          }}
+        />
+        {/* Middle line */}
+        <line
+          x1="0" y1="19.35" x2="52" y2="19.35"
+          stroke="#fff" strokeMiterlimit={10} strokeWidth={5}
+          className="transition-opacity duration-500 ease-in-out"
+          style={{ opacity: open ? 0 : 1 }}
+        />
+        {/* Bottom line */}
+        <line
+          x1="0" y1="19.35" x2="52" y2="19.35"
+          stroke="#fff" strokeMiterlimit={10} strokeWidth={5}
+          className="transition-transform duration-500 ease-in-out"
+          style={{
+            transformOrigin: "26px 19.35px",
+            transform: open ? "rotate(-33deg)" : "translateY(16.85px)",
+          }}
+        />
+      </svg>
+    </button>
+  );
+}
+
+export function NavMenuOverlay({
   menuItems,
   barLabel,
   open,
@@ -94,45 +140,9 @@ export function NavMenu({
 
   return (
     <>
-      <button
-        onClick={() => onToggle(!open)}
-        className="p-1 hover:opacity-70"
-        aria-label="Toggle menu"
-      >
-        <svg className="h-4 w-5" viewBox="0 0 52 39" fill="none">
-          {/* Top line */}
-          <line
-            x1="0" y1="19.35" x2="52" y2="19.35"
-            stroke="#fff" strokeMiterlimit={10} strokeWidth={5}
-            className="transition-transform duration-500 ease-in-out"
-            style={{
-              transformOrigin: "26px 19.35px",
-              transform: open ? "rotate(33deg)" : "translateY(-16.85px)",
-            }}
-          />
-          {/* Middle line */}
-          <line
-            x1="0" y1="19.35" x2="52" y2="19.35"
-            stroke="#fff" strokeMiterlimit={10} strokeWidth={5}
-            className="transition-opacity duration-500 ease-in-out"
-            style={{ opacity: open ? 0 : 1 }}
-          />
-          {/* Bottom line */}
-          <line
-            x1="0" y1="19.35" x2="52" y2="19.35"
-            stroke="#fff" strokeMiterlimit={10} strokeWidth={5}
-            className="transition-transform duration-500 ease-in-out"
-            style={{
-              transformOrigin: "26px 19.35px",
-              transform: open ? "rotate(-33deg)" : "translateY(16.85px)",
-            }}
-          />
-        </svg>
-      </button>
-
       {/* Bar label in header row when open */}
       {mounted && barLabel && (
-        <div className={`pointer-events-none absolute left-0 top-0 z-[60] flex h-64 items-center transition-opacity duration-500 md:h-28 ${visible ? "opacity-100" : "opacity-0"}`}>
+        <div className={`pointer-events-none absolute inset-x-0 top-20 z-[55] flex h-20 items-end pb-4 bg-[#0a0a0a] transition-opacity duration-500 md:top-0 md:h-28 md:items-center md:pb-0 ${visible ? "opacity-100" : "opacity-0"}`}>
           <span className="inline-block w-52 rounded-r-full bg-white px-4 py-1 text-center text-base font-semibold text-black md:w-64">
             {barLabel}
           </span>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { NavMenu } from "@/components/NavMenu";
+import { NavMenuButton, NavMenuOverlay } from "@/components/NavMenu";
 import { SearchBar } from "@/components/SearchBar";
 import { BAR_NAMES, NAV } from "@/lib/labels";
 
@@ -54,7 +54,7 @@ export function Navigation({ bar, isAdmin }: { bar?: string; isAdmin?: boolean }
 
   return (
     <nav className="relative z-50 bg-zinc-950/80 backdrop-blur-sm">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 md:h-28">
+      <div className="relative z-[60] mx-auto flex h-20 max-w-7xl items-center justify-between px-4 md:h-28">
         {/* Left spacer */}
         <div className="w-24" />
 
@@ -73,9 +73,10 @@ export function Navigation({ bar, isAdmin }: { bar?: string; isAdmin?: boolean }
         {/* Right: Search + Menu */}
         <div className="flex w-24 items-center justify-end gap-3">
           <SearchBar bar={bar} onOpen={() => setMenuOpen(false)} />
-          <NavMenu menuItems={menuItems} barLabel={barLabel} open={menuOpen} onToggle={setMenuOpen} adminHref={isAdmin && bar ? `/${bar}/admin` : undefined} />
+          <NavMenuButton open={menuOpen} onToggle={setMenuOpen} />
         </div>
       </div>
+      <NavMenuOverlay menuItems={menuItems} barLabel={barLabel} open={menuOpen} onToggle={setMenuOpen} adminHref={isAdmin && bar ? `/${bar}/admin` : undefined} />
     </nav>
   );
 }
