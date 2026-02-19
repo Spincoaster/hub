@@ -27,13 +27,13 @@ export default function Home() {
         </h1>
 
         {/* SP only: Logo centered */}
-        <FadeIn delayMs={400} className="mt-12 mb-16 flex justify-center md:hidden">
+        <FadeIn delayMs={400} className="mt-10 mb-12 flex justify-center md:hidden">
           <Image
             src="/bar_logo.png"
             alt="Spincoaster Music Bar"
             width={200}
             height={200}
-            className="w-[200px]"
+            className="w-[128px]"
             priority
           />
         </FadeIn>
