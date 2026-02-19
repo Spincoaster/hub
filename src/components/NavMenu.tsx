@@ -61,12 +61,12 @@ export function NavMenu({
 
   useEffect(() => {
     if (!open) return;
-    const prevent = (e: Event) => e.preventDefault();
-    window.addEventListener("wheel", prevent, { passive: false });
-    window.addEventListener("touchmove", prevent, { passive: false });
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.overflow = "hidden";
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
     return () => {
-      window.removeEventListener("wheel", prevent);
-      window.removeEventListener("touchmove", prevent);
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
     };
   }, [open]);
 
@@ -119,7 +119,7 @@ export function NavMenu({
 
       {/* Menu dropdown */}
       {mounted && (
-      <div className={`absolute inset-x-0 top-20 z-50 h-screen overflow-hidden bg-[#0a0a0a] transition-all duration-300 ease-in-out md:top-28 ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+      <div className={`absolute inset-x-0 top-20 z-50 h-[calc(100vh-5rem)] overflow-y-auto bg-[#0a0a0a] transition-all duration-300 ease-in-out md:top-28 md:h-[calc(100vh-7rem)] ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
         <NoiseBackground className="pointer-events-none absolute inset-0 h-full w-full" />
         <div className="relative mt-20 flex flex-col border-t border-white md:mt-0">
           {menuItems.map((item, i) => {

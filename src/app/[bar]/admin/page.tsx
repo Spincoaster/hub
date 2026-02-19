@@ -177,7 +177,7 @@ export default async function AdminPage({
           アカウント管理
         </h2>
         <p className="mb-3 text-sm text-zinc-400">
-          パスワードの変更や管理者ユーザーの追加・削除ができます。
+          ログイン中: <span className="text-white font-medium">{session.user?.name}</span>
         </p>
         <div className="flex gap-3">
           <Link
