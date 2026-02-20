@@ -122,8 +122,11 @@ export function NavMenuOverlay({
       history.pushState({ navMenuOpen: true }, "");
       closedByPopstate.current = false;
     } else if (!closedByPopstate.current) {
-      // Closed by button/link click — pop the state we pushed
-      if (history.state?.navMenuOpen) history.back();
+      // Closed by button/link click — clear the flag without history.back()
+      // which would interfere with Next.js Link navigation
+      if (history.state?.navMenuOpen) {
+        history.replaceState(null, "");
+      }
     }
   }, [open]);
 
