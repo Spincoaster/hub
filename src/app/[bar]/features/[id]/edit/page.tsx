@@ -253,7 +253,7 @@ export default function FeatureEditPage() {
         const endpoint =
           newItemType === "Track" ? "/api/tracks" : "/api/records";
         const res = await fetch(
-          `${endpoint}?query=${encodeURIComponent(searchQuery)}`
+          `${endpoint}?query=${encodeURIComponent(searchQuery)}&bar=${encodeURIComponent(bar)}`
         );
         if (!res.ok) throw new Error("Search failed");
         const data = await res.json();
