@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { BAR_VALUES } from "@/lib/utils";
 import DeleteButton from "@/components/DeleteButton";
 
 export default async function OwnersPage({
@@ -12,6 +13,7 @@ export default async function OwnersPage({
   const session = await auth();
 
   const owners = await prisma.owner.findMany({
+    where: { records: { some: { bar: BAR_VALUES[bar] } } },
     orderBy: { name: "asc" },
   });
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { buildPrefixFilter } from "@/lib/utils";
+import { buildPrefixFilter, BAR_VALUES } from "@/lib/utils";
 import InitialLetterPagination from "@/components/InitialLetterPagination";
 import { NAV, SEARCH } from "@/lib/labels";
 
@@ -17,7 +17,7 @@ export default async function TrackArtistsPage({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {
-    tracks: { some: {} },
+    tracks: { some: { bar: BAR_VALUES[bar] } },
     ...buildPrefixFilter(hasPrefix),
   };
 

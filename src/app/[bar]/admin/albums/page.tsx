@@ -32,7 +32,7 @@ export default function AdminAlbumsPage() {
   const search = useCallback(async (q: string, p: number) => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ page: String(p), limit: String(PAGE_SIZE) });
+      const params = new URLSearchParams({ page: String(p), limit: String(PAGE_SIZE), bar });
       if (q.trim()) params.set("query", q.trim());
       if (artistId) params.set("artistId", artistId);
       const res = await fetch(`/api/albums?${params}`);
@@ -45,7 +45,7 @@ export default function AdminAlbumsPage() {
     } finally {
       setLoading(false);
     }
-  }, [artistId]);
+  }, [bar, artistId]);
 
   useEffect(() => {
     search(query, page);

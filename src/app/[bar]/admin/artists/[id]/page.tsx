@@ -11,7 +11,7 @@ interface Artist {
   furigana: string | null;
   albums: { id: string; name: string | null; _count?: { tracks: number } }[];
   records: { id: string; name: string | null; location: string | null; number: string | null; bar: number | null; owner: { name: string | null } | null }[];
-  tracks: { id: string; name: string | null; number: number | null; album: { id: string; name: string | null } | null }[];
+  tracks: { id: string; name: string | null; number: number | null; bar: number | null; album: { id: string; name: string | null } | null }[];
 }
 
 const BAR_VALUES: Record<string, number> = { shinjuku: 0, ebisu: 1, kagurazaka: 2 };
@@ -26,6 +26,7 @@ export default function ArtistDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const barRecords = artist?.records.filter((r) => r.bar === BAR_VALUES[bar]) ?? [];
+  const barTracks = artist?.tracks.filter((t) => t.bar === BAR_VALUES[bar]) ?? [];
 
   useEffect(() => {
     fetch(`/api/artists/${id}`)
@@ -123,11 +124,11 @@ export default function ArtistDetailPage() {
       )}
 
       {/* トラック */}
-      {artist.tracks.length > 0 && (
+      {barTracks.length > 0 && (
         <div className="mb-8">
           <h2 className="mb-3 text-lg font-semibold text-white">
             トラック
-            <span className="ml-2 text-sm font-normal text-zinc-400">({artist.tracks.length}件)</span>
+            <span className="ml-2 text-sm font-normal text-zinc-400">({barTracks.length}件)</span>
           </h2>
           <table className="w-full text-left text-sm text-white">
             <thead>
@@ -138,7 +139,7 @@ export default function ArtistDetailPage() {
               </tr>
             </thead>
             <tbody>
-              {artist.tracks.map((track) => (
+              {barTracks.map((track) => (
                 <tr key={track.id} className="border-b border-zinc-800">
                   <td className="py-3 text-zinc-400">{track.number ?? "—"}</td>
                   <td className="py-3">

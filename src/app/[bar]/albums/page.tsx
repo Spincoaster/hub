@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { buildPrefixFilter } from "@/lib/utils";
+import { buildPrefixFilter, BAR_VALUES } from "@/lib/utils";
 import InitialLetterPagination from "@/components/InitialLetterPagination";
 import DeleteButton from "@/components/DeleteButton";
 import { SEARCH } from "@/lib/labels";
@@ -18,7 +18,9 @@ export default async function AlbumsPage({
   const session = await auth();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const where: any = {};
+  const where: any = {
+    tracks: { some: { bar: BAR_VALUES[bar] } },
+  };
 
   if (hasPrefix) {
     Object.assign(where, buildPrefixFilter(hasPrefix));

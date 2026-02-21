@@ -1,15 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { serializeBigInt, buildPrefixFilter } from "@/lib/utils";
+import { serializeBigInt, BAR_VALUES, buildPrefixFilter } from "@/lib/utils";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const hasPrefix = searchParams.get("has_prefix");
+  const bar = searchParams.get("bar");
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
   const query = searchParams.get("query");
   const artistId = searchParams.get("artistId");
+
+  if (bar && BAR_VALUES[bar] !== undefined) {
+    where.tracks = { some: { bar: BAR_VALUES[bar] } };
+  }
 
   if (artistId) {
     where.artistId = BigInt(artistId);
