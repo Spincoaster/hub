@@ -108,10 +108,19 @@ export function NavMenuOverlay({
 
   useEffect(() => {
     if (!open) return;
+    const updateMenuHeight = () => {
+      const headerH = window.matchMedia("(min-width: 768px)").matches ? 112 : 80;
+      document.documentElement.style.setProperty("--menu-h", `${window.innerHeight - headerH}px`);
+    };
+    updateMenuHeight();
+    window.visualViewport?.addEventListener("resize", updateMenuHeight);
+    window.addEventListener("resize", updateMenuHeight);
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = "hidden";
     document.body.style.paddingRight = `${scrollbarWidth}px`;
     return () => {
+      window.visualViewport?.removeEventListener("resize", updateMenuHeight);
+      window.removeEventListener("resize", updateMenuHeight);
       document.body.style.overflow = "";
       document.body.style.paddingRight = "";
     };
@@ -154,7 +163,7 @@ export function NavMenuOverlay({
 
       {/* Menu dropdown */}
       {mounted && (
-      <div className={`absolute inset-x-0 top-20 z-50 h-[calc(100vh-5rem)] overflow-y-auto bg-[#0a0a0a] transition-all duration-300 ease-in-out md:top-28 md:h-[calc(100vh-7rem)] ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+      <div style={{ height: "var(--menu-h, calc(100vh - 5rem))" }} className={`absolute inset-x-0 top-20 z-50 overflow-y-auto bg-[#0a0a0a] transition-all duration-300 ease-in-out md:top-28 ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
         <NoiseBackground className="pointer-events-none absolute inset-0 h-full w-full" />
         <div className="relative mt-20 flex flex-col border-t border-white md:mt-0">
           {menuItems.map((item, i) => {
