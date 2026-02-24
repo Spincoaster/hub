@@ -12,18 +12,13 @@ export default async function ArtistDetailPage({
   const { bar, id } = await params;
   const session = await auth();
 
-  const barFilter =
-    bar === "ebisu"
-      ? { bar: BAR_VALUES.ebisu }
-      : bar === "shinjuku"
-        ? { bar: { not: BAR_VALUES.ebisu } }
-        : {};
+  const barFilter = { bar: BAR_VALUES[bar] };
 
   const artist = await prisma.artist.findUnique({
     where: { id: BigInt(id) },
     include: {
       records: { include: { owner: true }, where: barFilter },
-      tracks: { include: { album: true } },
+      tracks: { include: { album: true }, where: barFilter },
       albums: true,
     },
   });

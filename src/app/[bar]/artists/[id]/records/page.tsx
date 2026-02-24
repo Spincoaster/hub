@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
-import Link from "next/link";
+
 import { RecordList } from "@/components/RecordList";
 import { getSessionId } from "@/lib/session";
 
@@ -12,12 +12,7 @@ export default async function ArtistRecordsPage({
 }) {
   const { bar, id } = await params;
 
-  const barFilter =
-    bar === "ebisu"
-      ? { bar: BAR_VALUES.ebisu }
-      : bar === "shinjuku"
-        ? { bar: { not: BAR_VALUES.ebisu } }
-        : {};
+  const barFilter = { bar: BAR_VALUES[bar] };
 
   const artist = await prisma.artist.findUnique({
     where: { id: BigInt(id) },

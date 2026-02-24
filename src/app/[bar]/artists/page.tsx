@@ -20,16 +20,7 @@ export default async function ArtistsPage({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
 
-  if (bar === "ebisu") {
-    where.records = { some: { bar: BAR_VALUES.ebisu } };
-  } else if (bar === "shinjuku") {
-    where.NOT = {
-      AND: [
-        { records: { some: {} } },
-        { records: { every: { bar: BAR_VALUES.ebisu } } },
-      ],
-    };
-  }
+  where.records = { some: { bar: BAR_VALUES[bar] } };
 
   if (hasPrefix) {
     Object.assign(where, buildPrefixFilter(hasPrefix));
