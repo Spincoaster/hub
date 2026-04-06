@@ -36,9 +36,9 @@ function escapeStr(s: string): string {
 }
 
 async function main() {
+  const url = process.env.POSTGRES_URL ?? "";
   const pool = new Pool({
-    connectionString: process.env.POSTGRES_URL,
-    ssl: { rejectUnauthorized: false },
+    connectionString: url + (url.includes("?") ? "&" : "?") + "uselibpqcompat=true",
   });
   try {
     const { rows } = await pool.query<{ key: string; value: string }>(

@@ -124,7 +124,8 @@ async function migrate() {
   const mysqlConn = await mysql.createConnection({ uri: MYSQL_URL });
 
   console.log("Connecting to PostgreSQL...");
-  const pg = new Pool({ connectionString: PG_URL, ssl: { rejectUnauthorized: false } });
+  const pgConnStr = PG_URL + (PG_URL.includes("?") ? "&" : "?") + "uselibpqcompat=true";
+  const pg = new Pool({ connectionString: pgConnStr });
 
   for (const table of TABLES) {
     console.log(`\nMigrating: ${table.name}`);

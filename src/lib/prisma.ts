@@ -6,11 +6,14 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+function pgUrl() {
+  const url = process.env.POSTGRES_URL ?? "";
+  const sep = url.includes("?") ? "&" : "?";
+  return `${url}${sep}uselibpqcompat=true`;
+}
+
 function createPrismaClient() {
-  const pool = new Pool({
-    connectionString: process.env.POSTGRES_URL,
-    ssl: { rejectUnauthorized: false },
-  });
+  const pool = new Pool({ connectionString: pgUrl() });
   const adapter = new PrismaPg(pool);
   return new PrismaClient({ adapter });
 }

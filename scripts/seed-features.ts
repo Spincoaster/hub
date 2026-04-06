@@ -4,9 +4,9 @@ config({ path: ".env.local", override: true });
 
 import { Pool } from "pg";
 
+const _url = process.env.POSTGRES_URL ?? "";
 const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL,
-  ssl: { rejectUnauthorized: false },
+  connectionString: _url + (_url.includes("?") ? "&" : "?") + "uselibpqcompat=true",
 });
 
 async function main() {
