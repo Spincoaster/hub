@@ -68,7 +68,7 @@ const LABELS: Record<string, string> = {
 };
 
 async function main() {
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const pool = new Pool({ connectionString: process.env.POSTGRES_URL });
   try {
     let created = 0;
     let skipped = 0;

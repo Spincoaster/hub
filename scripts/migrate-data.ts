@@ -6,7 +6,7 @@ import mysql from "mysql2/promise";
 import { Pool } from "pg";
 
 const MYSQL_URL = process.env.MYSQL_DATABASE_URL!;
-const PG_URL = process.env.DATABASE_URL!;
+const PG_URL = process.env.POSTGRES_URL!;
 
 // Tables in dependency order (parents before children)
 const TABLES = [
