@@ -18,7 +18,7 @@ const FEATURES = [
 ];
 
 async function seed() {
-  const pg = new Pool({ connectionString: PG_URL });
+  const pg = new Pool({ connectionString: PG_URL, ssl: { rejectUnauthorized: false } });
 
   for (const b of BARS) {
     for (const f of FEATURES) {

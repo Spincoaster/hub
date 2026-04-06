@@ -68,7 +68,10 @@ const LABELS: Record<string, string> = {
 };
 
 async function main() {
-  const pool = new Pool({ connectionString: process.env.POSTGRES_URL });
+  const pool = new Pool({
+    connectionString: process.env.POSTGRES_URL,
+    ssl: { rejectUnauthorized: false },
+  });
   try {
     let created = 0;
     let skipped = 0;

@@ -36,7 +36,10 @@ function escapeStr(s: string): string {
 }
 
 async function main() {
-  const pool = new Pool({ connectionString: process.env.POSTGRES_URL });
+  const pool = new Pool({
+    connectionString: process.env.POSTGRES_URL,
+    ssl: { rejectUnauthorized: false },
+  });
   try {
     const { rows } = await pool.query<{ key: string; value: string }>(
       "SELECT key, value FROM labels ORDER BY key"
