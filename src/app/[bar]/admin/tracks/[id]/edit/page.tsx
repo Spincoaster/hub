@@ -22,6 +22,7 @@ export default function EditTrackPage() {
   const [phoneticName, setPhoneticName] = useState("");
   const [furigana, setFurigana] = useState("");
   const [number, setNumber] = useState<number | "">("");
+  const [scoreDelta, setScoreDelta] = useState("0");
   const [artistId, setArtistId] = useState("");
   const [albumId, setAlbumId] = useState("");
   const [artistQuery, setArtistQuery] = useState("");
@@ -45,6 +46,7 @@ export default function EditTrackPage() {
         setPhoneticName(data.phoneticName ?? "");
         setFurigana(data.furigana ?? "");
         setNumber(data.number ?? "");
+        setScoreDelta(String(data.rankingAdjustment?.scoreDelta ?? 0));
         if (data.artist) {
           setSelectedArtist({ id: data.artist.id, name: data.artist.name });
           setArtistId(data.artist.id);
@@ -102,6 +104,12 @@ export default function EditTrackPage() {
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
+    const parsedScoreDelta = Number(scoreDelta);
+    if (!Number.isInteger(parsedScoreDelta)) {
+      setError("ランキング補正は整数で入力してください");
+      return;
+    }
+
     setSaving(true);
     setError(null);
 
@@ -119,6 +127,18 @@ export default function EditTrackPage() {
         }),
       });
       if (!res.ok) throw new Error("Failed to save");
+
+      const adjustmentRes = await fetch("/api/ranking-adjustments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          itemType: "Hi-Res",
+          itemId: id,
+          scoreDelta: parsedScoreDelta,
+        }),
+      });
+      if (!adjustmentRes.ok) throw new Error("Failed to save ranking adjustment");
+
       router.push(`/${bar}/admin/tracks`);
     } catch {
       setError("保存に失敗しました");
@@ -174,6 +194,16 @@ export default function EditTrackPage() {
             type="number"
             value={number}
             onChange={(e) => setNumber(e.target.value === "" ? "" : parseInt(e.target.value))}
+            className={inputClass}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-zinc-300">ランキング補正</label>
+          <input
+            type="number"
+            step="1"
+            value={scoreDelta}
+            onChange={(e) => setScoreDelta(e.target.value)}
             className={inputClass}
           />
         </div>

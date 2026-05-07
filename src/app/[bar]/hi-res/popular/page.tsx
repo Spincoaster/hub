@@ -3,6 +3,7 @@ import { serializeBigInt } from "@/lib/utils";
 import { RecordList } from "@/components/RecordList";
 import { getSessionId } from "@/lib/session";
 import { NAV, TABLE } from "@/lib/labels";
+import { getTopTrackRanking } from "@/lib/ranking-adjustments";
 
 export const dynamic = "force-dynamic";
 
@@ -24,19 +25,11 @@ export default async function TrackTop100Page({
 }: {
   params: Promise<{ bar: string }>;
 }) {
-  const { bar } = await params;
+  await params;
 
-  const topTrackLikes = await prisma.like.groupBy({
-    by: ["trackId"],
-    where: { trackId: { not: null } },
-    _count: { trackId: true },
-    orderBy: { _count: { trackId: "desc" } },
-    take: 100,
-  });
+  const topTrackRanking = await getTopTrackRanking(100);
 
-  const topTrackIds = topTrackLikes
-    .map((l) => l.trackId)
-    .filter((id): id is bigint => id !== null);
+  const topTrackIds = topTrackRanking.map((row) => row.itemId);
 
   const topTracks =
     topTrackIds.length > 0
@@ -48,13 +41,13 @@ export default async function TrackTop100Page({
 
   // Build likeCounts map
   const likeCounts: Record<string, number> = {};
-  for (const l of topTrackLikes) {
-    if (l.trackId) likeCounts[String(l.trackId)] = l._count.trackId;
+  for (const row of topTrackRanking) {
+    likeCounts[String(row.itemId)] = row.score;
   }
 
   // Build likeMap for current session
   const sessionId = await getSessionId();
-  let likeMap: Record<string, string> = {};
+  const likeMap: Record<string, string> = {};
   if (sessionId && topTrackIds.length > 0) {
     const likes = await prisma.like.findMany({
       where: { sessionId, trackId: { in: topTrackIds } },

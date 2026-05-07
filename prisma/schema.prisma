@@ -134,6 +134,7 @@ model Record {
   artist Artist? @relation(fields: [artistId], references: [id], onDelete: Cascade)
   owner  Owner?  @relation(fields: [ownerId], references: [id])
   likes  Like[]
+  rankingAdjustment RankingAdjustment?
 
   @@unique([bar, location, number])
   @@map("records")
@@ -154,6 +155,7 @@ model Track {
   artist Artist? @relation(fields: [artistId], references: [id], onDelete: Cascade)
   album  Album?  @relation(fields: [albumId], references: [id], onDelete: Cascade)
   likes  Like[]
+  rankingAdjustment RankingAdjustment?
 
   @@map("tracks")
 }
@@ -174,6 +176,20 @@ model Like {
   @@index([recordId])
   @@index([trackId])
   @@map("likes")
+}
+
+model RankingAdjustment {
+  id         BigInt   @id @default(autoincrement())
+  recordId   BigInt?  @unique @map("record_id")
+  trackId    BigInt?  @unique @map("track_id")
+  scoreDelta Int      @default(0) @map("score_delta")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  record Record? @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  track  Track?  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  @@map("ranking_adjustments")
 }
 
 model Label {

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { RecordPopup, type PopupData } from "@/components/RecordPopup";
+import { recordListItemKey } from "@/lib/record-list-keys";
 
 
 type RecordItem = {
@@ -26,7 +27,7 @@ export function RecordList({
   likeCounts?: Record<string, number>;
   singleColumn?: boolean;
 }) {
-  const [popupItemId, setPopupItemId] = useState<string | null>(null);
+  const [popupItemKey, setPopupItemKey] = useState<string | null>(null);
   const [likeMap, setLikeMap] = useState<Record<string, string>>(
     initialLikeMap ?? {},
   );
@@ -35,28 +36,35 @@ export function RecordList({
   );
 
   const likeable = initialLikeMap !== undefined;
+  const itemKey = (item: RecordItem) => recordListItemKey(item.id, item.type);
+  const getLikeId = (item: RecordItem) => likeMap[itemKey(item)] ?? likeMap[item.id];
+  const getLikeCount = (item: RecordItem) =>
+    likeCounts[itemKey(item)] ?? likeCounts[item.id] ?? 0;
 
   const toggleLike = useCallback(
-    async (itemId: string, type: "Record" | "Hi-Res") => {
-      const likeId = likeMap[itemId];
+    async (item: RecordItem) => {
+      const key = recordListItemKey(item.id, item.type);
+      const likeId = likeMap[key] ?? likeMap[item.id];
       const isLiked = !!likeId;
+      const previousCount = likeCounts[key] ?? likeCounts[item.id] ?? 0;
 
       // Optimistic update
       if (isLiked) {
         setLikeMap((prev) => {
           const next = { ...prev };
-          delete next[itemId];
+          delete next[key];
+          delete next[item.id];
           return next;
         });
         setLikeCounts((prev) => ({
           ...prev,
-          [itemId]: Math.max((prev[itemId] ?? 0) - 1, 0),
+          [key]: Math.max(previousCount - 1, 0),
         }));
       } else {
-        setLikeMap((prev) => ({ ...prev, [itemId]: "pending" }));
+        setLikeMap((prev) => ({ ...prev, [key]: "pending" }));
         setLikeCounts((prev) => ({
           ...prev,
-          [itemId]: (prev[itemId] ?? 0) + 1,
+          [key]: previousCount + 1,
         }));
       }
 
@@ -64,11 +72,15 @@ export function RecordList({
         if (isLiked) {
           const res = await fetch(`/api/likes/${likeId}`, { method: "DELETE" });
           if (!res.ok) throw new Error("delete failed");
+          const data = await res.json();
+          if (typeof data.likeCount === "number") {
+            setLikeCounts((prev) => ({ ...prev, [key]: data.likeCount }));
+          }
         } else {
           const body =
-            type === "Record"
-              ? { recordId: itemId }
-              : { trackId: itemId };
+            item.type === "Record"
+              ? { recordId: item.id }
+              : { trackId: item.id };
           const res = await fetch("/api/likes", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -76,35 +88,38 @@ export function RecordList({
           });
           if (!res.ok) throw new Error("create failed");
           const data = await res.json();
-          setLikeMap((prev) => ({ ...prev, [itemId]: String(data.id) }));
+          setLikeMap((prev) => ({ ...prev, [key]: String(data.id) }));
+          if (typeof data.likeCount === "number") {
+            setLikeCounts((prev) => ({ ...prev, [key]: data.likeCount }));
+          }
         }
       } catch {
         // Rollback on failure
         if (isLiked) {
-          setLikeMap((prev) => ({ ...prev, [itemId]: likeId }));
+          setLikeMap((prev) => ({ ...prev, [key]: likeId }));
           setLikeCounts((prev) => ({
             ...prev,
-            [itemId]: (prev[itemId] ?? 0) + 1,
+            [key]: previousCount,
           }));
         } else {
           setLikeMap((prev) => {
             const next = { ...prev };
-            delete next[itemId];
+            delete next[key];
             return next;
           });
           setLikeCounts((prev) => ({
             ...prev,
-            [itemId]: Math.max((prev[itemId] ?? 0) - 1, 0),
+            [key]: previousCount,
           }));
         }
       }
     },
-    [likeMap],
+    [likeCounts, likeMap],
   );
 
   // Derive popup data from current state
-  const popupItem = popupItemId
-    ? items.find((i) => i.id === popupItemId)
+  const popupItem = popupItemKey
+    ? items.find((i) => itemKey(i) === popupItemKey)
     : null;
   const popupData: PopupData | null = popupItem
     ? {
@@ -113,25 +128,26 @@ export function RecordList({
         artistName: popupItem.artistName,
         albumName: popupItem.albumName,
         number: popupItem.number,
-        likeCount: likeCounts[popupItem.id] ?? 0,
+        likeCount: getLikeCount(popupItem),
         type: popupItem.type,
         ownerName: popupItem.ownerName,
         location: popupItem.location,
-        isLiked: likeable ? !!likeMap[popupItem.id] : undefined,
-        likeId: likeMap[popupItem.id],
+        isLiked: likeable ? !!getLikeId(popupItem) : undefined,
+        likeId: getLikeId(popupItem),
       }
     : null;
 
   return (
     <>
       {items.map((item) => {
-        const count = likeCounts[item.id] ?? 0;
-        const isLiked = !!likeMap[item.id];
+        const key = itemKey(item);
+        const count = getLikeCount(item);
+        const isLiked = !!getLikeId(item);
 
         return (
           <button
-            key={item.id}
-            onClick={() => setPopupItemId(item.id)}
+            key={key}
+            onClick={() => setPopupItemKey(key)}
             className="group flex w-full touch-manipulation items-stretch border-b border-zinc-600 first:border-t md:first:border-t-0 text-left transition-colors hover:bg-zinc-900/50"
           >
             <span className={`flex min-w-0 flex-1 ${singleColumn ? "" : "flex-col md:flex-row md:items-stretch"}`}>
@@ -200,10 +216,10 @@ export function RecordList({
       {popupData && (
         <RecordPopup
           data={popupData}
-          onClose={() => setPopupItemId(null)}
+          onClose={() => setPopupItemKey(null)}
           onToggleLike={
             likeable
-              ? () => toggleLike(popupData.id, popupData.type)
+              ? () => toggleLike(popupItem!)
               : undefined
           }
         />

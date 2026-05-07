@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { RecordPopup, type PopupData } from "@/components/RecordPopup";
+import { recordListItemKey } from "@/lib/record-list-keys";
 
 type RecordItem = {
   id: string;
@@ -35,7 +36,7 @@ export function RecordCarousel({
   singleColumn?: boolean;
   columns?: string[];
 }) {
-  const [popupItemId, setPopupItemId] = useState<string | null>(null);
+  const [popupItemKey, setPopupItemKey] = useState<string | null>(null);
   const [likeMap, setLikeMap] = useState<Record<string, string>>(
     initialLikeMap ?? {},
   );
@@ -51,6 +52,10 @@ export function RecordCarousel({
   const measured = pageWidth > 0;
   const likeable = initialLikeMap !== undefined;
   const pages = chunk(items, 5);
+  const itemKey = (item: RecordItem) => recordListItemKey(item.id, item.type);
+  const getLikeId = (item: RecordItem) => likeMap[itemKey(item)] ?? likeMap[item.id];
+  const getLikeCount = (item: RecordItem) =>
+    likeCounts[itemKey(item)] ?? likeCounts[item.id] ?? 0;
 
   // Measure alignment with max-w-7xl px-4 container
   useEffect(() => {
@@ -92,25 +97,28 @@ export function RecordCarousel({
   };
 
   const toggleLike = useCallback(
-    async (itemId: string, type: "Record" | "Hi-Res") => {
-      const likeId = likeMap[itemId];
+    async (item: RecordItem) => {
+      const key = recordListItemKey(item.id, item.type);
+      const likeId = likeMap[key] ?? likeMap[item.id];
       const isLiked = !!likeId;
+      const previousCount = likeCounts[key] ?? likeCounts[item.id] ?? 0;
 
       if (isLiked) {
         setLikeMap((prev) => {
           const next = { ...prev };
-          delete next[itemId];
+          delete next[key];
+          delete next[item.id];
           return next;
         });
         setLikeCounts((prev) => ({
           ...prev,
-          [itemId]: Math.max((prev[itemId] ?? 0) - 1, 0),
+          [key]: Math.max(previousCount - 1, 0),
         }));
       } else {
-        setLikeMap((prev) => ({ ...prev, [itemId]: "pending" }));
+        setLikeMap((prev) => ({ ...prev, [key]: "pending" }));
         setLikeCounts((prev) => ({
           ...prev,
-          [itemId]: (prev[itemId] ?? 0) + 1,
+          [key]: previousCount + 1,
         }));
       }
 
@@ -118,11 +126,15 @@ export function RecordCarousel({
         if (isLiked) {
           const res = await fetch(`/api/likes/${likeId}`, { method: "DELETE" });
           if (!res.ok) throw new Error("delete failed");
+          const data = await res.json();
+          if (typeof data.likeCount === "number") {
+            setLikeCounts((prev) => ({ ...prev, [key]: data.likeCount }));
+          }
         } else {
           const body =
-            type === "Record"
-              ? { recordId: itemId }
-              : { trackId: itemId };
+            item.type === "Record"
+              ? { recordId: item.id }
+              : { trackId: item.id };
           const res = await fetch("/api/likes", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -130,33 +142,36 @@ export function RecordCarousel({
           });
           if (!res.ok) throw new Error("create failed");
           const data = await res.json();
-          setLikeMap((prev) => ({ ...prev, [itemId]: String(data.id) }));
+          setLikeMap((prev) => ({ ...prev, [key]: String(data.id) }));
+          if (typeof data.likeCount === "number") {
+            setLikeCounts((prev) => ({ ...prev, [key]: data.likeCount }));
+          }
         }
       } catch {
         if (isLiked) {
-          setLikeMap((prev) => ({ ...prev, [itemId]: likeId }));
+          setLikeMap((prev) => ({ ...prev, [key]: likeId }));
           setLikeCounts((prev) => ({
             ...prev,
-            [itemId]: (prev[itemId] ?? 0) + 1,
+            [key]: previousCount,
           }));
         } else {
           setLikeMap((prev) => {
             const next = { ...prev };
-            delete next[itemId];
+            delete next[key];
             return next;
           });
           setLikeCounts((prev) => ({
             ...prev,
-            [itemId]: Math.max((prev[itemId] ?? 0) - 1, 0),
+            [key]: previousCount,
           }));
         }
       }
     },
-    [likeMap],
+    [likeCounts, likeMap],
   );
 
-  const popupItem = popupItemId
-    ? items.find((i) => i.id === popupItemId)
+  const popupItem = popupItemKey
+    ? items.find((i) => itemKey(i) === popupItemKey)
     : null;
   const popupData: PopupData | null = popupItem
     ? {
@@ -165,12 +180,12 @@ export function RecordCarousel({
         artistName: popupItem.artistName,
         albumName: popupItem.albumName,
         number: popupItem.number,
-        likeCount: likeCounts[popupItem.id] ?? 0,
+        likeCount: getLikeCount(popupItem),
         type: popupItem.type,
         ownerName: popupItem.ownerName,
         location: popupItem.location,
-        isLiked: likeable ? !!likeMap[popupItem.id] : undefined,
-        likeId: likeMap[popupItem.id],
+        isLiked: likeable ? !!getLikeId(popupItem) : undefined,
+        likeId: getLikeId(popupItem),
       }
     : null;
 
@@ -206,13 +221,14 @@ export function RecordCarousel({
               <span className="w-1/5" />
             </div>
             {page.map((item) => {
-              const count = likeCounts[item.id] ?? 0;
-              const isLiked = !!likeMap[item.id];
+              const key = itemKey(item);
+              const count = getLikeCount(item);
+              const isLiked = !!getLikeId(item);
 
               return (
                 <button
-                  key={item.id}
-                  onClick={() => setPopupItemId(item.id)}
+                  key={key}
+                  onClick={() => setPopupItemKey(key)}
                   className="group flex w-full touch-manipulation items-stretch border-b border-zinc-600 first:border-t md:first:border-t-0 text-left transition-colors hover:bg-zinc-900/50"
                 >
                   <span className={`flex min-w-0 ${singleColumn ? "w-4/5" : "w-4/5 flex-col md:flex-row md:items-stretch"}`}>
@@ -298,10 +314,10 @@ export function RecordCarousel({
       {popupData && (
         <RecordPopup
           data={popupData}
-          onClose={() => setPopupItemId(null)}
+          onClose={() => setPopupItemKey(null)}
           onToggleLike={
             likeable
-              ? () => toggleLike(popupData.id, popupData.type)
+              ? () => toggleLike(popupItem!)
               : undefined
           }
         />

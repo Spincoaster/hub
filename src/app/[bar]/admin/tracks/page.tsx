@@ -3,6 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import {
+  parseAdminTableSort,
+  SortableHeaderButton,
+  type AdminTableSort,
+} from "@/components/admin/SortableHeaderButton";
 
 const PAGE_SIZE = 50;
 
@@ -12,6 +17,8 @@ interface Track {
   number: number | null;
   artist: { id: string; name: string | null } | null;
   album: { id: string; name: string | null } | null;
+  _count?: { likes: number };
+  rankingAdjustment?: { scoreDelta: number } | null;
 }
 
 export default function AdminTracksPage() {
@@ -21,6 +28,7 @@ export default function AdminTracksPage() {
   const bar = params.bar as string;
   const artistId = searchParams.get("artistId");
   const albumId = searchParams.get("albumId");
+  const sort = parseAdminTableSort(searchParams.get("sort"));
 
   const [tracks, setTracks] = useState<Track[]>([]);
   const [total, setTotal] = useState(0);
@@ -31,13 +39,14 @@ export default function AdminTracksPage() {
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
-  const search = useCallback(async (q: string, p: number) => {
+  const search = useCallback(async (q: string, p: number, sortMode: AdminTableSort) => {
     setLoading(true);
     try {
       const params = new URLSearchParams({ page: String(p), limit: String(PAGE_SIZE), bar });
       if (q.trim()) params.set("query", q.trim());
       if (artistId) params.set("artistId", artistId);
       if (albumId) params.set("albumId", albumId);
+      if (sortMode !== "default") params.set("sort", sortMode);
       const res = await fetch(`/api/tracks?${params}`);
       if (!res.ok) throw new Error("Failed to fetch");
       const json = await res.json();
@@ -51,23 +60,35 @@ export default function AdminTracksPage() {
   }, [bar, artistId, albumId]);
 
   useEffect(() => {
-    search(query, page);
-  }, [search, page]);
-
-  useEffect(() => {
     const timer = setTimeout(() => {
-      setPage(1);
-      search(query, 1);
+      search(query, page, sort);
     }, 300);
     return () => clearTimeout(timer);
-  }, [query, search]);
+  }, [query, page, sort, search]);
+
+  function handleQueryChange(value: string) {
+    setQuery(value);
+    setPage(1);
+  }
+
+  function handleSort(nextSort: AdminTableSort) {
+    const nextParams = new URLSearchParams(searchParams.toString());
+    if (nextSort === "default" || sort === nextSort) {
+      nextParams.delete("sort");
+    } else {
+      nextParams.set("sort", nextSort);
+    }
+    setPage(1);
+    const queryString = nextParams.toString();
+    router.push(queryString ? `/${bar}/admin/tracks?${queryString}` : `/${bar}/admin/tracks`);
+  }
 
   async function handleDelete(id: string, name: string) {
     if (!confirm(`「${name}」を削除しますか？`)) return;
     try {
       const res = await fetch(`/api/tracks/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete");
-      search(query, page);
+      search(query, page, sort);
     } catch {
       setError("削除に失敗しました");
     }
@@ -127,7 +148,7 @@ export default function AdminTracksPage() {
         <input
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => handleQueryChange(e.target.value)}
           placeholder="トラック名・アーティスト名で検索..."
           className="block w-full rounded-md border border-zinc-600 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
@@ -163,9 +184,33 @@ export default function AdminTracksPage() {
             <thead>
               <tr className="border-b border-zinc-700 text-zinc-400">
                 <th className="py-2 font-medium">No.</th>
-                <th className="py-2 font-medium">トラック名</th>
+                <th className="py-2">
+                  <SortableHeaderButton
+                    label="トラック名"
+                    active={sort === "default"}
+                    direction="asc"
+                    title="トラック名で昇順に並べ替え"
+                    onClick={() => handleSort("default")}
+                  />
+                </th>
                 <th className="py-2 font-medium">アーティスト</th>
                 <th className="py-2 font-medium">アルバム</th>
+                <th className="w-20 py-2 text-right">
+                  <SortableHeaderButton
+                    label="いいね"
+                    active={sort === "likes_desc"}
+                    title="いいね数で降順に並べ替え"
+                    onClick={() => handleSort("likes_desc")}
+                  />
+                </th>
+                <th className="w-20 py-2 text-right">
+                  <SortableHeaderButton
+                    label="補正"
+                    active={sort === "adjusted_likes_desc"}
+                    title="補正込みのいいね数で降順に並べ替え"
+                    onClick={() => handleSort("adjusted_likes_desc")}
+                  />
+                </th>
                 <th className="py-2" />
               </tr>
             </thead>
@@ -183,6 +228,10 @@ export default function AdminTracksPage() {
                     {track.album ? (
                       <button onClick={() => router.push(`/${bar}/admin/albums/${track.album!.id}`)} className="hover:text-blue-400 hover:underline">{track.album.name ?? "—"}</button>
                     ) : "—"}
+                  </td>
+                  <td className="w-20 py-3 text-right text-zinc-400">{track._count?.likes ?? 0}</td>
+                  <td className="w-20 py-3 text-right text-zinc-400">
+                    {track.rankingAdjustment?.scoreDelta ?? 0}
                   </td>
                   <td className="py-3 text-right"><div className="flex items-center justify-end gap-2">
                     <button
@@ -204,7 +253,7 @@ export default function AdminTracksPage() {
               ))}
               {tracks.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-zinc-500">
+                  <td colSpan={7} className="py-8 text-center text-zinc-500">
                     トラックが見つかりません
                   </td>
                 </tr>

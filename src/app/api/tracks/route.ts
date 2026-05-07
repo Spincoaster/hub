@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { serializeBigInt, BAR_VALUES, buildPrefixFilter } from "@/lib/utils";
+import {
+  getSortedAdminTrackIds,
+  parseAdminListSort,
+} from "@/lib/admin-list-sort";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -9,18 +13,22 @@ export async function GET(request: NextRequest) {
   const bar = searchParams.get("bar");
   const artistId = searchParams.get("artistId");
   const albumId = searchParams.get("albumId");
+  const sort = parseAdminListSort(searchParams.get("sort"));
+  const barValue = bar && BAR_VALUES[bar] !== undefined ? BAR_VALUES[bar] : undefined;
+  const parsedArtistId = artistId ? BigInt(artistId) : undefined;
+  const parsedAlbumId = albumId ? BigInt(albumId) : undefined;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
 
-  if (bar && BAR_VALUES[bar] !== undefined) {
-    where.bar = BAR_VALUES[bar];
+  if (barValue !== undefined) {
+    where.bar = barValue;
   }
-  if (artistId) {
-    where.artistId = BigInt(artistId);
+  if (parsedArtistId !== undefined) {
+    where.artistId = parsedArtistId;
   }
-  if (albumId) {
-    where.albumId = BigInt(albumId);
+  if (parsedAlbumId !== undefined) {
+    where.albumId = parsedAlbumId;
   }
   if (hasPrefix) {
     Object.assign(where, buildPrefixFilter(hasPrefix));
@@ -40,10 +48,52 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(searchParams.get("limit") ?? "500", 10);
   const skip = (page - 1) * limit;
 
+  if (sort) {
+    const [trackIds, total] = await Promise.all([
+      getSortedAdminTrackIds({
+        barValue,
+        hasPrefix,
+        artistId: parsedArtistId,
+        albumId: parsedAlbumId,
+        query,
+        sort,
+        take: limit,
+        skip,
+      }),
+      prisma.track.count({ where }),
+    ]);
+
+    const tracks =
+      trackIds.length === 0
+        ? []
+        : await prisma.track.findMany({
+            where: { id: { in: trackIds } },
+            include: {
+              artist: true,
+              album: true,
+              rankingAdjustment: true,
+              _count: { select: { likes: true } },
+            },
+          });
+
+    const trackById = new Map(tracks.map((track) => [track.id.toString(), track]));
+    const sortedTracks = trackIds.flatMap((id) => {
+      const track = trackById.get(id.toString());
+      return track ? [track] : [];
+    });
+
+    return NextResponse.json(serializeBigInt({ data: sortedTracks, total, page, limit }));
+  }
+
   const [tracks, total] = await Promise.all([
     prisma.track.findMany({
       where,
-      include: { artist: true, album: true, _count: { select: { likes: true } } },
+      include: {
+        artist: true,
+        album: true,
+        rankingAdjustment: true,
+        _count: { select: { likes: true } },
+      },
       orderBy: { name: "asc" },
       take: limit,
       skip,

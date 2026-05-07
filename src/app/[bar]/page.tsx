@@ -5,6 +5,18 @@ import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
 import { RecordList } from "@/components/RecordList";
 import { RecordCarousel } from "@/components/RecordCarousel";
 import { getSessionId } from "@/lib/session";
+import {
+  getAdjustedRecordLikeCounts,
+  getAdjustedTrackLikeCounts,
+  getTopRecordRanking,
+  getTopTrackRanking,
+} from "@/lib/ranking-adjustments";
+import {
+  assignRecordLikeCounts,
+  assignTrackLikeCounts,
+  recordLikeKey,
+  trackLikeKey,
+} from "@/lib/record-list-keys";
 import { RightUpArrow } from "@/components/icons/RightUpArrow";
 import { AnimatedText } from "@/components/AnimatedText";
 import { FadeIn } from "@/components/FadeIn";
@@ -69,25 +81,10 @@ export default async function BarPage({
   const barValue = BAR_VALUES[bar];
 
   // Parallel: top likes + features + session
-  const [topRecordLikes, topTrackLikes, barFeatures, sessionId] =
+  const [topRecordRanking, topTrackRanking, barFeatures, sessionId] =
     await Promise.all([
-      prisma.like.groupBy({
-        by: ["recordId"],
-        where: {
-          recordId: { not: null },
-          record: { bar: barValue },
-        },
-        _count: { recordId: true },
-        orderBy: { _count: { recordId: "desc" } },
-        take: 20,
-      }),
-      prisma.like.groupBy({
-        by: ["trackId"],
-        where: { trackId: { not: null } },
-        _count: { trackId: true },
-        orderBy: { _count: { trackId: "desc" } },
-        take: 20,
-      }),
+      getTopRecordRanking(barValue, 20),
+      getTopTrackRanking(20),
       prisma.feature.findMany({
         where: { bar: barValue },
         orderBy: { number: "asc" },
@@ -98,12 +95,8 @@ export default async function BarPage({
       getSessionId(),
     ]);
 
-  const topRecordIds = topRecordLikes
-    .map((l) => l.recordId)
-    .filter((id): id is bigint => id !== null);
-  const topTrackIds = topTrackLikes
-    .map((l) => l.trackId)
-    .filter((id): id is bigint => id !== null);
+  const topRecordIds = topRecordRanking.map((row) => row.itemId);
+  const topTrackIds = topTrackRanking.map((row) => row.itemId);
 
   // Collect all feature item IDs for batch query
   const featureRecordIds: bigint[] = [];
@@ -121,7 +114,7 @@ export default async function BarPage({
   const allRecordIds = [...topRecordIds, ...featureRecordIds];
   const allTrackIds = [...topTrackIds, ...featureTrackIds];
 
-  const [topRecords, topTracks, featureRecords, featureTracks, ...likeResults] =
+  const [topRecords, topTracks, featureRecords, featureTracks, recordLikeCounts, trackLikeCounts] =
     await Promise.all([
       topRecordIds.length > 0
         ? prisma.record.findMany({
@@ -147,30 +140,14 @@ export default async function BarPage({
             include: { artist: true, album: true },
           })
         : Promise.resolve([]),
-      allRecordIds.length > 0
-        ? prisma.like.groupBy({
-            by: ["recordId"],
-            where: { recordId: { in: allRecordIds } },
-            _count: { recordId: true },
-          })
-        : Promise.resolve([]),
-      allTrackIds.length > 0
-        ? prisma.like.groupBy({
-            by: ["trackId"],
-            where: { trackId: { in: allTrackIds } },
-            _count: { trackId: true },
-          })
-        : Promise.resolve([]),
+      getAdjustedRecordLikeCounts(allRecordIds),
+      getAdjustedTrackLikeCounts(allTrackIds),
     ]);
 
   // Build likeCounts map
   const likeCounts: Record<string, number> = {};
-  for (const l of likeResults[0] as { recordId: bigint | null; _count: { recordId: number } }[]) {
-    if (l.recordId) likeCounts[String(l.recordId)] = l._count.recordId;
-  }
-  for (const l of likeResults[1] as { trackId: bigint | null; _count: { trackId: number } }[]) {
-    if (l.trackId) likeCounts[String(l.trackId)] = l._count.trackId;
-  }
+  assignRecordLikeCounts(likeCounts, recordLikeCounts);
+  assignTrackLikeCounts(likeCounts, trackLikeCounts);
 
   // Build lookup maps for feature items
   const recordMap = new Map(
@@ -196,7 +173,7 @@ export default async function BarPage({
     return { ...feature, resolvedItems };
   });
 
-  let likeMap: Record<string, string> = {};
+  const likeMap: Record<string, string> = {};
   if (sessionId) {
     const orConditions = [];
     if (allRecordIds.length > 0)
@@ -209,8 +186,8 @@ export default async function BarPage({
         where: { sessionId, OR: orConditions },
       });
       for (const like of likes) {
-        const itemId = like.recordId ?? like.trackId;
-        if (itemId) likeMap[String(itemId)] = String(like.id);
+        if (like.recordId) likeMap[recordLikeKey(like.recordId)] = String(like.id);
+        if (like.trackId) likeMap[trackLikeKey(like.trackId)] = String(like.id);
       }
     }
   }

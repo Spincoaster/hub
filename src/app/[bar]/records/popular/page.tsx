@@ -3,6 +3,7 @@ import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
 import { RecordList } from "@/components/RecordList";
 import { getSessionId } from "@/lib/session";
 import { NAV, TABLE } from "@/lib/labels";
+import { getTopRecordRanking } from "@/lib/ranking-adjustments";
 
 export const dynamic = "force-dynamic";
 
@@ -27,20 +28,9 @@ export default async function RecordTop100Page({
   const { bar } = await params;
   const barValue = BAR_VALUES[bar];
 
-  const topRecordLikes = await prisma.like.groupBy({
-    by: ["recordId"],
-    where: {
-      recordId: { not: null },
-      record: { bar: barValue },
-    },
-    _count: { recordId: true },
-    orderBy: { _count: { recordId: "desc" } },
-    take: 100,
-  });
+  const topRecordRanking = await getTopRecordRanking(barValue, 100);
 
-  const topRecordIds = topRecordLikes
-    .map((l) => l.recordId)
-    .filter((id): id is bigint => id !== null);
+  const topRecordIds = topRecordRanking.map((row) => row.itemId);
 
   const topRecords =
     topRecordIds.length > 0
@@ -52,13 +42,13 @@ export default async function RecordTop100Page({
 
   // Build likeCounts map
   const likeCounts: Record<string, number> = {};
-  for (const l of topRecordLikes) {
-    if (l.recordId) likeCounts[String(l.recordId)] = l._count.recordId;
+  for (const row of topRecordRanking) {
+    likeCounts[String(row.itemId)] = row.score;
   }
 
   // Build likeMap for current session
   const sessionId = await getSessionId();
-  let likeMap: Record<string, string> = {};
+  const likeMap: Record<string, string> = {};
   if (sessionId && topRecordIds.length > 0) {
     const likes = await prisma.like.findMany({
       where: { sessionId, recordId: { in: topRecordIds } },

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getOrCreateSessionId, getSessionId } from "@/lib/session";
 import { serializeBigInt } from "@/lib/utils";
+import { getAdjustedLikeCount } from "@/lib/ranking-adjustments";
 
 export async function POST(request: NextRequest) {
   const sessionId = await getOrCreateSessionId();
@@ -21,8 +22,9 @@ export async function POST(request: NextRequest) {
     const like = await prisma.like.create({
       data: { sessionId, recordId, trackId },
     });
+    const likeCount = await getAdjustedLikeCount({ recordId, trackId });
 
-    return NextResponse.json(serializeBigInt(like), { status: 201 });
+    return NextResponse.json(serializeBigInt({ ...like, likeCount }), { status: 201 });
   } catch (e: unknown) {
     if (
       typeof e === "object" &&

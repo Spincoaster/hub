@@ -4,6 +4,7 @@ import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
 
 import { RecordList } from "@/components/RecordList";
 import { getSessionId } from "@/lib/session";
+import { getAdjustedRecordLikeCounts } from "@/lib/ranking-adjustments";
 
 export default async function ArtistRecordsPage({
   params,
@@ -43,21 +44,11 @@ export default async function ArtistRecordsPage({
   const recordIds = records.map((r) => BigInt(r.id));
 
   // Like counts
-  const likeCounts: Record<string, number> = {};
-  if (recordIds.length > 0) {
-    const counts = await prisma.like.groupBy({
-      by: ["recordId"],
-      where: { recordId: { in: recordIds } },
-      _count: { recordId: true },
-    });
-    for (const c of counts) {
-      if (c.recordId) likeCounts[String(c.recordId)] = c._count.recordId;
-    }
-  }
+  const likeCounts = await getAdjustedRecordLikeCounts(recordIds);
 
   // Session likeMap
   const sessionId = await getSessionId();
-  let likeMap: Record<string, string> = {};
+  const likeMap: Record<string, string> = {};
   if (sessionId && recordIds.length > 0) {
     const likes = await prisma.like.findMany({
       where: { sessionId, recordId: { in: recordIds } },

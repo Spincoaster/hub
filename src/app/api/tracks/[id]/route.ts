@@ -9,7 +9,7 @@ export async function GET(
   const { id } = await params;
   const track = await prisma.track.findUnique({
     where: { id: BigInt(id) },
-    include: { artist: true, album: true },
+    include: { artist: true, album: true, rankingAdjustment: true },
   });
 
   if (!track) {
