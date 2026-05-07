@@ -3,13 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { serializeBigInt } from "@/lib/utils";
 import { RecordList } from "@/components/RecordList";
 import { getSessionId } from "@/lib/session";
+import { getAdjustedTrackLikeCounts } from "@/lib/ranking-adjustments";
 
 export default async function ArtistTracksPage({
   params,
 }: {
   params: Promise<{ bar: string; id: string }>;
 }) {
-  const { bar, id } = await params;
+  const { id } = await params;
 
   const artist = await prisma.artist.findUnique({
     where: { id: BigInt(id) },
@@ -37,21 +38,11 @@ export default async function ArtistTracksPage({
   const trackIds = tracks.map((t) => BigInt(t.id));
 
   // Like counts
-  const likeCounts: Record<string, number> = {};
-  if (trackIds.length > 0) {
-    const counts = await prisma.like.groupBy({
-      by: ["trackId"],
-      where: { trackId: { in: trackIds } },
-      _count: { trackId: true },
-    });
-    for (const c of counts) {
-      if (c.trackId) likeCounts[String(c.trackId)] = c._count.trackId;
-    }
-  }
+  const likeCounts = await getAdjustedTrackLikeCounts(trackIds);
 
   // Session likeMap
   const sessionId = await getSessionId();
-  let likeMap: Record<string, string> = {};
+  const likeMap: Record<string, string> = {};
   if (sessionId && trackIds.length > 0) {
     const likes = await prisma.like.findMany({
       where: { sessionId, trackId: { in: trackIds } },

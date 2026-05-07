@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { serializeBigInt, BAR_VALUES, buildPrefixFilter } from "@/lib/utils";
+import {
+  getSortedAdminRecordIds,
+  parseAdminListSort,
+} from "@/lib/admin-list-sort";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -8,26 +12,29 @@ export async function GET(request: NextRequest) {
   const hasPrefix = searchParams.get("has_prefix");
   const ownerId = searchParams.get("owner_id");
   const query = searchParams.get("query");
+  const sort = parseAdminListSort(searchParams.get("sort"));
+  const barValue = bar && BAR_VALUES[bar] !== undefined ? BAR_VALUES[bar] : undefined;
+  const parsedOwnerId = ownerId ? BigInt(ownerId) : undefined;
+  const artistId = searchParams.get("artistId");
+  const parsedArtistId = artistId ? BigInt(artistId) : undefined;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
 
-  if (bar && BAR_VALUES[bar] !== undefined) {
-    where.bar = BAR_VALUES[bar];
+  if (barValue !== undefined) {
+    where.bar = barValue;
   }
 
   if (hasPrefix) {
     Object.assign(where, buildPrefixFilter(hasPrefix));
   }
 
-  const artistId = searchParams.get("artistId");
-
-  if (ownerId) {
-    where.ownerId = BigInt(ownerId);
+  if (parsedOwnerId !== undefined) {
+    where.ownerId = parsedOwnerId;
   }
 
-  if (artistId) {
-    where.artistId = BigInt(artistId);
+  if (parsedArtistId !== undefined) {
+    where.artistId = parsedArtistId;
   }
 
   if (query) {
@@ -44,10 +51,52 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(searchParams.get("limit") ?? "500", 10);
   const skip = (page - 1) * limit;
 
+  if (sort) {
+    const [recordIds, total] = await Promise.all([
+      getSortedAdminRecordIds({
+        barValue,
+        hasPrefix,
+        ownerId: parsedOwnerId,
+        artistId: parsedArtistId,
+        query,
+        sort,
+        take: limit,
+        skip,
+      }),
+      prisma.record.count({ where }),
+    ]);
+
+    const records =
+      recordIds.length === 0
+        ? []
+        : await prisma.record.findMany({
+            where: { id: { in: recordIds } },
+            include: {
+              owner: true,
+              artist: true,
+              rankingAdjustment: true,
+              _count: { select: { likes: true } },
+            },
+          });
+
+    const recordById = new Map(records.map((record) => [record.id.toString(), record]));
+    const sortedRecords = recordIds.flatMap((id) => {
+      const record = recordById.get(id.toString());
+      return record ? [record] : [];
+    });
+
+    return NextResponse.json(serializeBigInt({ data: sortedRecords, total, page, limit }));
+  }
+
   const [records, total] = await Promise.all([
     prisma.record.findMany({
       where,
-      include: { owner: true, artist: true, _count: { select: { likes: true } } },
+      include: {
+        owner: true,
+        artist: true,
+        rankingAdjustment: true,
+        _count: { select: { likes: true } },
+      },
       orderBy: { artist: { name: "asc" } },
       take: limit,
       skip,

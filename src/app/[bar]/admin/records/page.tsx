@@ -3,6 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import {
+  parseAdminTableSort,
+  SortableHeaderButton,
+  type AdminTableSort,
+} from "@/components/admin/SortableHeaderButton";
 
 const PAGE_SIZE = 50;
 
@@ -13,6 +18,8 @@ interface Record {
   number: string | null;
   artist: { id: string; name: string | null } | null;
   owner: { id: string; name: string | null } | null;
+  _count?: { likes: number };
+  rankingAdjustment?: { scoreDelta: number } | null;
 }
 
 export default function AdminRecordsPage() {
@@ -21,6 +28,7 @@ export default function AdminRecordsPage() {
   const router = useRouter();
   const bar = params.bar as string;
   const artistId = searchParams.get("artistId");
+  const sort = parseAdminTableSort(searchParams.get("sort"));
 
   const [records, setRecords] = useState<Record[]>([]);
   const [total, setTotal] = useState(0);
@@ -31,12 +39,13 @@ export default function AdminRecordsPage() {
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
-  const search = useCallback(async (q: string, p: number) => {
+  const search = useCallback(async (q: string, p: number, sortMode: AdminTableSort) => {
     setLoading(true);
     try {
       const params = new URLSearchParams({ page: String(p), limit: String(PAGE_SIZE), bar });
       if (q.trim()) params.set("query", q.trim());
       if (artistId) params.set("artistId", artistId);
+      if (sortMode !== "default") params.set("sort", sortMode);
       const res = await fetch(`/api/records?${params}`);
       if (!res.ok) throw new Error("Failed to fetch");
       const json = await res.json();
@@ -50,16 +59,28 @@ export default function AdminRecordsPage() {
   }, [bar, artistId]);
 
   useEffect(() => {
-    search(query, page);
-  }, [search, page]);
-
-  useEffect(() => {
     const timer = setTimeout(() => {
-      setPage(1);
-      search(query, 1);
+      search(query, page, sort);
     }, 300);
     return () => clearTimeout(timer);
-  }, [query, search]);
+  }, [query, page, sort, search]);
+
+  function handleQueryChange(value: string) {
+    setQuery(value);
+    setPage(1);
+  }
+
+  function handleSort(nextSort: AdminTableSort) {
+    const nextParams = new URLSearchParams(searchParams.toString());
+    if (nextSort === "default" || sort === nextSort) {
+      nextParams.delete("sort");
+    } else {
+      nextParams.set("sort", nextSort);
+    }
+    setPage(1);
+    const queryString = nextParams.toString();
+    router.push(queryString ? `/${bar}/admin/records?${queryString}` : `/${bar}/admin/records`);
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
@@ -98,7 +119,7 @@ export default function AdminRecordsPage() {
         <input
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => handleQueryChange(e.target.value)}
           placeholder="レコード名・アーティスト名で検索..."
           className="block w-full rounded-md border border-zinc-600 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
@@ -134,9 +155,33 @@ export default function AdminRecordsPage() {
             <thead>
               <tr className="border-b border-zinc-700 text-zinc-400">
                 <th className="py-2 font-medium">レコード名</th>
-                <th className="py-2 font-medium">アーティスト</th>
+                <th className="py-2">
+                  <SortableHeaderButton
+                    label="アーティスト"
+                    active={sort === "default"}
+                    direction="asc"
+                    title="アーティスト名で昇順に並べ替え"
+                    onClick={() => handleSort("default")}
+                  />
+                </th>
                 <th className="py-2 font-medium">場所</th>
                 <th className="py-2 font-medium">番号</th>
+                <th className="w-20 py-2 text-right">
+                  <SortableHeaderButton
+                    label="いいね"
+                    active={sort === "likes_desc"}
+                    title="いいね数で降順に並べ替え"
+                    onClick={() => handleSort("likes_desc")}
+                  />
+                </th>
+                <th className="w-20 py-2 text-right">
+                  <SortableHeaderButton
+                    label="補正"
+                    active={sort === "adjusted_likes_desc"}
+                    title="補正込みのいいね数で降順に並べ替え"
+                    onClick={() => handleSort("adjusted_likes_desc")}
+                  />
+                </th>
                 <th className="py-2" />
               </tr>
             </thead>
@@ -151,6 +196,10 @@ export default function AdminRecordsPage() {
                   </td>
                   <td className="py-3 text-zinc-400">{record.location ?? "—"}</td>
                   <td className="py-3 text-zinc-400">{record.number ?? "—"}</td>
+                  <td className="w-20 py-3 text-right text-zinc-400">{record._count?.likes ?? 0}</td>
+                  <td className="w-20 py-3 text-right text-zinc-400">
+                    {record.rankingAdjustment?.scoreDelta ?? 0}
+                  </td>
                   <td className="py-3 text-right">
                     <button
                       onClick={() => router.push(`/${bar}/admin/records/${record.id}/edit`)}
@@ -164,7 +213,7 @@ export default function AdminRecordsPage() {
               ))}
               {records.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-zinc-500">
+                  <td colSpan={7} className="py-8 text-center text-zinc-500">
                     レコードが見つかりません
                   </td>
                 </tr>

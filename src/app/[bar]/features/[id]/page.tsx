@@ -4,6 +4,16 @@ import { prisma } from "@/lib/prisma";
 import { serializeBigInt } from "@/lib/utils";
 import { auth } from "@/lib/auth";
 import { getSessionId } from "@/lib/session";
+import {
+  getAdjustedRecordLikeCounts,
+  getAdjustedTrackLikeCounts,
+} from "@/lib/ranking-adjustments";
+import {
+  assignRecordLikeCounts,
+  assignTrackLikeCounts,
+  recordLikeKey,
+  trackLikeKey,
+} from "@/lib/record-list-keys";
 import { DeleteFeatureButton } from "@/components/admin/DeleteFeatureButton";
 import { RecordList } from "@/components/RecordList";
 import { PageRefresh } from "@/components/PageRefresh";
@@ -60,20 +70,8 @@ export default async function FeatureDetailPage({
             include: { artist: true, album: true },
           })
         : Promise.resolve([]),
-      recordIds.length > 0
-        ? prisma.like.groupBy({
-            by: ["recordId"],
-            where: { recordId: { in: recordIds } },
-            _count: { recordId: true },
-          })
-        : Promise.resolve([]),
-      trackIds.length > 0
-        ? prisma.like.groupBy({
-            by: ["trackId"],
-            where: { trackId: { in: trackIds } },
-            _count: { trackId: true },
-          })
-        : Promise.resolve([]),
+      getAdjustedRecordLikeCounts(recordIds),
+      getAdjustedTrackLikeCounts(trackIds),
       sessionId && allItemIds.length > 0
         ? prisma.like.findMany({
             where: {
@@ -97,18 +95,14 @@ export default async function FeatureDetailPage({
 
   // Build likeCounts
   const likeCounts: Record<string, number> = {};
-  for (const l of recordLikeCounts) {
-    if (l.recordId) likeCounts[String(l.recordId)] = l._count.recordId;
-  }
-  for (const l of trackLikeCounts) {
-    if (l.trackId) likeCounts[String(l.trackId)] = l._count.trackId;
-  }
+  assignRecordLikeCounts(likeCounts, recordLikeCounts);
+  assignTrackLikeCounts(likeCounts, trackLikeCounts);
 
   // Build likeMap
   const likeMap: Record<string, string> = {};
   for (const like of sessionLikes) {
-    const itemId = like.recordId ?? like.trackId;
-    if (itemId) likeMap[String(itemId)] = String(like.id);
+    if (like.recordId) likeMap[recordLikeKey(like.recordId)] = String(like.id);
+    if (like.trackId) likeMap[trackLikeKey(like.trackId)] = String(like.id);
   }
 
   // Build RecordList items

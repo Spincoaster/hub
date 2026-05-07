@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionId } from "@/lib/session";
+import { getAdjustedLikeCount } from "@/lib/ranking-adjustments";
 
 export async function DELETE(
   _request: NextRequest,
@@ -21,6 +22,10 @@ export async function DELETE(
   }
 
   await prisma.like.delete({ where: { id: like.id } });
+  const likeCount = await getAdjustedLikeCount({
+    recordId: like.recordId,
+    trackId: like.trackId,
+  });
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, likeCount });
 }

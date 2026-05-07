@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { serializeBigInt, BAR_VALUES } from "@/lib/utils";
 import { getSessionId } from "@/lib/session";
+import {
+  getAdjustedRecordLikeCounts,
+  getAdjustedTrackLikeCounts,
+} from "@/lib/ranking-adjustments";
+import {
+  assignRecordLikeCounts,
+  assignTrackLikeCounts,
+  recordLikeKey,
+  trackLikeKey,
+} from "@/lib/record-list-keys";
 
 export async function GET(request: NextRequest) {
   const query = request.nextUrl.searchParams.get("query");
@@ -58,29 +68,13 @@ export async function GET(request: NextRequest) {
   const trackIds = tracks.map((t) => t.id);
 
   // Fetch like counts
+  const [recordLikeCounts, trackLikeCounts] = await Promise.all([
+    getAdjustedRecordLikeCounts(recordIds),
+    getAdjustedTrackLikeCounts(trackIds),
+  ]);
   const likeCounts: Record<string, number> = {};
-
-  if (recordIds.length > 0) {
-    const recordLikes = await prisma.like.groupBy({
-      by: ["recordId"],
-      where: { recordId: { in: recordIds } },
-      _count: { recordId: true },
-    });
-    for (const l of recordLikes) {
-      if (l.recordId) likeCounts[String(l.recordId)] = l._count.recordId;
-    }
-  }
-
-  if (trackIds.length > 0) {
-    const trackLikes = await prisma.like.groupBy({
-      by: ["trackId"],
-      where: { trackId: { in: trackIds } },
-      _count: { trackId: true },
-    });
-    for (const l of trackLikes) {
-      if (l.trackId) likeCounts[String(l.trackId)] = l._count.trackId;
-    }
-  }
+  assignRecordLikeCounts(likeCounts, recordLikeCounts);
+  assignTrackLikeCounts(likeCounts, trackLikeCounts);
 
   // Fetch likeMap for current session
   const sessionId = await getSessionId();
@@ -96,8 +90,8 @@ export async function GET(request: NextRequest) {
         where: { sessionId, OR: orConditions },
       });
       for (const like of likes) {
-        const itemId = like.recordId ?? like.trackId;
-        if (itemId) likeMap[String(itemId)] = String(like.id);
+        if (like.recordId) likeMap[recordLikeKey(like.recordId)] = String(like.id);
+        if (like.trackId) likeMap[trackLikeKey(like.trackId)] = String(like.id);
       }
     }
   }
