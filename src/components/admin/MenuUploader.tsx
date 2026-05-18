@@ -43,7 +43,10 @@ export function MenuUploader({ bar }: { bar: string }) {
       setStatus("S3にアップロード中...");
       const uploadRes = await fetch(url, {
         method: "PUT",
-        headers: { "Content-Type": "application/pdf" },
+        headers: {
+          "Content-Type": "application/pdf",
+          "Cache-Control": "public, max-age=300, must-revalidate",
+        },
         body: file,
       });
       if (!uploadRes.ok) {
