@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
     Bucket: BUCKET,
     Key: key,
     ContentType: "application/pdf",
+    CacheControl: "public, max-age=300, must-revalidate",
   });
 
   try {
