@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 const inputClass =
@@ -10,6 +10,7 @@ const inputClass =
 export default function NewArtistPage() {
   const params = useParams();
   const router = useRouter();
+  const context = useSearchParams().get("context") ?? "hires";
   const bar = params.bar as string;
 
   const [name, setName] = useState("");
@@ -34,7 +35,7 @@ export default function NewArtistPage() {
         }),
       });
       if (!res.ok) throw new Error("Failed to create");
-      router.push(`/${bar}/admin/artists`);
+      router.push(`/${bar}/admin/artists?context=${context}`);
     } catch {
       setError("作成に失敗しました");
     } finally {
@@ -47,7 +48,7 @@ export default function NewArtistPage() {
       <div className="mb-4 flex gap-2 text-sm text-zinc-400">
         <Link href={`/${bar}/admin`} className="hover:text-white hover:underline">Admin</Link>
         <span>/</span>
-        <Link href={`/${bar}/admin/artists`} className="hover:text-white hover:underline">アーティスト一覧</Link>
+        <Link href={`/${bar}/admin/artists?context=${context}`} className="hover:text-white hover:underline">アーティスト一覧</Link>
         <span>/</span>
         <span className="text-zinc-300">新規作成</span>
       </div>

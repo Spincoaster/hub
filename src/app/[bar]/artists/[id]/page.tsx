@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { SEARCH } from "@/lib/labels";
 import { BAR_VALUES } from "@/lib/utils";
 
 export default async function ArtistDetailPage({
@@ -18,6 +19,7 @@ export default async function ArtistDetailPage({
     where: { id: BigInt(id) },
     include: {
       records: { include: { owner: true }, where: barFilter },
+      cassettes: { include: { owner: true }, where: barFilter },
       tracks: { include: { album: true }, where: barFilter },
       albums: true,
     },
@@ -81,6 +83,12 @@ export default async function ArtistDetailPage({
               ))}
             </tbody>
           </table>
+        </section>
+      )}
+
+      {artist.cassettes.length > 0 && (
+        <section className="mb-6">
+          <Link href={`/${bar}/artists/${id}/cassettes`} className="text-lg font-semibold underline">{SEARCH.cassette} ({artist.cassettes.length})</Link>
         </section>
       )}
 

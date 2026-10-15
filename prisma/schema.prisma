@@ -44,6 +44,7 @@ model Artist {
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   albums  Album[]
+  cassettes Cassette[]
   records Record[]
   tracks  Track[]
 
@@ -112,6 +113,7 @@ model Owner {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  cassettes Cassette[]
   records Record[]
 
   @@map("owners")
@@ -140,6 +142,32 @@ model Record {
   @@map("records")
 }
 
+model Cassette {
+  id              BigInt   @id @default(autoincrement())
+  phoneticName    String? @map("phonetic_name")
+  furigana        String?
+  name            String
+  location        String
+  number          Int
+  bar             Int
+  sideAFirstTrack String?  @map("side_a_first_track")
+  sideBFirstTrack String?  @map("side_b_first_track")
+  comment         String?
+  artistId        BigInt?  @map("artist_id")
+  ownerId         BigInt?  @map("owner_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  artist Artist? @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  owner  Owner?  @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  likes  Like[]
+  rankingAdjustment RankingAdjustment?
+
+  @@unique([bar, location, number])
+  @@index([artistId])
+  @@map("cassettes")
+}
+
 model Track {
   id           BigInt   @id @default(autoincrement())
   name         String?
@@ -165,11 +193,16 @@ model Like {
   sessionId String   @map("session_id")
   recordId  BigInt?  @map("record_id")
   trackId   BigInt?  @map("track_id")
+  cassetteId BigInt? @map("cassette_id")
   createdAt DateTime @default(now()) @map("created_at")
 
   record Record? @relation(fields: [recordId], references: [id], onDelete: Cascade)
   track  Track?  @relation(fields: [trackId], references: [id], onDelete: Cascade)
 
+  cassette Cassette? @relation(fields: [cassetteId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, cassetteId])
+  @@index([cassetteId])
   @@unique([sessionId, recordId])
   @@unique([sessionId, trackId])
   @@index([sessionId])
@@ -182,6 +215,8 @@ model RankingAdjustment {
   id         BigInt   @id @default(autoincrement())
   recordId   BigInt?  @unique @map("record_id")
   trackId    BigInt?  @unique @map("track_id")
+  cassetteId BigInt? @unique @map("cassette_id")
+  cassette Cassette? @relation(fields: [cassetteId], references: [id], onDelete: Cascade)
   scoreDelta Int      @default(0) @map("score_delta")
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
@@ -205,6 +240,7 @@ model Label {
 model SyncJob {
   id         BigInt    @id @default(autoincrement())
   bar        Int
+  mediaType  String @default("record") @map("media_type")
   status     String    // running, completed, failed
   startedAt  DateTime  @default(now()) @map("started_at")
   finishedAt DateTime? @map("finished_at")

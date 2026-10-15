@@ -1,9 +1,15 @@
 {
-  "regions": ["sin1"],
+  "regions": [
+    "sin1"
+  ],
   "crons": [
     {
       "path": "/api/sync-records",
       "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/sync-cassettes",
+      "schedule": "10 4 * * *"
     }
   ]
 }

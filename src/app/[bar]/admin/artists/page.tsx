@@ -11,7 +11,7 @@ interface Artist {
   name: string | null;
   phoneticName: string | null;
   furigana: string | null;
-  _count?: { records: number; albums: number; tracks: number };
+  _count?: { records: number; albums: number; tracks: number; cassettes: number };
 }
 
 export default function AdminArtistsPage() {
@@ -21,6 +21,8 @@ export default function AdminArtistsPage() {
   const bar = params.bar as string;
   const context = searchParams.get("context") ?? "hires";
   const isRecords = context === "records";
+  const isCassettes = context === "cassettes";
+  const isPhysical = isRecords || isCassettes;
 
   const [artists, setArtists] = useState<Artist[]>([]);
   const [total, setTotal] = useState(0);
@@ -35,7 +37,8 @@ export default function AdminArtistsPage() {
     setLoading(true);
     try {
       const params = new URLSearchParams({ page: String(p), limit: String(PAGE_SIZE) });
-      if (isRecords) {
+      if (isPhysical) {
+        if (isCassettes) params.set("context", "cassettes");
         params.set("bar", bar);
       } else {
         params.set("hasTracks", "true");
@@ -52,7 +55,7 @@ export default function AdminArtistsPage() {
     } finally {
       setLoading(false);
     }
-  }, [bar, isRecords]);
+  }, [bar, isPhysical, isCassettes]);
 
   useEffect(() => {
     search(query, page);
@@ -92,11 +95,11 @@ export default function AdminArtistsPage() {
 
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-white">
-          {isRecords ? "Record" : "Hi-Res"} アーティスト管理
+          {isCassettes ? "Cassette" : isRecords ? "Record" : "Hi-Res"} アーティスト管理
           <span className="ml-2 text-base font-normal text-zinc-400">({total}件)</span>
         </h1>
         <Link
-          href={`/${bar}/admin/artists/new`}
+          href={`/${bar}/admin/artists/new?context=${context}`}
           className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
         >
           新規作成
@@ -150,8 +153,8 @@ export default function AdminArtistsPage() {
               <tr className="border-b border-zinc-700 text-zinc-400">
                 <th className="py-2 font-medium">名前</th>
                 <th className="py-2 font-medium">読み</th>
-                {isRecords ? (
-                  <th className="w-12 py-2 text-center font-medium" title="レコード数"><svg className="inline h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" /></svg></th>
+                {isPhysical ? (
+                  <th className="w-12 py-2 text-center font-medium" title={isCassettes ? "カセット数" : "レコード数"}><svg className="inline h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" /></svg></th>
                 ) : (
                   <>
                     <th className="w-12 py-2 text-center font-medium" title="アルバム数"><svg className="inline h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><rect x="2" y="2" width="20" height="20" rx="2" /><path d="M12 8v8m-3-3 3 3 3-3" /></svg></th>
@@ -166,20 +169,20 @@ export default function AdminArtistsPage() {
                 <tr key={artist.id} className="border-b border-zinc-800">
                   <td className="py-3">
                     <button
-                      onClick={() => router.push(`/${bar}/admin/artists/${artist.id}`)}
+                      onClick={() => router.push(`/${bar}/admin/artists/${artist.id}?context=${context}`)}
                       className="hover:text-blue-400 hover:underline"
                     >
                       {artist.name ?? "—"}
                     </button>
                   </td>
                   <td className="py-3 text-zinc-400">{artist.phoneticName ?? "—"}</td>
-                  {isRecords ? (
+                  {isPhysical ? (
                     <td className="w-12 py-3 text-center">
                       <button
-                        onClick={() => router.push(`/${bar}/admin/records?artistId=${artist.id}`)}
+                        onClick={() => router.push(`/${bar}/admin/${isCassettes ? "cassettes" : "records"}?artistId=${artist.id}`)}
                         className="text-zinc-400 hover:text-blue-400 hover:underline"
                       >
-                        {artist._count?.records ?? 0}
+                        {(isCassettes ? artist._count?.cassettes : artist._count?.records) ?? 0}
                       </button>
                     </td>
                   ) : (
@@ -204,14 +207,14 @@ export default function AdminArtistsPage() {
                   )}
                   <td className="py-3 text-right"><div className="flex items-center justify-end gap-2">
                     <button
-                      onClick={() => router.push(`/${bar}/admin/artists/${artist.id}`)}
+                      onClick={() => router.push(`/${bar}/admin/artists/${artist.id}?context=${context}`)}
                       className="text-zinc-400 hover:text-blue-400"
                       title="詳細"
                     >
                       <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
                     </button>
                     <button
-                      onClick={() => router.push(`/${bar}/admin/artists/${artist.id}/edit`)}
+                      onClick={() => router.push(`/${bar}/admin/artists/${artist.id}/edit?context=${context}`)}
                       className="text-zinc-400 hover:text-blue-400"
                       title="編集"
                     >
@@ -229,7 +232,7 @@ export default function AdminArtistsPage() {
               ))}
               {artists.length === 0 && (
                 <tr>
-                  <td colSpan={isRecords ? 4 : 5} className="py-8 text-center text-zinc-500">
+                  <td colSpan={isPhysical ? 4 : 5} className="py-8 text-center text-zinc-500">
                     アーティストが見つかりません
                   </td>
                 </tr>

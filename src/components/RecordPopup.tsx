@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { POPUP } from "@/lib/labels";
+import { POPUP, SEARCH } from "@/lib/labels";
 
 export type PopupData = {
   id: string;
@@ -10,7 +10,10 @@ export type PopupData = {
   albumName?: string;
   number: number | null;
   likeCount: number;
-  type: "Record" | "Hi-Res";
+  type: "Record" | "Hi-Res" | "Cassette";
+  sideAFirstTrack?: string;
+  sideBFirstTrack?: string;
+  comment?: string;
   ownerName?: string;
   location?: string;
   isLiked?: boolean;
@@ -41,7 +44,10 @@ export function RecordPopup({
   }, []);
 
   useEffect(() => {
-    const prevent = (e: Event) => e.preventDefault();
+    const prevent = (e: Event) => {
+      if (e.target instanceof Element && e.target.closest("[data-popup-content]")) return;
+      e.preventDefault();
+    };
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") handleClose();
     };
@@ -61,7 +67,8 @@ export function RecordPopup({
       onClick={handleClose}
     >
       <div
-        className={`mx-4 w-full max-w-xl border border-white bg-zinc-950/5 px-6 pt-4 pb-10 md:w-fit md:min-w-xl md:max-w-6xl md:px-22 md:pt-10 backdrop-blur-[4px] transition-all duration-200 ${visible ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
+        className={`mx-4 max-h-[90dvh] overflow-y-auto w-full max-w-xl border border-white bg-zinc-950/5 px-6 pt-4 pb-10 md:w-fit md:min-w-xl md:max-w-6xl md:px-22 md:pt-10 backdrop-blur-[4px] transition-all duration-200 ${visible ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
+        data-popup-content
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -102,14 +109,27 @@ export function RecordPopup({
         {/* Badge */}
         <div className="mb-4">
           <span className="rounded-full bg-white px-4 py-1 text-sm font-bold text-black">
-            {data.type}
+            {data.type === "Cassette" ? SEARCH.cassette : data.type}
           </span>
         </div>
 
 
+        {data.type === "Cassette" && (
+          <div className="mb-6 space-y-2 text-sm">
+            {data.sideAFirstTrack && <p><span className="text-zinc-400">{POPUP.cassetteSideA}</span>{data.sideAFirstTrack}</p>}
+            {data.sideBFirstTrack && <p><span className="text-zinc-400">{POPUP.cassetteSideB}</span>{data.sideBFirstTrack}</p>}
+            {data.comment && <p className="whitespace-pre-wrap">{data.comment}</p>}
+          </div>
+        )}
+
         {/* Request message */}
         <div className="mb-6 text-sm leading-snug text-white">
-          {data.type === "Record" ? (
+          {data.type === "Cassette" ? (
+            <>
+              <p>{POPUP.cassetteRequestEn}</p>
+              <p className="mt-3 text-xs">{POPUP.cassetteRequestJa}</p>
+            </>
+          ) : data.type === "Record" ? (
             <>
               <div className="space-y-0.5">
                 <p>{POPUP.recordRequestEn1}</p>
@@ -139,9 +159,9 @@ export function RecordPopup({
             {data.ownerName && (
               <p className="text-lg font-medium">{data.ownerName}</p>
             )}
-            {(data.location || (data.type === "Record" && data.number != null)) && (
+            {(data.location || (data.type !== "Hi-Res" && data.number != null)) && (
               <p className="text-lg font-medium">
-                {[data.location, data.type === "Record" ? data.number : null].filter(Boolean).join("-")}
+                {[data.location, data.type !== "Hi-Res" ? data.number : null].filter(Boolean).join("-")}
               </p>
             )}
           </div>

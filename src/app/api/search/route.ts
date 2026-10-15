@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cassetteLikes } from "@/lib/cassettes";
 import { prisma } from "@/lib/prisma";
 import { serializeBigInt, BAR_VALUES } from "@/lib/utils";
 import { getSessionId } from "@/lib/session";
@@ -18,7 +19,7 @@ export async function GET(request: NextRequest) {
   const bar = request.nextUrl.searchParams.get("bar");
 
   if (!query) {
-    return NextResponse.json({ records: [], tracks: [], likeCounts: {}, likeMap: {} });
+    return NextResponse.json({ records: [], tracks: [], cassettes: [], likeCounts: {}, likeMap: {} });
   }
 
   const barValue = bar && bar in BAR_VALUES ? BAR_VALUES[bar] : undefined;
@@ -44,7 +45,7 @@ export async function GET(request: NextRequest) {
     ],
   }));
 
-  const [records, tracks] = await Promise.all([
+  const [records, tracks, cassettes] = await Promise.all([
     prisma.record.findMany({
       where: {
         ...(barValue !== undefined ? { bar: barValue } : {}),
@@ -62,6 +63,19 @@ export async function GET(request: NextRequest) {
       orderBy: { name: "asc" },
       take: 50,
     }),
+    bar === "kagurazaka" ? prisma.cassette.findMany({
+      where: { bar: 2, AND: terms.map((term) => ({ OR: [
+        { name: { contains: term, mode: "insensitive" as const } },
+        { phoneticName: { contains: term, mode: "insensitive" as const } },
+        { furigana: { contains: term, mode: "insensitive" as const } },
+        { artist: { name: { contains: term, mode: "insensitive" as const } } },
+        { artist: { phoneticName: { contains: term, mode: "insensitive" as const } } },
+        { artist: { furigana: { contains: term, mode: "insensitive" as const } } },
+        { sideAFirstTrack: { contains: term, mode: "insensitive" as const } },
+        { sideBFirstTrack: { contains: term, mode: "insensitive" as const } },
+      ] })) },
+      include: { artist: true, owner: true }, orderBy: { name: "asc" }, take: 50,
+    }) : Promise.resolve([]),
   ]);
 
   const recordIds = records.map((r) => r.id);
@@ -96,5 +110,8 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.json(serializeBigInt({ records, tracks, likeCounts, likeMap }));
+  const cassetteLikeData = await cassetteLikes(cassettes.map((item) => item.id));
+  Object.assign(likeCounts, cassetteLikeData.likeCounts);
+  Object.assign(likeMap, cassetteLikeData.likeMap);
+  return NextResponse.json(serializeBigInt({ records, tracks, cassettes, likeCounts, likeMap }));
 }

@@ -1,0 +1,250 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import {
+  parseAdminTableSort,
+  SortableHeaderButton,
+  type AdminTableSort,
+} from "@/components/admin/SortableHeaderButton";
+
+const PAGE_SIZE = 50;
+
+interface Cassette {
+  id: string;
+  name: string | null;
+  location: string | null;
+  number: number | null;
+  artist: { id: string; name: string | null } | null;
+  owner: { id: string; name: string | null } | null;
+  _count?: { likes: number };
+  rankingAdjustment?: { scoreDelta: number } | null;
+}
+
+export default function AdminCassettesPage() {
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const bar = params.bar as string;
+  const artistId = searchParams.get("artistId");
+  const sort = parseAdminTableSort(searchParams.get("sort"));
+
+  const [cassettes, setCassettes] = useState<Cassette[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  const search = useCallback(async (q: string, p: number, sortMode: AdminTableSort) => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({ page: String(p), limit: String(PAGE_SIZE), bar });
+      if (q.trim()) params.set("query", q.trim());
+      if (artistId) params.set("artistId", artistId);
+      if (sortMode !== "default") params.set("sort", sortMode);
+      const res = await fetch(`/api/cassettes?${params}`);
+      if (!res.ok) throw new Error("Failed to fetch");
+      const json = await res.json();
+      setCassettes(json.data ?? []);
+      setTotal(json.total ?? 0);
+    } catch {
+      setError("取得に失敗しました");
+    } finally {
+      setLoading(false);
+    }
+  }, [bar, artistId]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      search(query, page, sort);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [query, page, sort, search]);
+
+  function handleQueryChange(value: string) {
+    setQuery(value);
+    setPage(1);
+  }
+
+  function handleSort(nextSort: AdminTableSort) {
+    const nextParams = new URLSearchParams(searchParams.toString());
+    if (nextSort === "default" || sort === nextSort) {
+      nextParams.delete("sort");
+    } else {
+      nextParams.set("sort", nextSort);
+    }
+    setPage(1);
+    const queryString = nextParams.toString();
+    router.push(queryString ? `/${bar}/admin/cassettes?${queryString}` : `/${bar}/admin/cassettes`);
+  }
+
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-8">
+      <div className="mb-4 flex gap-2 text-sm text-zinc-400">
+        <Link
+          href={`/${bar}/admin`}
+          className="hover:text-white hover:underline"
+        >
+          Admin
+        </Link>
+        <span>/</span>
+        <Link
+          href={`/${bar}/admin/artists?context=cassettes`}
+          className="hover:text-white hover:underline"
+        >
+          アーティスト一覧
+        </Link>
+        <span>/</span>
+        <span className="text-zinc-300">カセット一覧</span>
+      </div>
+
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-white">
+          カセット一覧
+          <span className="ml-2 text-base font-normal text-zinc-400">({total}件)</span>
+        </h1>
+        <Link href={`/${bar}/admin/cassettes/new`} className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">新規作成</Link>
+      </div>
+
+      {error && (
+        <div className="mb-4 rounded border border-red-400 bg-red-950 px-4 py-3 text-sm text-red-300">
+          {error}
+        </div>
+      )}
+
+      <div className="mb-4">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => handleQueryChange(e.target.value)}
+          placeholder="カセット名・アーティスト名で検索..."
+          className="block w-full rounded-md border border-zinc-600 bg-zinc-800 px-3 py-2 text-white placeholder-zinc-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+      </div>
+
+      {loading ? (
+        <p className="text-zinc-400">読み込み中...</p>
+      ) : (
+        <>
+          {totalPages > 1 && (
+            <div className="mb-4 flex items-center justify-center gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+                className="rounded border border-zinc-600 px-3 py-1 text-sm text-zinc-300 hover:bg-zinc-800 disabled:opacity-30"
+              >
+                &larr;
+              </button>
+              <span className="text-sm text-zinc-400">
+                {page} / {totalPages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
+                className="rounded border border-zinc-600 px-3 py-1 text-sm text-zinc-300 hover:bg-zinc-800 disabled:opacity-30"
+              >
+                &rarr;
+              </button>
+            </div>
+          )}
+
+          <table className="w-full text-left text-sm text-white">
+            <thead>
+              <tr className="border-b border-zinc-700 text-zinc-400">
+                <th className="py-2 font-medium">カセット名</th>
+                <th className="py-2">
+                  <SortableHeaderButton
+                    label="アーティスト"
+                    active={sort === "default"}
+                    direction="asc"
+                    title="アーティスト名で昇順に並べ替え"
+                    onClick={() => handleSort("default")}
+                  />
+                </th>
+                <th className="py-2 font-medium">場所</th>
+                <th className="py-2 font-medium">番号</th>
+                <th className="w-20 py-2 text-right">
+                  <SortableHeaderButton
+                    label="いいね"
+                    active={sort === "likes_desc"}
+                    title="いいね数で降順に並べ替え"
+                    onClick={() => handleSort("likes_desc")}
+                  />
+                </th>
+                <th className="w-20 py-2 text-right">
+                  <SortableHeaderButton
+                    label="補正"
+                    active={sort === "adjusted_likes_desc"}
+                    title="補正込みのいいね数で降順に並べ替え"
+                    onClick={() => handleSort("adjusted_likes_desc")}
+                  />
+                </th>
+                <th className="py-2" />
+              </tr>
+            </thead>
+            <tbody>
+              {cassettes.map((cassette) => (
+                <tr key={cassette.id} className="border-b border-zinc-800">
+                  <td className="py-3">{cassette.name ?? "—"}</td>
+                  <td className="py-3 text-zinc-400">
+                    {cassette.artist ? (
+                      <button onClick={() => router.push(`/${bar}/admin/artists/${cassette.artist!.id}?context=cassettes`)} className="hover:text-blue-400 hover:underline">{cassette.artist.name ?? "—"}</button>
+                    ) : "—"}
+                  </td>
+                  <td className="py-3 text-zinc-400">{cassette.location ?? "—"}</td>
+                  <td className="py-3 text-zinc-400">{cassette.number ?? "—"}</td>
+                  <td className="w-20 py-3 text-right text-zinc-400">{cassette._count?.likes ?? 0}</td>
+                  <td className="w-20 py-3 text-right text-zinc-400">
+                    {cassette.rankingAdjustment?.scoreDelta ?? 0}
+                  </td>
+                  <td className="py-3 text-right">
+                    <button
+                      onClick={() => router.push(`/${bar}/admin/cassettes/${cassette.id}/edit`)}
+                      className="text-zinc-400 hover:text-blue-400"
+                      title="編集"
+                    >
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path d="m15 5 4 4" /></svg>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {cassettes.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-zinc-500">
+                    カセットが見つかりません
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+
+          {totalPages > 1 && (
+            <div className="mt-4 flex items-center justify-center gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+                className="rounded border border-zinc-600 px-3 py-1 text-sm text-zinc-300 hover:bg-zinc-800 disabled:opacity-30"
+              >
+                &larr;
+              </button>
+              <span className="text-sm text-zinc-400">
+                {page} / {totalPages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
+                className="rounded border border-zinc-600 px-3 py-1 text-sm text-zinc-300 hover:bg-zinc-800 disabled:opacity-30"
+              >
+                &rarr;
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}

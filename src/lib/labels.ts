@@ -10,16 +10,18 @@ export const BAR_NAMES: Record<string, string> = {
 
 export const NAV = {
   admin: "Admin",
-  allHiRes: "All Hi-Res List",
-  allRecords: "All Record List",
+  allCassettes: "All Cassette List",
+  allHiRes: "All Hi-Res Tracks",
+  allRecords: "All Records",
   drinkMenu: "Drink Menu",
-  popularHiRes: "Popular Hi-Res",
-  popularRecords: "Popular Record",
+  popularCassettes: "Popular Cassettes",
+  popularHiRes: "Popular Hi-Res Tracks",
+  popularRecords: "Popular Records",
   top: "Top",
 } as const;
 
 export const TOP_PAGE = {
-  coverChargeEn1: "There’s a 900yen cover charge per person,",
+  coverChargeEn1: "There’s a 900 yen cover charge per person,",
   coverChargeEn2: "and the following are complimentary.",
   coverChargeJa: "当店は900円のカバーチャージをいただいております。\n以下はサービスです。",
   snacksEn: "Snacks on the table",
@@ -27,19 +29,24 @@ export const TOP_PAGE = {
   songRequestEn: "1 Song Request",
   songRequestJa: "1曲リクエスト",
   viewAll: "View All",
-  viewAllHiRes: "View All Hi-Res",
-  viewAllRecords: "View All Record",
+  viewAllCassettes: "View All Cassette",
+  viewAllHiRes: "View All Hi-Res Tracks",
+  viewAllRecords: "View All Records",
 } as const;
 
 export const TABLE = {
-  albumArtist: "Album / Artist",
-  albums: "Album",
-  artist: "Artist",
-  artists: "Artist",
+  albumArtist: "Albums / Artists",
+  albums: "Albums",
+  artist: "Artists",
+  artists: "Artists",
   title: "Title",
 } as const;
 
 export const POPUP = {
+  cassetteRequestEn: "To request this cassette, please show this screen to our staff. Please let us know whether you would like Side A or Side B.",
+  cassetteRequestJa: "このカセットをリクエストする場合は、この画面をスタッフにご提示ください。あわせて、A面・B面のどちらをご希望かお伝えください。",
+  cassetteSideA: "A面1曲目 / Side A, Track 1: ",
+  cassetteSideB: "B面1曲目 / Side B, Track 1: ",
   close: "Close",
   recordRequestEn1: "To request a track from this record, please show this screen to our staff.",
   recordRequestEn2: "We will bring the record to you so you can choose one track.",
@@ -51,9 +58,13 @@ export const POPUP = {
 
 export const SEARCH = {
   all: "All",
-  artistLabel: "[ Artist ]",
+  artistLabel: "Artists",
+  cassette: "Cassette",
+  cassettesLabel: "[ Cassettes ]",
   hiRes: "Hi-Res",
   noArtists: "No artists found.",
+  noCassettes: "No cassettes found.",
+  noPopularCassettes: "No liked cassettes yet.",
   noResults: "No results found.",
   placeholder: "Search",
   record: "Record",

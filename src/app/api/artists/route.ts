@@ -11,7 +11,11 @@ export async function GET(request: NextRequest) {
   const where: any = {};
 
   if (bar && BAR_VALUES[bar] !== undefined) {
-    where.records = { some: { bar: BAR_VALUES[bar] } };
+    if (searchParams.get("context") === "cassettes") {
+      where.cassettes = { some: { bar: BAR_VALUES[bar] } };
+    } else {
+      where.records = { some: { bar: BAR_VALUES[bar] } };
+    }
   }
 
   const hasTracks = searchParams.get("hasTracks");
@@ -48,7 +52,7 @@ export async function GET(request: NextRequest) {
   const [artists, total] = await Promise.all([
     prisma.artist.findMany({
       where,
-      include: { _count: { select: { records: true, albums: true, tracks: true } } },
+      include: { _count: { select: { records: true, albums: true, tracks: true, cassettes: bar && BAR_VALUES[bar] !== undefined ? { where: { bar: BAR_VALUES[bar] } } : true } } },
       orderBy: { name: "asc" },
       take: limit,
       skip,

@@ -25,8 +25,10 @@ const navigationMenus: Record<string, { href: string; label: string; external: b
   kagurazaka: [
     { href: "/kagurazaka", label: NAV.top, external: false },
     { href: "https://menu.spincoaster.com/kagurazaka", label: NAV.drinkMenu, external: true },
+    { href: "/kagurazaka/cassettes/artists", label: NAV.allCassettes, external: false },
     { href: "/kagurazaka/records/artists", label: NAV.allRecords, external: false },
     { href: "/kagurazaka/records/popular", label: NAV.popularRecords, external: false },
+    { href: "/kagurazaka/cassettes/popular", label: NAV.popularCassettes, external: false },
   ],
   default: [
     { href: "/shinjuku", label: BAR_NAMES.shinjuku, external: false },

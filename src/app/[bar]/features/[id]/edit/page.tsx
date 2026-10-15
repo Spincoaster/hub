@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { SEARCH } from "@/lib/labels";
 import {
   DndContext,
   closestCenter,
@@ -129,7 +130,7 @@ function SortableItem({
               {item.itemType === "Track" && item.itemData.album
                 ? item.itemData.album.name ?? "—"
                 : ""}
-              {item.itemType === "Record" && item.itemData.owner
+              {(item.itemType === "Record" || item.itemType === "Cassette") && item.itemData.owner
                 ? item.itemData.owner.name ?? "—"
                 : ""}
             </p>
@@ -173,7 +174,7 @@ export default function FeatureEditPage() {
   );
 
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newItemType, setNewItemType] = useState<"Track" | "Record">("Track");
+  const [newItemType, setNewItemType] = useState<"Track" | "Record" | "Cassette">("Record");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
@@ -219,10 +220,13 @@ export default function FeatureEditPage() {
           bar: barValue === "" ? null : barValue,
         }),
       });
-      if (!res.ok) throw new Error("Failed to save");
+      if (!res.ok) {
+        const result = await res.json();
+        throw new Error(result.error ?? "Failed to save");
+      }
       router.push(`/${bar}/features/${id}`);
-    } catch {
-      setError("保存に失敗しました");
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "保存に失敗しました");
     } finally {
       setSaving(false);
     }
@@ -247,25 +251,28 @@ export default function FeatureEditPage() {
       setSearchResults([]);
       return;
     }
+    setSearchResults([]);
     setSearching(true);
+    const controller = new AbortController();
     const timer = setTimeout(async () => {
       try {
         const endpoint =
-          newItemType === "Track" ? "/api/tracks" : "/api/records";
+          newItemType === "Track" ? "/api/tracks" : newItemType === "Cassette" ? "/api/cassettes" : "/api/records";
         const res = await fetch(
-          `${endpoint}?query=${encodeURIComponent(searchQuery)}&bar=${encodeURIComponent(bar)}`
+          `${endpoint}?query=${encodeURIComponent(searchQuery)}&bar=${encodeURIComponent(bar)}`,
+          { signal: controller.signal }
         );
         if (!res.ok) throw new Error("Search failed");
         const data = await res.json();
         setSearchResults(Array.isArray(data) ? data : data.data ?? []);
       } catch {
-        setSearchResults([]);
+        if (!controller.signal.aborted) setSearchResults([]);
       } finally {
-        setSearching(false);
+        if (!controller.signal.aborted) setSearching(false);
       }
     }, 300);
-    return () => clearTimeout(timer);
-  }, [searchQuery, newItemType]);
+    return () => { clearTimeout(timer); controller.abort(); };
+  }, [searchQuery, newItemType, bar]);
 
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -476,13 +483,15 @@ export default function FeatureEditPage() {
               </label>
               <select
                 value={newItemType}
-                onChange={(e) =>
-                  setNewItemType(e.target.value as "Track" | "Record")
-                }
+                onChange={(e) => {
+                  setNewItemType(e.target.value as "Track" | "Record" | "Cassette");
+                  setSearchResults([]);
+                }}
                 className={inputClass}
               >
                 <option value="Track">Track</option>
                 <option value="Record">Record</option>
+                {feature.bar === 2 && <option value="Cassette">{SEARCH.cassette}</option>}
               </select>
             </div>
 

@@ -1,4 +1,4 @@
-export type RecordListItemType = "Record" | "Hi-Res";
+export type RecordListItemType = "Record" | "Hi-Res" | "Cassette";
 
 export function recordListItemKey(id: string | number | bigint, type: RecordListItemType): string {
   return `${type}:${String(id)}`;

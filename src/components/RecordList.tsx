@@ -11,7 +11,10 @@ type RecordItem = {
   artistName: string;
   albumName: string;
   number: number | null;
-  type: "Record" | "Hi-Res";
+  type: "Record" | "Hi-Res" | "Cassette";
+  sideAFirstTrack?: string;
+  sideBFirstTrack?: string;
+  comment?: string;
   ownerName?: string;
   location?: string;
 };
@@ -80,7 +83,7 @@ export function RecordList({
           const body =
             item.type === "Record"
               ? { recordId: item.id }
-              : { trackId: item.id };
+              : item.type === "Cassette" ? { cassetteId: item.id } : { trackId: item.id };
           const res = await fetch("/api/likes", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -132,6 +135,9 @@ export function RecordList({
         type: popupItem.type,
         ownerName: popupItem.ownerName,
         location: popupItem.location,
+        sideAFirstTrack: popupItem.sideAFirstTrack,
+        sideBFirstTrack: popupItem.sideBFirstTrack,
+        comment: popupItem.comment,
         isLiked: likeable ? !!getLikeId(popupItem) : undefined,
         likeId: getLikeId(popupItem),
       }

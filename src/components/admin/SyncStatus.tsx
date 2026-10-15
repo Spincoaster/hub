@@ -89,7 +89,9 @@ function formatDate(iso: string) {
 export function SyncStatus({
   barValue,
   latestSync,
+  mediaType = "record",
 }: {
+  mediaType?: "record" | "cassette";
   barValue: number;
   latestSync: SyncJob | null;
 }) {
@@ -101,7 +103,7 @@ export function SyncStatus({
     setSyncing(true);
     setError(null);
     try {
-      const res = await fetch(`/api/sync-records?bar=${barValue}`, {
+      const res = await fetch(mediaType === "cassette" ? "/api/sync-cassettes" : `/api/sync-records?bar=${barValue}`, {
         method: "POST",
       });
       const data = await res.json();
@@ -169,6 +171,9 @@ export function SyncStatus({
                   </span>
                 )}
               </div>
+              {Array.isArray(parsedResult.skippedRows) && parsedResult.skippedRows.length > 0 && (
+                <p className="text-sm text-amber-300">未入力・不正な値があるためスキップした行: {parsedResult.skippedRows.join(", ")}。既存カセットの削除は保留しています。</p>
+              )}
               {Array.isArray(parsedResult.changes) && parsedResult.changes.length > 0 && (
                 <ChangeDetails changes={parsedResult.changes as ChangeEntry[]} />
               )}
