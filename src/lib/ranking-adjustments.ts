@@ -127,10 +127,17 @@ export async function getAdjustedRecordLikeCounts(
 export async function getAdjustedLikeCount({
   recordId,
   trackId,
+  cassetteId,
 }: {
   recordId?: bigint | null;
   trackId?: bigint | null;
+  cassetteId?: bigint | null;
 }): Promise<number> {
+  if (cassetteId) {
+    const counts = await getAdjustedCassetteLikeCounts([cassetteId]);
+    return counts[String(cassetteId)] ?? 0;
+  }
+
   if (recordId) {
     const counts = await getAdjustedRecordLikeCounts([recordId]);
     return counts[String(recordId)] ?? 0;
@@ -171,6 +178,72 @@ export async function getAdjustedTrackLikeCounts(
   for (const adjustment of adjustments) {
     if (adjustment.trackId) {
       scoreDeltas.set(String(adjustment.trackId), adjustment.scoreDelta);
+    }
+  }
+
+  const counts: Record<string, number> = {};
+  for (const id of ids) {
+    const key = String(id);
+    counts[key] = applyScoreDelta(rawCounts.get(key) ?? 0, scoreDeltas.get(key) ?? 0);
+  }
+  return counts;
+}
+
+export async function getTopCassetteRanking(
+  barValue: number,
+  take: number,
+): Promise<RankingResult[]> {
+  const rows = await prisma.$queryRaw<RankingRow[]>`
+    SELECT
+      r.id AS "itemId",
+      COALESCE(l.like_count, 0)::int AS "likeCount",
+      COALESCE(ra.score_delta, 0)::int AS "scoreDelta",
+      GREATEST(COALESCE(l.like_count, 0) + COALESCE(ra.score_delta, 0), 0)::int AS "score"
+    FROM cassettes r
+    LEFT JOIN (
+      SELECT cassette_id, count(*)::int AS like_count
+      FROM likes
+      WHERE cassette_id IS NOT NULL
+      GROUP BY cassette_id
+    ) l ON l.cassette_id = r.id
+    LEFT JOIN ranking_adjustments ra ON ra.cassette_id = r.id
+    WHERE r.bar = ${barValue}
+      AND GREATEST(COALESCE(l.like_count, 0) + COALESCE(ra.score_delta, 0), 0) > 0
+    ORDER BY "score" DESC, "likeCount" DESC, r.id ASC
+    LIMIT ${take}
+  `;
+
+  return normalizeRows(rows);
+}
+
+
+export async function getAdjustedCassetteLikeCounts(
+  cassetteIds: bigint[],
+): Promise<Record<string, number>> {
+  const ids = uniqueBigInts(cassetteIds);
+  if (ids.length === 0) return {};
+
+  const [likeCounts, adjustments] = await Promise.all([
+    prisma.like.groupBy({
+      by: ["cassetteId"],
+      where: { cassetteId: { in: ids } },
+      _count: { cassetteId: true },
+    }),
+    prisma.rankingAdjustment.findMany({
+      where: { cassetteId: { in: ids } },
+      select: { cassetteId: true, scoreDelta: true },
+    }),
+  ]);
+
+  const rawCounts = new Map<string, number>();
+  for (const count of likeCounts) {
+    if (count.cassetteId) rawCounts.set(String(count.cassetteId), count._count.cassetteId);
+  }
+
+  const scoreDeltas = new Map<string, number>();
+  for (const adjustment of adjustments) {
+    if (adjustment.cassetteId) {
+      scoreDeltas.set(String(adjustment.cassetteId), adjustment.scoreDelta);
     }
   }
 

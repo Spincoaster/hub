@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 const inputClass =
@@ -10,6 +10,7 @@ const inputClass =
 export default function EditArtistPage() {
   const params = useParams();
   const router = useRouter();
+  const context = useSearchParams().get("context") ?? "hires";
   const bar = params.bar as string;
   const id = params.id as string;
 
@@ -51,7 +52,7 @@ export default function EditArtistPage() {
         }),
       });
       if (!res.ok) throw new Error("Failed to save");
-      router.push(`/${bar}/admin/artists`);
+      router.push(`/${bar}/admin/artists?context=${context}`);
     } catch {
       setError("保存に失敗しました");
     } finally {
@@ -72,7 +73,7 @@ export default function EditArtistPage() {
       <div className="mb-4 flex gap-2 text-sm text-zinc-400">
         <Link href={`/${bar}/admin`} className="hover:text-white hover:underline">Admin</Link>
         <span>/</span>
-        <Link href={`/${bar}/admin/artists`} className="hover:text-white hover:underline">アーティスト一覧</Link>
+        <Link href={`/${bar}/admin/artists?context=${context}`} className="hover:text-white hover:underline">アーティスト一覧</Link>
         <span>/</span>
         <span className="text-zinc-300">編集</span>
       </div>

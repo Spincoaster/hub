@@ -3,7 +3,7 @@
  *
  * Usage: npx tsx scripts/generate-labels.ts
  *
- * If no labels exist in DB yet, keeps the current labels.ts as-is.
+ * DB values override defaults; missing keys retain their code-defined defaults.
  */
 
 import "dotenv/config";
@@ -13,6 +13,7 @@ config({ path: ".env.local", override: true });
 import { Pool } from "pg";
 import * as fs from "fs";
 import * as path from "path";
+import { resolveLabels } from "../src/lib/label-defaults";
 
 const LABELS_PATH = path.resolve(__dirname, "../src/lib/labels.ts");
 
@@ -45,12 +46,7 @@ async function main() {
       "SELECT key, value FROM labels ORDER BY key"
     );
 
-    if (rows.length === 0) {
-      console.log("No labels in DB – keeping existing labels.ts");
-      return;
-    }
-
-    const map = new Map(rows.map((r) => [r.key, r.value]));
+    const map = resolveLabels(rows);
 
     const lines: string[] = [
       "/** User-facing labels – AUTO-GENERATED from DB. Do not edit manually. */",
@@ -95,7 +91,7 @@ async function main() {
     }
 
     fs.writeFileSync(LABELS_PATH, lines.join("\n"));
-    console.log(`Generated ${LABELS_PATH} with ${rows.length} labels`);
+    console.log(`Generated ${LABELS_PATH} with ${map.size} labels (${rows.length} from DB)`);
   } finally {
     await pool.end();
   }

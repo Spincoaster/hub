@@ -25,6 +25,7 @@ export async function DELETE(
   const likeCount = await getAdjustedLikeCount({
     recordId: like.recordId,
     trackId: like.trackId,
+    cassetteId: like.cassetteId,
   });
 
   return NextResponse.json({ ok: true, likeCount });

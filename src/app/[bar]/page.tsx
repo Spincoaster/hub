@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { popularCassettes, cassetteLikes } from "@/lib/cassettes";
 import { prisma } from "@/lib/prisma";
 import { BAR_VALUES, serializeBigInt } from "@/lib/utils";
 import { RecordList } from "@/components/RecordList";
@@ -20,7 +21,7 @@ import {
 import { RightUpArrow } from "@/components/icons/RightUpArrow";
 import { AnimatedText } from "@/components/AnimatedText";
 import { FadeIn } from "@/components/FadeIn";
-import { SITE_NAME, NAV, TOP_PAGE, TABLE } from "@/lib/labels";
+import { SITE_NAME, NAV, TOP_PAGE, TABLE, SEARCH } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
 
@@ -81,7 +82,7 @@ export default async function BarPage({
   const barValue = BAR_VALUES[bar];
 
   // Parallel: top likes + features + session
-  const [topRecordRanking, topTrackRanking, barFeatures, sessionId] =
+  const [topRecordRanking, topTrackRanking, barFeatures, sessionId, cassetteRanking] =
     await Promise.all([
       getTopRecordRanking(barValue, 20),
       getTopTrackRanking(20),
@@ -93,6 +94,7 @@ export default async function BarPage({
         },
       }),
       getSessionId(),
+      bar === "kagurazaka" ? popularCassettes(barValue, 20) : Promise.resolve(null),
     ]);
 
   const topRecordIds = topRecordRanking.map((row) => row.itemId);
@@ -101,11 +103,13 @@ export default async function BarPage({
   // Collect all feature item IDs for batch query
   const featureRecordIds: bigint[] = [];
   const featureTrackIds: bigint[] = [];
+  const featureCassetteIds: bigint[] = [];
   for (const f of barFeatures) {
     for (const item of f.featureItems) {
       if (item.itemId) {
         if (item.itemType === "Record") featureRecordIds.push(BigInt(item.itemId));
         if (item.itemType === "Track") featureTrackIds.push(BigInt(item.itemId));
+        if (item.itemType === "Cassette") featureCassetteIds.push(BigInt(item.itemId));
       }
     }
   }
@@ -144,10 +148,17 @@ export default async function BarPage({
       getAdjustedTrackLikeCounts(allTrackIds),
     ]);
 
+  const [featureCassettes, cassetteLikeData] = await Promise.all([
+    featureCassetteIds.length ? prisma.cassette.findMany({ where: { id: { in: featureCassetteIds }, bar: barValue }, include: { artist: true, owner: true } }) : [],
+    cassetteLikes(featureCassetteIds),
+  ]);
+  const cassetteMap = new Map(featureCassettes.map((item) => [String(item.id), item]));
+
   // Build likeCounts map
   const likeCounts: Record<string, number> = {};
   assignRecordLikeCounts(likeCounts, recordLikeCounts);
   assignTrackLikeCounts(likeCounts, trackLikeCounts);
+  Object.assign(likeCounts, cassetteLikeData.likeCounts);
 
   // Build lookup maps for feature items
   const recordMap = new Map(
@@ -164,6 +175,8 @@ export default async function BarPage({
       if (item.itemId) {
         if (item.itemType === "Record") {
           itemData = (recordMap.get(String(item.itemId)) ?? null) as unknown as Record<string, unknown> | null;
+        } else if (item.itemType === "Cassette") {
+          itemData = (cassetteMap.get(String(item.itemId)) ?? null) as unknown as Record<string, unknown> | null;
         } else if (item.itemType === "Track") {
           itemData = (trackMap.get(String(item.itemId)) ?? null) as unknown as Record<string, unknown> | null;
         }
@@ -173,7 +186,7 @@ export default async function BarPage({
     return { ...feature, resolvedItems };
   });
 
-  const likeMap: Record<string, string> = {};
+  const likeMap: Record<string, string> = { ...cassetteLikeData.likeMap };
   if (sessionId) {
     const orConditions = [];
     if (allRecordIds.length > 0)
@@ -244,6 +257,9 @@ export default async function BarPage({
         owner?: { name?: string } | null;
         location?: string;
         number?: number | null;
+        sideAFirstTrack?: string | null;
+        sideBFirstTrack?: string | null;
+        comment?: string | null;
       } | null;
     }>;
     const items = resolvedItems
@@ -257,9 +273,12 @@ export default async function BarPage({
             ? (item.itemData!.album?.name ?? "—")
             : "",
         number: item.itemData!.number ?? null,
-        type: (item.itemType === "Track" ? "Hi-Res" : "Record") as "Record" | "Hi-Res",
-        ownerName: item.itemType === "Record" ? (item.itemData!.owner?.name ?? undefined) : undefined,
-        location: item.itemType === "Record" ? ((item.itemData as { location?: string }).location ?? undefined) : undefined,
+        type: (item.itemType === "Track" ? "Hi-Res" : item.itemType === "Cassette" ? "Cassette" : "Record") as "Record" | "Hi-Res" | "Cassette",
+        sideAFirstTrack: item.itemData!.sideAFirstTrack ?? undefined,
+        sideBFirstTrack: item.itemData!.sideBFirstTrack ?? undefined,
+        comment: item.itemType === "Cassette" ? item.itemData!.comment ?? undefined : undefined,
+        ownerName: item.itemType !== "Track" ? (item.itemData!.owner?.name ?? undefined) : undefined,
+        location: item.itemType !== "Track" ? ((item.itemData as { location?: string }).location ?? undefined) : undefined,
       }));
     return { id: f.id as string, name: f.name as string, description: (f.description as string | null) ?? null, items };
   });
@@ -327,6 +346,17 @@ export default async function BarPage({
                 </span>
               </Link>
             </FadeIn>
+            {bar === "kagurazaka" && (
+              <FadeIn delayMs={700}>
+                <Link href={`/${bar}/cassettes/artists`} className="flex items-center justify-between rounded-full h-16 border border-white pl-10 pr-0 text-sm font-medium">
+                  <span>{TOP_PAGE.viewAllCassettes}</span>
+                  <span className="relative ml-16 flex h-16 w-16 shrink-0 items-center justify-center">
+                    <img src="/annulus.svg" alt="" className="absolute inset-0 h-full w-full" />
+                    <RightUpArrow className="relative h-2.5 w-2.5" />
+                  </span>
+                </Link>
+              </FadeIn>
+            )}
             {bar === "shinjuku" && (
               <FadeIn delayMs={700}>
                 <Link
@@ -358,6 +388,26 @@ export default async function BarPage({
         </div>
         <RecordCarousel items={recordItems} likeMap={likeMap} likeCounts={likeCounts} columns={[TABLE.title, TABLE.artist]} />
       </section>
+
+      {cassetteRanking && (
+        <>
+          <hr className="mb-12 border-zinc-600" />
+          <section className="mb-16">
+            <div className="mx-auto max-w-7xl px-4">
+              <SectionHeader
+                title={NAV.popularCassettes}
+                viewAllHref={`/${bar}/cassettes/popular`}
+                viewAllLabel={TOP_PAGE.viewAll}
+              />
+            </div>
+            {cassetteRanking.items.length > 0 ? (
+              <RecordCarousel {...cassetteRanking} columns={[TABLE.title, TABLE.artist]} />
+            ) : (
+              <p className="mx-auto max-w-7xl px-4 text-sm text-zinc-400">{SEARCH.noPopularCassettes}</p>
+            )}
+          </section>
+        </>
+      )}
 
       {bar === "shinjuku" && (
         <>

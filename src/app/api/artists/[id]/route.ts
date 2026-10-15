@@ -12,6 +12,7 @@ export async function GET(
     include: {
       albums: { include: { _count: { select: { tracks: true } } } },
       records: { include: { owner: true } },
+      cassettes: { include: { owner: true } },
       tracks: { include: { album: true } },
     },
   });

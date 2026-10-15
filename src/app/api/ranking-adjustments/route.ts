@@ -3,10 +3,10 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { serializeBigInt } from "@/lib/utils";
 
-type ItemType = "Record" | "Track" | "Hi-Res";
+type ItemType = "Record" | "Track" | "Hi-Res" | "Cassette";
 
 function isItemType(value: unknown): value is ItemType {
-  return value === "Record" || value === "Track" || value === "Hi-Res";
+  return value === "Record" || value === "Track" || value === "Hi-Res" || value === "Cassette";
 }
 
 function isBigIntString(value: unknown): value is string {
@@ -36,12 +36,18 @@ export async function POST(request: NextRequest) {
 
   if (scoreDelta === 0) {
     await prisma.rankingAdjustment.deleteMany({
-      where: isRecord ? { recordId: id } : { trackId: id },
+      where: itemType === "Cassette" ? { cassetteId: id } : isRecord ? { recordId: id } : { trackId: id },
     });
     return NextResponse.json({ scoreDelta: 0 });
   }
 
-  const adjustment = isRecord
+  const adjustment = itemType === "Cassette"
+    ? await prisma.rankingAdjustment.upsert({
+        where: { cassetteId: id },
+        create: { cassetteId: id, scoreDelta },
+        update: { scoreDelta },
+      })
+    : isRecord
     ? await prisma.rankingAdjustment.upsert({
         where: { recordId: id },
         create: { recordId: id, scoreDelta },

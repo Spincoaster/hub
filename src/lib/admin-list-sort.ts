@@ -193,3 +193,88 @@ export async function getSortedAdminTrackIds(params: {
 
   return rows.map((row) => row.id);
 }
+
+function cassettePrefixCondition(hasPrefix: string | null): Prisma.Sql | null {
+  if (!hasPrefix) return null;
+
+  if (/^[a-zA-Z]$/.test(hasPrefix)) {
+    return Prisma.sql`r.phonetic_name LIKE ${`${hasPrefix.toLowerCase()}%`}`;
+  }
+
+  if (hasPrefix === "#") {
+    return Prisma.sql`r.phonetic_name < 'a' AND r.phonetic_name <> ''`;
+  }
+
+  return Prisma.sql`r.furigana LIKE ${`${hasPrefix}%`}`;
+}
+
+function cassetteConditions(params: {
+  barValue?: number;
+  hasPrefix: string | null;
+  ownerId?: bigint;
+  artistId?: bigint;
+  query: string | null;
+}): Prisma.Sql[] {
+  const conditions: Prisma.Sql[] = [];
+
+  if (params.barValue !== undefined) conditions.push(Prisma.sql`r.bar = ${params.barValue}`);
+  if (params.ownerId !== undefined) conditions.push(Prisma.sql`r.owner_id = ${params.ownerId}`);
+  if (params.artistId !== undefined) conditions.push(Prisma.sql`r.artist_id = ${params.artistId}`);
+
+  const prefixCondition = cassettePrefixCondition(params.hasPrefix);
+  if (prefixCondition) conditions.push(prefixCondition);
+
+  for (const term of searchTerms(params.query)) {
+    const pattern = `%${term}%`;
+    conditions.push(Prisma.sql`(r.name ILIKE ${pattern} OR r.phonetic_name ILIKE ${pattern} OR r.furigana ILIKE ${pattern} OR a.name ILIKE ${pattern} OR r.side_a_first_track ILIKE ${pattern} OR r.side_b_first_track ILIKE ${pattern})`);
+  }
+
+  return conditions;
+}
+
+export async function getSortedAdminCassetteIds(params: {
+  barValue?: number;
+  hasPrefix: string | null;
+  ownerId?: bigint;
+  artistId?: bigint;
+  query: string | null;
+  sort: AdminListSort;
+  take: number;
+  skip: number;
+}): Promise<bigint[]> {
+  const orderBy =
+    params.sort === "adjusted_likes_desc"
+      ? Prisma.sql`
+          GREATEST(COALESCE(l.like_count, 0) + COALESCE(ra.score_delta, 0), 0) DESC,
+          COALESCE(l.like_count, 0) DESC,
+          a.name ASC NULLS LAST,
+          r.name ASC NULLS LAST,
+          r.id ASC
+        `
+      : Prisma.sql`
+          COALESCE(l.like_count, 0) DESC,
+          GREATEST(COALESCE(l.like_count, 0) + COALESCE(ra.score_delta, 0), 0) DESC,
+          a.name ASC NULLS LAST,
+          r.name ASC NULLS LAST,
+          r.id ASC
+        `;
+
+  const rows = await prisma.$queryRaw<SortedIdRow[]>`
+    SELECT r.id
+    FROM cassettes r
+    LEFT JOIN artists a ON a.id = r.artist_id
+    LEFT JOIN (
+      SELECT cassette_id, count(*)::int AS like_count
+      FROM likes
+      WHERE cassette_id IS NOT NULL
+      GROUP BY cassette_id
+    ) l ON l.cassette_id = r.id
+    LEFT JOIN ranking_adjustments ra ON ra.cassette_id = r.id
+    ${whereSql(cassetteConditions(params))}
+    ORDER BY ${orderBy}
+    LIMIT ${params.take}
+    OFFSET ${params.skip}
+  `;
+
+  return rows.map((row) => row.id);
+}

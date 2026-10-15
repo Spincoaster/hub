@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 interface Artist {
@@ -11,6 +11,7 @@ interface Artist {
   furigana: string | null;
   albums: { id: string; name: string | null; _count?: { tracks: number } }[];
   records: { id: string; name: string | null; location: string | null; number: string | null; bar: number | null; owner: { name: string | null } | null }[];
+  cassettes: { id: string; name: string; location: string; number: number; bar: number; owner: { name: string | null } | null }[];
   tracks: { id: string; name: string | null; number: number | null; bar: number | null; album: { id: string; name: string | null } | null }[];
 }
 
@@ -19,6 +20,7 @@ const BAR_VALUES: Record<string, number> = { shinjuku: 0, ebisu: 1, kagurazaka: 
 export default function ArtistDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const context = useSearchParams().get("context") ?? "hires";
   const bar = params.bar as string;
   const id = params.id as string;
 
@@ -26,6 +28,7 @@ export default function ArtistDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const barRecords = artist?.records.filter((r) => r.bar === BAR_VALUES[bar]) ?? [];
+  const barCassettes = artist?.cassettes.filter((item) => item.bar === BAR_VALUES[bar]) ?? [];
   const barTracks = artist?.tracks.filter((t) => t.bar === BAR_VALUES[bar]) ?? [];
 
   useEffect(() => {
@@ -62,7 +65,7 @@ export default function ArtistDetailPage() {
       <div className="mb-4 flex gap-2 text-sm text-zinc-400">
         <Link href={`/${bar}/admin`} className="hover:text-white hover:underline">Admin</Link>
         <span>/</span>
-        <Link href={`/${bar}/admin/artists`} className="hover:text-white hover:underline">アーティスト一覧</Link>
+        <Link href={`/${bar}/admin/artists?context=${context}`} className="hover:text-white hover:underline">アーティスト一覧</Link>
         <span>/</span>
         <span className="text-zinc-300">詳細</span>
       </div>
@@ -70,7 +73,7 @@ export default function ArtistDetailPage() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-white">{artist.name ?? "—"}</h1>
         <Link
-          href={`/${bar}/admin/artists/${id}/edit`}
+          href={`/${bar}/admin/artists/${id}/edit?context=${context}`}
           className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
         >
           編集
@@ -195,6 +198,40 @@ export default function ArtistDetailPage() {
                   </td>
                   <td className="py-3 text-zinc-400">{record.location ?? "—"}</td>
                   <td className="py-3 text-zinc-400">{record.number ?? "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {/* カセット */}
+      {barCassettes.length > 0 && (
+        <div className="mb-8">
+          <h2 className="mb-3 text-lg font-semibold text-white">
+            カセット
+            <span className="ml-2 text-sm font-normal text-zinc-400">({barCassettes.length}件)</span>
+          </h2>
+          <table className="w-full text-left text-sm text-white">
+            <thead>
+              <tr className="border-b border-zinc-700 text-zinc-400">
+                <th className="py-2 font-medium">名前</th>
+                <th className="py-2 font-medium">場所</th>
+                <th className="py-2 font-medium">番号</th>
+              </tr>
+            </thead>
+            <tbody>
+              {barCassettes.map((cassette) => (
+                <tr key={cassette.id} className="border-b border-zinc-800">
+                  <td className="py-3">
+                    <button
+                      onClick={() => router.push(`/${bar}/admin/cassettes/${cassette.id}/edit`)}
+                      className="hover:text-blue-400 hover:underline"
+                    >
+                      {cassette.name ?? "—"}
+                    </button>
+                  </td>
+                  <td className="py-3 text-zinc-400">{cassette.location ?? "—"}</td>
+                  <td className="py-3 text-zinc-400">{cassette.number ?? "—"}</td>
                 </tr>
               ))}
             </tbody>

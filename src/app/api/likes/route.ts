@@ -11,18 +11,20 @@ export async function POST(request: NextRequest) {
   const recordId = body.recordId ? BigInt(body.recordId) : null;
   const trackId = body.trackId ? BigInt(body.trackId) : null;
 
-  if ((!recordId && !trackId) || (recordId && trackId)) {
+  const cassetteId = body.cassetteId ? BigInt(body.cassetteId) : null;
+
+  if ([recordId, trackId, cassetteId].filter(Boolean).length !== 1) {
     return NextResponse.json(
-      { error: "Provide either recordId or trackId" },
+      { error: "Provide exactly one of recordId, trackId or cassetteId" },
       { status: 400 },
     );
   }
 
   try {
     const like = await prisma.like.create({
-      data: { sessionId, recordId, trackId },
+      data: { sessionId, recordId, trackId, cassetteId },
     });
-    const likeCount = await getAdjustedLikeCount({ recordId, trackId });
+    const likeCount = await getAdjustedLikeCount({ recordId, trackId, cassetteId });
 
     return NextResponse.json(serializeBigInt({ ...like, likeCount }), { status: 201 });
   } catch (e: unknown) {

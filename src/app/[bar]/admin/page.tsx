@@ -34,9 +34,9 @@ export default async function AdminPage({
   const { bar } = await params;
   const barValue = BAR_VALUES[bar];
 
-  const [latestSync, features] = await Promise.all([
+  const [latestSync, features, latestCassetteSync] = await Promise.all([
     prisma.syncJob.findFirst({
-      where: { bar: barValue },
+      where: { bar: barValue, mediaType: "record" },
       orderBy: { startedAt: "desc" },
     }),
     prisma.feature.findMany({
@@ -44,6 +44,7 @@ export default async function AdminPage({
       orderBy: { number: "asc" },
       include: { _count: { select: { featureItems: true } } },
     }),
+    bar === "kagurazaka" ? prisma.syncJob.findFirst({ where: { bar: barValue, mediaType: "cassette" }, orderBy: { startedAt: "desc" } }) : Promise.resolve(null),
   ]);
 
   const sheetConfig = BAR_SHEET_CONFIGS[barValue];
@@ -87,6 +88,18 @@ export default async function AdminPage({
           latestSync={serializeBigInt(latestSync) as unknown as SyncJob | null}
         />
       </section>
+
+      {bar === "kagurazaka" && (
+        <section className="mb-12">
+          <h2 className="mb-4 text-2xl font-semibold text-white">カセットリスト同期</h2>
+          <p className="mb-3 text-sm text-zinc-400">
+            <a className="text-blue-400 underline" href={`https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit#gid=139140348`} target="_blank" rel="noopener noreferrer">神楽坂カセットテープリスト</a>と同期します。
+          </p>
+          <SyncStatus barValue={barValue} mediaType="cassette" latestSync={serializeBigInt(latestCassetteSync) as unknown as SyncJob | null} />
+          <Link href={`/${bar}/admin/artists?context=cassettes`} className="mt-3 mr-4 inline-block text-sm text-blue-400 underline">カセットのアーティスト管理</Link>
+          <Link href={`/${bar}/admin/cassettes`} className="mt-3 inline-block text-sm text-blue-400 underline">カセット一覧を見る</Link>
+        </section>
+      )}
 
       <section className="mb-12">
         <h2 className="mb-4 text-2xl font-semibold text-white">

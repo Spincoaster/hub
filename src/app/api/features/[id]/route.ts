@@ -18,7 +18,7 @@ export async function GET(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  // Resolve polymorphic item references (itemType: "Track" or "Record")
+  // Resolve polymorphic item references.
   const itemsWithData = await Promise.all(
     feature.featureItems.map(async (item) => {
       let itemData = null;
@@ -27,6 +27,11 @@ export async function GET(
           itemData = await prisma.track.findUnique({
             where: { id: BigInt(item.itemId) },
             include: { artist: true, album: true, _count: { select: { likes: true } } },
+          });
+        } else if (item.itemType === "Cassette") {
+          itemData = await prisma.cassette.findUnique({
+            where: { id: BigInt(item.itemId) },
+            include: { artist: true, owner: true, _count: { select: { likes: true } } },
           });
         } else if (item.itemType === "Record") {
           itemData = await prisma.record.findUnique({
@@ -51,19 +56,34 @@ export async function PUT(
   // TODO: requireAuth()
   const { id } = await params;
   const body = await request.json();
-  const feature = await prisma.feature.update({
-    where: { id: BigInt(id) },
-    data: {
-      number: body.number,
-      name: body.name,
-      description: body.description,
-      externalLink: body.externalLink,
-      externalThumbnail: body.externalThumbnail,
-      category: body.category,
-      bar: body.bar ?? null,
-    },
+  return prisma.$transaction(async (tx) => {
+    // Serialize bar changes with cassette additions to this feature.
+    const [current] = await tx.$queryRaw<Array<{ bar: number | null }>>`
+      SELECT bar FROM features WHERE id = ${BigInt(id)} FOR UPDATE
+    `;
+    if (!current) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    const nextBar = body.bar === undefined ? current.bar : body.bar;
+    if (nextBar !== current.bar && await tx.featureItem.count({
+      where: { featureId: BigInt(id), itemType: "Cassette" },
+    })) {
+      return NextResponse.json({
+        error: "カセットを含む特集は店舗を変更できません。先に特集からカセットを外してください。",
+      }, { status: 409 });
+    }
+    const feature = await tx.feature.update({
+      where: { id: BigInt(id) },
+      data: {
+        number: body.number,
+        name: body.name,
+        description: body.description,
+        externalLink: body.externalLink,
+        externalThumbnail: body.externalThumbnail,
+        category: body.category,
+        bar: nextBar,
+      },
+    });
+    return NextResponse.json(serializeBigInt(feature));
   });
-  return NextResponse.json(serializeBigInt(feature));
 }
 
 export async function DELETE(

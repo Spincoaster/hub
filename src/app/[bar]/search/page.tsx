@@ -14,6 +14,12 @@ interface SearchRecord {
   location: string | null;
 }
 
+interface SearchCassette extends SearchRecord {
+  sideAFirstTrack: string | null;
+  sideBFirstTrack: string | null;
+  comment: string | null;
+}
+
 interface SearchTrack {
   id: string;
   name: string | null;
@@ -47,6 +53,7 @@ export default function SearchPage() {
   const hasHiRes = bar === "shinjuku";
 
   const [records, setRecords] = useState<SearchRecord[]>([]);
+  const [cassettes, setCassettes] = useState<SearchCassette[]>([]);
   const [tracks, setTracks] = useState<SearchTrack[]>([]);
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
   const [likeMap, setLikeMap] = useState<Record<string, string>>({});
@@ -64,11 +71,13 @@ export default function SearchPage() {
         const data = await res.json();
         setRecords(data.records ?? []);
         setTracks(data.tracks ?? []);
+        setCassettes(data.cassettes ?? []);
         setLikeCounts(data.likeCounts ?? {});
         setLikeMap(data.likeMap ?? {});
       } catch {
         setRecords([]);
         setTracks([]);
+        setCassettes([]);
         setLikeCounts({});
         setLikeMap({});
       } finally {
@@ -93,6 +102,14 @@ export default function SearchPage() {
     location: r.location ?? undefined,
   }));
 
+  const cassetteItems = cassettes.map((item) => ({
+    id: String(item.id), name: item.name ?? "—", artistName: item.artist?.name ?? "—",
+    albumName: "", number: item.number, type: "Cassette" as const,
+    location: item.location ?? undefined, ownerName: item.owner?.name ?? undefined,
+    sideAFirstTrack: item.sideAFirstTrack ?? undefined, sideBFirstTrack: item.sideBFirstTrack ?? undefined,
+    comment: item.comment ?? undefined,
+  }));
+
   const trackItems = tracks.map((t) => ({
     id: String(t.id),
     name: t.name ?? "—",
@@ -110,7 +127,7 @@ export default function SearchPage() {
           Search results of {query}
         </h1>
         <p className="mt-2 text-sm text-white">
-          {records.length} record{hasHiRes ? `, ${tracks.length} track` : ""} are found.
+          {records.length} record{bar === "kagurazaka" ? `, ${cassettes.length} cassette` : ""}{hasHiRes ? `, ${tracks.length} track` : ""} are found.
         </p>
       </div>
 
@@ -134,6 +151,15 @@ export default function SearchPage() {
               </>
             )}
           </section>
+
+          {bar === "kagurazaka" && (
+            <section className="mt-12">
+              <div className="mb-4"><span className="rounded-full bg-white px-4 py-1 text-sm font-bold text-black">{SEARCH.cassette}</span></div>
+              {cassetteItems.length === 0 ? <p className="text-zinc-400">{SEARCH.noResults}</p> : (
+                <><TableHeader columns={[TABLE.title, TABLE.artist]} /><RecordList items={cassetteItems} likeMap={likeMap} likeCounts={likeCounts} /></>
+              )}
+            </section>
+          )}
 
           {/* Hi-Res */}
           {hasHiRes && (

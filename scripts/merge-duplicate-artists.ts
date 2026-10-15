@@ -96,6 +96,12 @@ async function main() {
         console.log(`  Updated ${recResult.rowCount} records`);
       }
 
+      // Update cassettes before removing duplicate artists.
+      await client.query(
+        `UPDATE cassettes SET artist_id = $1 WHERE artist_id = ANY($2::bigint[])`,
+        [keep.id, removeIds]
+      );
+
       // Update albums
       const albResult = await client.query(
         `UPDATE albums SET artist_id = $1 WHERE artist_id = ANY($2::bigint[])`,

@@ -1,3 +1,4 @@
+import { cassetteLikes, cassetteListItem } from "@/lib/cassettes";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -45,10 +46,12 @@ export default async function FeatureDetailPage({
   // Collect item IDs by type
   const recordIds: bigint[] = [];
   const trackIds: bigint[] = [];
+  const cassetteIds: bigint[] = [];
   for (const item of feature.featureItems) {
     if (item.itemId) {
       if (item.itemType === "Record") recordIds.push(BigInt(item.itemId));
       if (item.itemType === "Track") trackIds.push(BigInt(item.itemId));
+      if (item.itemType === "Cassette") cassetteIds.push(BigInt(item.itemId));
     }
   }
 
@@ -89,6 +92,12 @@ export default async function FeatureDetailPage({
         : Promise.resolve([]),
     ]);
 
+  const [cassettes, cassetteLikeData] = await Promise.all([
+    cassetteIds.length ? prisma.cassette.findMany({ where: { id: { in: cassetteIds }, bar: feature.bar ?? -1 }, include: { artist: true, owner: true } }) : [],
+    cassetteLikes(cassetteIds),
+  ]);
+  const cassetteMap = new Map(cassettes.map((item) => [String(item.id), item]));
+
   // Build lookup maps
   const recordMap = new Map(records.map((r) => [String(r.id), r]));
   const trackMap = new Map(tracks.map((t) => [String(t.id), t]));
@@ -105,10 +114,17 @@ export default async function FeatureDetailPage({
     if (like.trackId) likeMap[trackLikeKey(like.trackId)] = String(like.id);
   }
 
+  Object.assign(likeCounts, cassetteLikeData.likeCounts);
+  Object.assign(likeMap, cassetteLikeData.likeMap);
+
   // Build RecordList items
   const items = feature.featureItems
     .map((item) => {
       if (!item.itemId) return null;
+      if (item.itemType === "Cassette") {
+        const cassette = cassetteMap.get(String(item.itemId));
+        return cassette ? cassetteListItem(cassette) : null;
+      }
       if (item.itemType === "Record") {
         const r = recordMap.get(String(item.itemId));
         if (!r) return null;
